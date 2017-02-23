@@ -1,0 +1,34 @@
+configuration:
+  - Debug
+  - Release
+
+environment:
+  TreatWarningsAsErrors: true
+
+branches:
+  only:
+    - master
+    - develop
+
+skip_tags: true
+
+notifications:
+  - provider: GitHubPullRequest
+    on_build_success: true
+    on_build_failure: true
+
+cache:
+  - packages -> **\packages.config
+
+before_build:
+  - nuget restore
+
+test:
+  assemblies:
+    - bin\$(configuration)\*.test.dll
+
+artifacts:
+  - path: bin\$(configuration)
+    type: zip
+
+# vim: set ai et st=2 sts=2 sw=2:
