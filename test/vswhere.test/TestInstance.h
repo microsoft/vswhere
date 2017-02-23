@@ -174,7 +174,7 @@ public:
                 throw win32_error(hr, "failed to lock packages array");
             }
 
-            for (auto i = 0; i < m_packages.size(); ++i)
+            for (size_t i = 0; i < m_packages.size(); ++i)
             {
                 const auto package = m_packages[i];
                 auto rgData = (ElementType*)psa->pvData;
