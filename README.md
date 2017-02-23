@@ -14,3 +14,12 @@ To file issues or suggestions, please use the [Issues](https://github.com/Micros
 ## License
 
 This project is licensed under the [MIT license](LICENSE.txt).
+
+## Status
+
+This project uses a Git flow model releasing from the `master` branch with development based on and stabilized in the `develop` branch.
+
+Branch  | AppVeyor | VSTS
+------  | ------ | -------
+master  | [![build status: master](https://ci.appveyor.com/api/projects/status/yy3g7rggm2sx4nam/branch/master?svg=true)](https://ci.appveyor.com/project/heaths/vswhere/branch/master) | ![build status: master](https://devdiv.visualstudio.com/_apis/public/build/definitions/0bdbc590-a062-4c3f-b0f6-9383f67865ee/5581/badge)
+develop | [![build status: develop](https://ci.appveyor.com/api/projects/status/yy3g7rggm2sx4nam/branch/develop?svg=true)](https://ci.appveyor.com/project/heaths/vswhere/branch/develop)
