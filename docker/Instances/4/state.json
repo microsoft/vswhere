@@ -1,0 +1,45 @@
+{
+    "channelId": "VisualStudio.15.Release/public.d15rel/15.0.26117.0",
+    "installationName": "VisualStudio/public.d15rel/15.0.26117.0",
+    "installationVersion": "15.0.26117",
+    "installationPath": "C:\\BuildTools",
+    "installDate": "2017-01-18T03:45:00Z",
+    "product": {
+        "id": "Microsoft.VisualStudio.Product.BuildTools",
+        "version": "15.0.26117.0",
+        "type": "Product"
+    },
+    "localizedResources": [
+        {
+            "language": "en-us",
+            "title": "Visual Studio Build Tools 2017",
+            "description": "The Visual Studio Build Tools allows you to build native and managed MSBuild-based applications without requiring the Visual Studio IDE. There are options to install the Visual C++ compilers and libraries, MFC, ATL, and C++/CLI support."
+        },
+        {
+            "language": "de-de",
+            "title": "Visual Studio-Buildtools 2017",
+            "description": "Die Visual Studio-Buildtools ermöglichen Ihnen die Erstellung nativer und verwalteter MSBuild-basierter Anwendungen, ohne dass die Visual Studio-IDE erforderlich ist. Es stehen Optionen zur Installation von Visual C++-Compilern und -Bibliotheken, MFC, ATL sowie C++/CLI-Unterstützung zur Verfügung."
+        }
+    ],
+    "enginePath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\resources\\app\\ServiceHub\\Services\\Microsoft.VisualStudio.Setup.Service",
+    "selectedPackages": [
+        {
+            "id": "Microsoft.VisualStudio.Product.BuildTools",
+            "version": "15.0.26117.0",
+            "type": "Product",
+            "selectedState": "IndividuallySelected"
+        }
+    ],
+    "packages": [
+        {
+            "id": "Microsoft.VisualStudio.Workload.MSBuildTools",
+            "version": "15.0.26117.0",
+            "type": "Workload"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Product.BuildTools",
+            "version": "15.0.26117.0",
+            "type": "Product"
+        }
+    ]
+}

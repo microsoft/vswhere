@@ -1,0 +1,85 @@
+{
+    "channelId": "VisualStudio.15.Release/public.d15rel/15.0.26117.0",
+    "installationName": "VisualStudio/public.d15rel/15.0.26117.0",
+    "installationVersion": "15.0.26117",
+    "installationPath": "C:\\VS\\Enterprise",
+    "installDate": "2017-01-18T03:15:00Z",
+    "product": {
+        "id": "Microsoft.VisualStudio.Product.Enterprise",
+        "version": "15.0.26117.0",
+        "type": "Product"
+    },
+    "localizedResources": [
+        {
+            "language": "en-us",
+            "title": "Visual Studio Enterprise 2017",
+            "description": "Microsoft DevOps solution for productivity and coordination across teams of any size"
+        },
+        {
+            "language": "de-de",
+            "title": "Visual Studio Enterprise 2017",
+            "description": "Microsoft DevOps-Lösung für Produktivität und Koordination von Teams beliebiger Größe"
+        }
+    ],
+    "launchParams": {
+        "fileName": "Common7\\IDE\\devenv.exe"
+    },
+    "enginePath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\resources\\app\\ServiceHub\\Services\\Microsoft.VisualStudio.Setup.Service",
+    "properties": {
+        "nickname": "Enterprise"
+    },
+    "selectedPackages": [
+        {
+            "id": "Microsoft.VisualStudio.Product.Enterprise",
+            "version": "15.0.26117.0",
+            "type": "Product",
+            "selectedState": "IndividuallySelected"
+        }
+    ],
+    "packages": [
+        {
+            "id": "Microsoft.VisualStudio.Workload.ManagedDesktop",
+            "version": "15.0.26117.0",
+            "type": "Workload"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Workload.NativeDesktop",
+            "version": "15.0.26117.0",
+            "type": "Workload"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Workload.CoreEditor",
+            "version": "15.0.26117.0",
+            "type": "Workload"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Branding.Enterprise",
+            "version": "15.0.26117.0",
+            "type": "Vsix"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Product.Enterprise",
+            "version": "15.0.26117.0",
+            "type": "Product"
+        }
+    ],
+    "errors": {
+        "errorLogFilePath": "C:\\TEMP\\dd_setup_201601180315_errors.log",
+        "failedPackages": [
+            {
+                "id": "Microsoft.VisualStudio.Workload.Office",
+                "version": "15.0.26009.0",
+                "type": "Workload",
+                "logFilePath": "C:\\TEMP\\dd_setup_201601180315_003_Microsoft.VisualStudio.Workload.Office_errors.log",
+                "description": "Failed to install Microsoft.VisualStudio.Workload.Office"
+            }
+        ],
+        "skippedPackages": [
+            {
+                "id": "Microsoft.VisualStudio.Component.Sharepoint.Tools",
+                "version": "15.0.260009.0",
+                "type": "Component"
+            }
+        ]
+    }
+}

@@ -1,0 +1,61 @@
+{
+    "channelId": "VisualStudio.15.Release/public.d15rel/15.0.26116.0",
+    "installationName": "VisualStudio/public.d15rel/15.0.26116.0",
+    "installationVersion": "15.0.26116",
+    "installationPath": "C:\\VS\\Community",
+    "installDate": "2017-01-17T03:00:00Z",
+    "product": {
+        "id": "Microsoft.VisualStudio.Product.Community",
+        "version": "15.0.26116.0",
+        "type": "Product"
+    },
+    "localizedResources": [
+        {
+            "language": "en-us",
+            "title": "Visual Studio Community 2017",
+            "description": "Free, fully-featured IDE for students, open-source and individual developers"
+        },
+        {
+            "language": "de-de",
+            "title": "Visual Studio Community 2017",
+            "description": "Kostenlose, voll funktionsfähige IDE für Studenten, Open Source- und einzelne Entwickler."
+        }
+    ],
+    "launchParams": {
+        "fileName": "Common7\\IDE\\devenv.exe"
+    },
+    "enginePath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\resources\\app\\ServiceHub\\Services\\Microsoft.VisualStudio.Setup.Service",
+    "properties": {
+        "nickname": "Community"
+    },
+    "selectedPackages": [
+        {
+            "id": "Microsoft.VisualStudio.Product.Community",
+            "version": "15.0.26116.0",
+            "type": "Product",
+            "selectedState": "IndividuallySelected"
+        }
+    ],
+    "packages": [
+        {
+            "id": "Microsoft.VisualStudio.Workload.ManagedDesktop",
+            "version": "15.0.26116.0",
+            "type": "Workload"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Workload.CoreEditor",
+            "version": "15.0.26116.0",
+            "type": "Workload"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Branding.Community",
+            "version": "15.0.26116.0",
+            "type": "Vsix"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Product.Community",
+            "version": "15.0.26116.0",
+            "type": "Product"
+        }
+    ]
+}

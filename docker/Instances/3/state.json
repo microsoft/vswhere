@@ -1,0 +1,61 @@
+{
+    "channelId": "VisualStudio.15.Release/public.d15rel/15.0.26117.0",
+    "installationName": "VisualStudio/public.d15rel/15.0.26117.0",
+    "installationVersion": "15.0.26117",
+    "installationPath": "C:\\VS\\Professional",
+    "installDate": "2017-01-18T03:30:00Z",
+    "product": {
+        "id": "Microsoft.VisualStudio.Product.Professional",
+        "version": "15.0.26117.0",
+        "type": "Product"
+    },
+    "localizedResources": [
+        {
+            "language": "en-us",
+            "title": "Visual Studio Professional 2017",
+            "description": "Professional developer tools and services for small teams"
+        },
+        {
+            "language": "de-de",
+            "title": "Visual Studio Professional 2017",
+            "description": "Professionelle Entwicklertools und -dienste für kleine Teams"
+        }
+    ],
+    "launchParams": {
+        "fileName": "Common7\\IDE\\devenv.exe"
+    },
+    "enginePath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\resources\\app\\ServiceHub\\Services\\Microsoft.VisualStudio.Setup.Service",
+    "properties": {
+        "nickname": "Professional"
+    },
+    "selectedPackages": [
+        {
+            "id": "Microsoft.VisualStudio.Product.Professional",
+            "version": "15.0.26117.0",
+            "type": "Product",
+            "selectedState": "IndividuallySelected"
+        }
+    ],
+    "packages": [
+        {
+            "id": "Microsoft.VisualStudio.Workload.ManagedDesktop",
+            "version": "15.0.26117.0",
+            "type": "Workload"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Workload.CoreEditor",
+            "version": "15.0.26117.0",
+            "type": "Workload"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Branding.Professional",
+            "version": "15.0.26117.0",
+            "type": "Vsix"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Product.Professional",
+            "version": "15.0.26117.0",
+            "type": "Product"
+        }
+    ]
+}
