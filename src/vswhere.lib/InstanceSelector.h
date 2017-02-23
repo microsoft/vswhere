@@ -17,7 +17,7 @@ public:
     {
     }
 
-    std::vector<ISetupInstance*> Select(_In_ IEnumSetupInstances* pEnum) const;
+    std::vector<ISetupInstancePtr> Select(_In_ IEnumSetupInstances* pEnum) const;
 
 private:
     static std::wstring GetId(_In_ ISetupPackageReference* pPackageReference);

@@ -47,7 +47,7 @@ public:
             { L"installationVersion", L"1.2.3.4" },
         };
 
-        vector<ISetupInstance*> instances =
+        vector<ISetupInstancePtr> instances =
         {
             &instance1,
             &instance2,

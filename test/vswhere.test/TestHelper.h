@@ -58,7 +58,7 @@ public:
 
     STDMETHODIMP_(ULONG) Release(void)
     {
-        _ASSERTE(m_ulRef);
+        Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreNotEqual(0UL, m_ulRef);
         return ::InterlockedDecrement(&m_ulRef);
     }
 

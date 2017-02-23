@@ -53,7 +53,7 @@ public:
             { L"installationVersion", L"1.2.3.4" },
         };
 
-        vector<ISetupInstance*> instances =
+        vector<ISetupInstancePtr> instances =
         {
             &instance1,
             &instance2,
@@ -83,7 +83,7 @@ public:
 
     TEST_METHOD(Write_No_Instances)
     {
-        vector<ISetupInstance*> instances;
+        vector<ISetupInstancePtr> instances;
 
         JsonFormatter sut;
         wostringstream ostr;

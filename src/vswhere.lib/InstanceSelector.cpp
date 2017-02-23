@@ -31,7 +31,7 @@ InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_opt_ ISetup
     }
 }
 
-vector<ISetupInstance*> InstanceSelector::Select(_In_ IEnumSetupInstances* pEnum) const
+vector<ISetupInstancePtr> InstanceSelector::Select(_In_ IEnumSetupInstances* pEnum) const
 {
     _ASSERT(pEnum);
 
@@ -39,7 +39,7 @@ vector<ISetupInstance*> InstanceSelector::Select(_In_ IEnumSetupInstances* pEnum
     unsigned long celtFetched = 0;
     ISetupInstance* pInstances[1] = {};
 
-    vector<ISetupInstance*> instances;
+    vector<ISetupInstancePtr> instances;
     do
     {
         celtFetched = 0;
@@ -47,10 +47,10 @@ vector<ISetupInstance*> InstanceSelector::Select(_In_ IEnumSetupInstances* pEnum
         hr = pEnum->Next(1, pInstances, &celtFetched);
         if (SUCCEEDED(hr) && celtFetched)
         {
-            auto pInstance = pInstances[0];
-            if (IsMatch(pInstance))
+            ISetupInstancePtr instance(pInstances[0], false);
+            if (IsMatch(instance))
             {
-                instances.push_back(pInstance);
+                instances.push_back(instance);
             }
         }
     } while (SUCCEEDED(hr) && celtFetched);
