@@ -18,7 +18,7 @@ public:
     }
 
     bool Less(const ISetupInstancePtr& a, const ISetupInstancePtr&  b) const;
-    std::vector<ISetupInstancePtr> Select(_In_ IEnumSetupInstances* pEnum) const;
+    std::vector<ISetupInstancePtr> Select(_In_opt_ IEnumSetupInstances* pEnum) const;
 
 private:
     static std::wstring GetId(_In_ ISetupPackageReference* pPackageReference);

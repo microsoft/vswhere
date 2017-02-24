@@ -11,6 +11,17 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 TEST_CLASS(InstanceSelectorTests)
 {
 public:
+    TEST_METHOD(Select_Null)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        InstanceSelector sut(args);
+        auto selected = sut.Select(NULL);
+
+        Assert::AreEqual<size_t>(0, selected.size());
+    }
+
     TEST_METHOD(Select_No_Product)
     {
         TestInstance instance =
