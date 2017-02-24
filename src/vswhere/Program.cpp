@@ -22,8 +22,7 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         if (args.get_Help())
         {
             WriteLogo(args, out);
-
-            // TODO: args.Usage(out);
+            args.Usage(out);
 
             return ERROR_SUCCESS;
         }
@@ -85,16 +84,16 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
     }
     catch (const system_error& ex)
     {
-        out << L"Error " << hex << showbase << ex.code().value() << L": " << ex.what() << endl;
+        out << ResourceManager::GetString(IDS_ERROR) << L" " << hex << showbase << ex.code().value() << L": " << ex.what() << endl;
         return ex.code().value();
     }
     catch (const exception& ex)
     {
-        out << L"Error: " << ex.what() << endl;
+        out << ResourceManager::GetString(IDS_ERROR) << L": " << ex.what() << endl;
     }
     catch (...)
     {
-        out << L"Error: unknown error." << endl;
+        out << ResourceManager::GetString(IDS_ERROR) << L": " << ResourceManager::GetString(IDS_E_UNKNOWN) << endl;
     }
 
     return E_FAIL;
