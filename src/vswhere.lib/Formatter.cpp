@@ -132,6 +132,8 @@ wstring Formatter::FormatDate(_In_ const FILETIME& value)
 
 void Formatter::WriteInternal(_In_ std::wostream& out, _In_ ISetupInstance* pInstance)
 {
+    _ASSERTE(pInstance);
+
     StartObject(out);
 
     bstr_t bstrValue;
@@ -146,7 +148,80 @@ void Formatter::WriteInternal(_In_ std::wostream& out, _In_ ISetupInstance* pIns
         }
     }
 
+    WriteProperties(out, pInstance);
     EndObject(out);
+}
+
+void Formatter::WriteProperty(_In_ std::wostream& out, _In_ const wstring& name, _In_ const variant_t& value)
+{
+    switch (value.vt)
+    {
+    case VT_BOOL:
+        WriteProperty(out, name, VARIANT_TRUE == value.boolVal);
+        break;
+
+    case VT_BSTR:
+        WriteProperty(out, name, wstring(value.bstrVal));
+        break;
+
+    case VT_I1:
+    case VT_I2:
+    case VT_I4:
+    case VT_I8:
+    case VT_UI1:
+    case VT_UI2:
+    case VT_UI4:
+        WriteProperty(out, name, value.llVal);
+        break;
+    }
+}
+
+void Formatter::WriteProperties(_In_ std::wostream& out, _In_ ISetupInstance* pInstance)
+{
+    _ASSERTE(pInstance);
+
+    ISetupPropertyStorePtr store;
+    LPSAFEARRAY psaNames = NULL;
+
+    auto hr = pInstance->QueryInterface(&store);
+    if (FAILED(hr))
+    {
+        if (E_NOINTERFACE != hr)
+        {
+            throw win32_error(hr);
+        }
+
+        return;
+    }
+
+    hr = store->GetNames(&psaNames);
+    if (FAILED(hr))
+    {
+        return;
+    }
+
+    SafeArray<BSTR> saNames(psaNames);
+    for (const auto& bstrName : saNames.Elements())
+    {
+        wstring name(bstrName);
+        variant_t vtValue;
+
+        auto it = find_if(m_properties.begin(), m_properties.end(), bind(Formatter::PropertyEqual, name, _1));
+        if (it == m_properties.end())
+        {
+            hr = store->GetValue(bstrName, vtValue.GetAddress());
+            if (SUCCEEDED(hr))
+            {
+                WriteProperty(out, name, vtValue);
+            }
+        }
+    }
+}
+
+bool Formatter::PropertyEqual(_In_ const std::wstring& name, _In_ PropertyArray::const_reference property)
+{
+    static ci_equal equal;
+    return equal(name, property.first);
 }
 
 HRESULT Formatter::GetInstanceId(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstanceId)

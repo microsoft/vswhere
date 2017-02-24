@@ -6,7 +6,7 @@
 #pragma once
 
 // Simple container for a single-dimension SAFEARRAY.
-template <class InterfaceType>
+template <class _Element>
 class SafeArray
 {
 public:
@@ -25,9 +25,10 @@ public:
     ~SafeArray()
     {
         Unlock();
+        Destroy();
     }
 
-    const std::vector<InterfaceType>& Elements() const
+    const std::vector<_Element>& Elements() const
     {
         return m_interfaces;
     }
@@ -43,7 +44,7 @@ private:
                 throw win32_error(hr);
             }
 
-            auto pvData = (InterfaceType*)m_psa->pvData;
+            auto pvData = (_Element*)m_psa->pvData;
             auto celt = m_psa->rgsabound[0].cElements;
 
             m_interfaces.assign(pvData, pvData + celt);
@@ -58,6 +59,14 @@ private:
         }
     }
 
+    void Destroy()
+    {
+        if (m_psa)
+        {
+            ::SafeArrayDestroy(m_psa);
+        }
+    }
+
     LPSAFEARRAY m_psa;
-    std::vector<InterfaceType> m_interfaces;
+    std::vector<_Element> m_interfaces;
 };
