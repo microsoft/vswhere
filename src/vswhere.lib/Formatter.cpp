@@ -64,7 +64,7 @@ void Formatter::Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstancePt
     EndDocument(out);
 }
 
-wstring Formatter::FormatDateISO9601(_In_ const FILETIME& value)
+wstring Formatter::FormatDateISO8601(_In_ const FILETIME& value)
 {
     SYSTEMTIME st = {};
 

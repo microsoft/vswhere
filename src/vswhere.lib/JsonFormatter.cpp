@@ -96,5 +96,5 @@ void JsonFormatter::EndDocument(_In_ wostream& out)
 
 wstring JsonFormatter::FormatDate(_In_ const FILETIME& value)
 {
-    return FormatDateISO9601(value);
+    return FormatDateISO8601(value);
 }

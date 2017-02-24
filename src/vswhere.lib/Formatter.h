@@ -32,7 +32,7 @@ protected:
 
     Formatter();
 
-    static std::wstring FormatDateISO9601(_In_ const FILETIME& value);
+    static std::wstring FormatDateISO8601(_In_ const FILETIME& value);
 
     virtual void StartDocument(_In_ std::wostream& out) {}
     virtual void StartArray(_In_ std::wostream& out) {}
