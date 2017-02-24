@@ -56,6 +56,8 @@ protected:
     virtual std::wstring FormatDate(_In_ const FILETIME& value);
 
 private:
+    static bool PropertyEqual(_In_ const std::wstring& name, _In_ PropertyArray::const_reference property);
+
     HRESULT GetInstanceId(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstanceId);
     HRESULT GetInstallDate(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallDate);
     HRESULT GetInstallationName(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallationName);
@@ -65,6 +67,8 @@ private:
     HRESULT GetDescription(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrDescription);
 
     void WriteInternal(_In_ std::wostream& out, _In_ ISetupInstance* pInstance);
+    void WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ const variant_t& value);
+    void WriteProperties(_In_ std::wostream& out, _In_ ISetupInstance* pInstance);
 
     PropertyArray m_properties;
 };
