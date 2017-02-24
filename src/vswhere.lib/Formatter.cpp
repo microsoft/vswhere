@@ -24,8 +24,8 @@ Formatter::Formatter()
 
 Formatter::FormatterMap Formatter::Formatters =
 {
-    { L"json", JsonFormatter::Create },
-    { L"text", TextFormatter::Create },
+    { L"json", make_tuple(IDS_FORMAT_TEXT, JsonFormatter::Create) },
+    { L"text", make_tuple(IDS_FORMAT_JSON, TextFormatter::Create) },
 };
 
 std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
@@ -33,7 +33,10 @@ std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
     auto it = Formatters.find(type);
     if (it != Formatters.end())
     {
-        return it->second();
+        FormatterFactory factory;
+        tie(ignore, factory) = it->second;
+
+        return factory();
     }
 
     throw win32_error(ERROR_NOT_SUPPORTED);
