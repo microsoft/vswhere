@@ -19,7 +19,7 @@ public:
     }
 
     void Write(_In_ std::wostream& out, _In_ ISetupInstance* pInstance);
-    void Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstance*> instances);
+    void Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstancePtr> instances);
 
     virtual bool ShowLogo() const
     {

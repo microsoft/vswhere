@@ -58,7 +58,7 @@ public:
 
     STDMETHODIMP_(ULONG) Release(void)
     {
-        _ASSERTE(m_ulRef);
+        Microsoft::VisualStudio::CppUnitTestFramework::Assert::AreNotEqual(0UL, m_ulRef);
         return ::InterlockedDecrement(&m_ulRef);
     }
 
@@ -68,7 +68,21 @@ public:
         _Out_ PULONGLONG pullVersion
     )
     {
-        return E_NOTFOUND;
+        static ci_equal equal;
+
+        if (equal(pwszVersion, L"1.0"))
+        {
+            *pullVersion = MAKEVERSION(1, 0, 0, 0);
+            S_OK;
+        }
+
+        if (equal(pwszVersion, L"2.0"))
+        {
+            *pullVersion = MAKEVERSION(2, 0, 0, 0);
+            return S_OK;
+        }
+
+        return E_NOTIMPL;
     }
 
     STDMETHODIMP ParseVersionRange(

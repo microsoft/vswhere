@@ -50,14 +50,10 @@ void Formatter::Write(_In_ std::wostream& out, _In_ ISetupInstance* pInstance)
     EndDocument(out);
 }
 
-void Formatter::Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstance*> instances)
+void Formatter::Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstancePtr> instances)
 {
     StartDocument(out);
     StartArray(out);
-
-    HRESULT hr = S_OK;
-    ISetupInstance* pInstance[1] = {};
-    unsigned long fetched = 0;
 
     for (const auto& instance : instances)
     {

@@ -11,7 +11,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 TEST_CLASS(InstanceSelectorTests)
 {
 public:
-    TEST_METHOD(NoProduct)
+    TEST_METHOD(Select_No_Product)
     {
         TestInstance instance =
         {
@@ -33,7 +33,7 @@ public:
         Assert::AreEqual<size_t>(0, selected.size());
     }
 
-    TEST_METHOD(Default_Product)
+    TEST_METHOD(Select_Default_Product)
     {
         TestPackageReference product =
         {
@@ -61,7 +61,7 @@ public:
         Assert::AreEqual<size_t>(1, selected.size());
     }
 
-    TEST_METHOD(Other_Product)
+    TEST_METHOD(Select_Other_Product)
     {
         TestPackageReference product =
         {
@@ -89,14 +89,14 @@ public:
         Assert::AreEqual<size_t>(1, selected.size());
     }
 
-    TEST_METHOD(NoVersion)
+    TEST_METHOD(Select_No_Version)
     {
         TestInstance instance =
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
         };
-        
+
         TestEnumInstances instances =
         {
             &instance,
@@ -113,7 +113,7 @@ public:
         Assert::AreEqual<size_t>(0, selected.size());
     }
 
-    TEST_METHOD(NoWorkload)
+    TEST_METHOD(Select_No_Workload)
     {
         TestPackageReference product =
         {
@@ -149,7 +149,7 @@ public:
         Assert::AreEqual<size_t>(0, selected.size());
     }
 
-    TEST_METHOD(Requires_Workload)
+    TEST_METHOD(Select_Requires_Workload)
     {
         TestPackageReference product =
         {
@@ -185,7 +185,7 @@ public:
         Assert::AreEqual<size_t>(1, selected.size());
     }
 
-    TEST_METHOD(InvalidVersionRange)
+    TEST_METHOD(Select_Invalid_Version_Range)
     {
         CommandArgs args;
         args.Parse(L"vswhere.exe -version invalid");
@@ -193,5 +193,200 @@ public:
         TestHelper helper(0, 0);
 
         Assert::ExpectException<win32_error>([&] { InstanceSelector(args, &helper); });
+    }
+
+    TEST_METHOD(Less_No_Version_A)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        TestInstance a =
+        {
+        };
+
+        TestInstance b =
+        {
+            { L"InstallationVersion", L"2.0" },
+        };
+
+        TestHelper helper(0, 0);
+
+        InstanceSelector sut(args, &helper);
+        Assert::IsTrue(sut.Less(&a, &b));
+    }
+
+    TEST_METHOD(Less_No_Version_B)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        TestInstance a =
+        {
+            { L"InstallationVersion", L"1.0" },
+        };
+
+        TestInstance b =
+        {
+        };
+
+        TestHelper helper(0, 0);
+
+        InstanceSelector sut(args, &helper);
+        Assert::IsFalse(sut.Less(&a, &b));
+    }
+
+    TEST_METHOD(Less_Version_A)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        TestInstance a =
+        {
+            { L"InstallationVersion", L"1.0" },
+        };
+
+        TestInstance b =
+        {
+            { L"InstallationVersion", L"2.0" },
+        };
+
+        TestHelper helper(0, 0);
+
+        InstanceSelector sut(args, &helper);
+        Assert::IsTrue(sut.Less(&a, &b));
+    }
+
+    TEST_METHOD(Less_Version_B)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        TestInstance a =
+        {
+            { L"InstallationVersion", L"2.0" },
+        };
+
+        TestInstance b =
+        {
+            { L"InstallationVersion", L"1.0" },
+        };
+
+        TestHelper helper(0, 0);
+
+        InstanceSelector sut(args, &helper);
+        Assert::IsFalse(sut.Less(&a, &b));
+    }
+
+    TEST_METHOD(Less_No_Date_A)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        TestInstance a =
+        {
+            { L"InstallationVersion", L"2.0" },
+        };
+
+        TestInstance b =
+        {
+            { L"InstallationVersion", L"2.0" },
+            { L"InstallDate", L"2017-02-23T22:00:00Z" },
+        };
+
+        TestHelper helper(0, 0);
+
+        InstanceSelector sut(args, &helper);
+        Assert::IsTrue(sut.Less(&a, &b));
+    }
+
+    TEST_METHOD(Less_No_Date_B)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        TestInstance a =
+        {
+            { L"InstallationVersion", L"2.0" },
+            { L"InstallDate", L"2017-02-23T22:00:00Z" },
+        };
+
+        TestInstance b =
+        {
+            { L"InstallationVersion", L"2.0" },
+        };
+
+        TestHelper helper(0, 0);
+
+        InstanceSelector sut(args, &helper);
+        Assert::IsFalse(sut.Less(&a, &b));
+    }
+
+    TEST_METHOD(Less_Date_A)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        TestInstance a =
+        {
+            { L"InstallationVersion", L"2.0" },
+            { L"InstallDate", L"2017-02-23T22:00:00Z" },
+        };
+
+        TestInstance b =
+        {
+            { L"InstallationVersion", L"2.0" },
+            { L"InstallDate", L"2017-02-23T23:00:00Z" },
+        };
+
+        TestHelper helper(0, 0);
+
+        InstanceSelector sut(args, &helper);
+        Assert::IsTrue(sut.Less(&a, &b));
+    }
+
+    TEST_METHOD(Less_Date_B)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        TestInstance a =
+        {
+            { L"InstallationVersion", L"2.0" },
+            { L"InstallDate", L"2017-02-23T23:00:00Z" },
+        };
+
+        TestInstance b =
+        {
+            { L"InstallationVersion", L"2.0" },
+            { L"InstallDate", L"2017-02-23T22:00:00Z" },
+        };
+
+        TestHelper helper(0, 0);
+
+        InstanceSelector sut(args, &helper);
+        Assert::IsFalse(sut.Less(&a, &b));
+    }
+
+    TEST_METHOD(Less_Dates_Equal)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        TestInstance a =
+        {
+            { L"InstallationVersion", L"2.0" },
+            { L"InstallDate", L"2017-02-23T22:00:00Z" },
+        };
+
+        TestInstance b =
+        {
+            { L"InstallationVersion", L"2.0" },
+            { L"InstallDate", L"2017-02-23T22:00:00Z" },
+        };
+
+        TestHelper helper(0, 0);
+
+        InstanceSelector sut(args, &helper);
+        Assert::ExpectException<win32_error>([&] { sut.Less(&a, &b); });
     }
 };
