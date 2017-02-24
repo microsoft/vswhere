@@ -8,17 +8,16 @@
 using namespace std;
 using std::placeholders::_1;
 
-const ci_equal InstanceSelector::s_comparer;
-
 InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_opt_ ISetupHelper* pHelper) :
-    m_args(args)
+    m_args(args),
+    m_ullMinimumVersion(0),
+    m_ullMaximumVersion(0)
 {
-    // Get the ISetupHelper (if implemented) if a version range is specified.
-    auto version = args.get_Version();
-    if (!version.empty())
+    m_helper = pHelper;
+    if (m_helper)
     {
-        m_helper = pHelper;
-        if (m_helper)
+        auto version = args.get_Version();
+        if (!version.empty())
         {
             auto hr = m_helper->ParseVersionRange(version.c_str(), &m_ullMinimumVersion, &m_ullMaximumVersion);
             if (FAILED(hr))
@@ -28,6 +27,65 @@ InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_opt_ ISetup
                 throw win32_error(ERROR_INVALID_PARAMETER, message);
             }
         }
+    }
+}
+
+bool InstanceSelector::Less(const ISetupInstancePtr& a, const ISetupInstancePtr&  b) const
+{
+    static ci_equal equal;
+    static ci_less less;
+
+    bstr_t bstrVersionA, bstrVersionB;
+    ULONGLONG ullVersionA, ullVersionB;
+    FILETIME ftDateA, ftDateB;
+
+    // Compare versions.
+    auto hrA = a->GetInstallationVersion(bstrVersionA.GetAddress());
+    auto hrB = b->GetInstallationVersion(bstrVersionB.GetAddress());
+    if (SUCCEEDED(hrA) && SUCCEEDED(hrB))
+    {
+        if (m_helper)
+        {
+            hrA = m_helper->ParseVersion(bstrVersionA, &ullVersionA);
+            hrB = m_helper->ParseVersion(bstrVersionB, &ullVersionB);
+            if (SUCCEEDED(hrA) && SUCCEEDED(hrB))
+            {
+                if (ullVersionA != ullVersionB)
+                {
+                    return ullVersionA < ullVersionB;
+                }
+            }
+            else
+            {
+                // a is less than b if we can't parse version for a but can for b.
+                return SUCCEEDED(hrB);
+            }
+        }
+    }
+    else
+    {
+        // a is less than b if we can't get version for a but can for b.
+        return SUCCEEDED(hrB);
+    }
+
+    // Compare dates.
+    hrA = a->GetInstallDate(&ftDateA);
+    hrB = b->GetInstallDate(&ftDateB);
+    if (SUCCEEDED(hrA) && SUCCEEDED(hrB))
+    {
+        auto result = ::CompareFileTime(&ftDateA, &ftDateB);
+        if (0 == result)
+        {
+            auto message = ResourceManager::GetString(IDS_E_UNEXPECTEDDATE);
+            throw win32_error(E_UNEXPECTED, message);
+        }
+
+        return 0 > result;
+    }
+    else
+    {
+        // a is less than b if we can't get date for a but can for b.
+        return SUCCEEDED(hrB);
     }
 }
 
@@ -54,6 +112,19 @@ vector<ISetupInstancePtr> InstanceSelector::Select(_In_ IEnumSetupInstances* pEn
             }
         }
     } while (SUCCEEDED(hr) && celtFetched);
+
+    if (m_args.get_Latest() && 1 < instances.size())
+    {
+        sort(instances.begin(), instances.end(), [&](const ISetupInstancePtr& a, const ISetupInstancePtr& b) -> bool
+        {
+            return Less(a, b);
+        });
+
+        return vector<ISetupInstancePtr>
+        {
+            instances.back(),
+        };
+    }
 
     return instances;
 }
@@ -168,8 +239,7 @@ bool InstanceSelector::IsVersionMatch(_In_ ISetupInstance* pInstance) const
 {
     _ASSERT(pInstance);
 
-    // m_helper will be NULL if no version range was specified or the interface was not yet implemented.
-    if (!m_helper)
+    if (!HasVersionRange())
     {
         return true;
     }

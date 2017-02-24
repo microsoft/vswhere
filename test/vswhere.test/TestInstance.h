@@ -92,20 +92,21 @@ public:
     STDMETHODIMP GetInstallDate(
         _Out_ LPFILETIME pInstallDate)
     {
-        // Rather than parsing the value, return a fixed value for "2017-02-23T01:22:35Z".
-        auto it = m_properties.find(L"installDate");
-        if (it != m_properties.end())
-        {
-            *pInstallDate =
-            {
-                1343813982,
-                30575987,
-            };
+        std::wstring value;
 
-            return S_OK;
+        auto hr = TryGet(L"installDate", value);
+        if (SUCCEEDED(hr))
+        {
+            const int num_fields = 6;
+            SYSTEMTIME st = {};
+
+            if (num_fields == ::swscanf_s(value.c_str(), L"%hd-%hd-%hdT%hd:%hd:%hd", &st.wYear, &st.wMonth, &st.wDay, &st.wHour, &st.wMinute, &st.wSecond))
+            {
+                ::SystemTimeToFileTime(&st, pInstallDate);
+            }
         }
 
-        return E_NOTFOUND;
+        return hr;
     }
 
     STDMETHODIMP GetInstallationName(
