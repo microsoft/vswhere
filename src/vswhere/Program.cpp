@@ -7,6 +7,7 @@
 
 using namespace std;
 
+void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& query, _In_ IEnumSetupInstancesPtr& e);
 void WriteLogo(_In_ const CommandArgs& args, _In_ wostream& out);
 
 int wmain(_In_ int argc, _In_ LPCWSTR argv[])
@@ -30,44 +31,14 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         ISetupConfigurationPtr query;
         IEnumSetupInstancesPtr e;
 
-        auto hr = query.CreateInstance(__uuidof(SetupConfiguration));
-        if (FAILED(hr))
-        {
-            if (REGDB_E_CLASSNOTREG == hr)
-            {
-                WriteLogo(args, out);
-                return ERROR_SUCCESS;
-            }
-        }
-
-        // If all instances are requested, try to get the proper enumerator; otherwise, fall back to original enumerator.
-        if (args.get_All())
-        {
-            ISetupConfiguration2Ptr query2;
-
-            hr = query->QueryInterface(&query2);
-            if (SUCCEEDED(hr))
-            {
-                hr = query2->EnumAllInstances(&e);
-                if (FAILED(hr))
-                {
-                    throw win32_error(hr);
-                }
-            }
-        }
-
-        if (!e)
-        {
-            hr = query->EnumInstances(&e);
-            if (FAILED(hr))
-            {
-                throw win32_error(hr);
-            }
-        }
+        GetEnumerator(args, query, e);
 
         // Attempt to get the ISetupHelper.
         ISetupHelperPtr helper;
-        query->QueryInterface(&helper);
+        if (query)
+        {
+            query->QueryInterface(&helper);
+        }
 
         InstanceSelector selector(args, helper);
         auto instances = selector.Select(e);
@@ -97,6 +68,45 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
     }
 
     return E_FAIL;
+}
+
+void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& query, _In_ IEnumSetupInstancesPtr& e)
+{
+    auto hr = query.CreateInstance(__uuidof(SetupConfiguration));
+    if (FAILED(hr))
+    {
+        if (REGDB_E_CLASSNOTREG == hr)
+        {
+            return;
+        }
+
+        throw win32_error(hr);
+    }
+
+    // If all instances are requested, try to get the proper enumerator; otherwise, fall back to original enumerator.
+    if (args.get_All())
+    {
+        ISetupConfiguration2Ptr query2;
+
+        hr = query->QueryInterface(&query2);
+        if (SUCCEEDED(hr))
+        {
+            hr = query2->EnumAllInstances(&e);
+            if (FAILED(hr))
+            {
+                throw win32_error(hr);
+            }
+        }
+    }
+
+    if (!e)
+    {
+        hr = query->EnumInstances(&e);
+        if (FAILED(hr))
+        {
+            throw win32_error(hr);
+        }
+    }
 }
 
 void WriteLogo(_In_ const CommandArgs& args, _In_ wostream& out)
