@@ -24,8 +24,8 @@ Formatter::Formatter()
 
 Formatter::FormatterMap Formatter::Formatters =
 {
-    { L"json", JsonFormatter::Create },
-    { L"text", TextFormatter::Create },
+    { L"json", make_tuple(IDS_FORMAT_TEXT, JsonFormatter::Create) },
+    { L"text", make_tuple(IDS_FORMAT_JSON, TextFormatter::Create) },
 };
 
 std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
@@ -33,7 +33,10 @@ std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
     auto it = Formatters.find(type);
     if (it != Formatters.end())
     {
-        return it->second();
+        FormatterFactory factory;
+        tie(ignore, factory) = it->second;
+
+        return factory();
     }
 
     throw win32_error(ERROR_NOT_SUPPORTED);
@@ -50,14 +53,10 @@ void Formatter::Write(_In_ std::wostream& out, _In_ ISetupInstance* pInstance)
     EndDocument(out);
 }
 
-void Formatter::Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstance*> instances)
+void Formatter::Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstancePtr> instances)
 {
     StartDocument(out);
     StartArray(out);
-
-    HRESULT hr = S_OK;
-    ISetupInstance* pInstance[1] = {};
-    unsigned long fetched = 0;
 
     for (const auto& instance : instances)
     {
@@ -68,7 +67,7 @@ void Formatter::Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstance*>
     EndDocument(out);
 }
 
-wstring Formatter::FormatDateISO9601(_In_ const FILETIME& value)
+wstring Formatter::FormatDateISO8601(_In_ const FILETIME& value)
 {
     SYSTEMTIME st = {};
 

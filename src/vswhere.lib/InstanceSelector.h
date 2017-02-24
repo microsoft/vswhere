@@ -17,7 +17,8 @@ public:
     {
     }
 
-    std::vector<ISetupInstance*> Select(_In_ IEnumSetupInstances* pEnum) const;
+    bool Less(const ISetupInstancePtr& a, const ISetupInstancePtr&  b) const;
+    std::vector<ISetupInstancePtr> Select(_In_ IEnumSetupInstances* pEnum) const;
 
 private:
     static std::wstring GetId(_In_ ISetupPackageReference* pPackageReference);
@@ -25,8 +26,11 @@ private:
     bool IsProductMatch(_In_ ISetupInstance2* pInstance) const;
     bool IsWorkloadMatch(_In_ ISetupInstance2* pInstance) const;
     bool IsVersionMatch(_In_ ISetupInstance* pInstance) const;
+    bool HasVersionRange() const
+    {
+        return m_ullMinimumVersion != 0 && m_ullMaximumVersion != 0;
+    }
 
-    static const ci_equal s_comparer;
     const CommandArgs& m_args;
     ULONGLONG m_ullMinimumVersion;
     ULONGLONG m_ullMaximumVersion;

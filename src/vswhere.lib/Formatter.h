@@ -8,7 +8,8 @@
 class Formatter
 {
 public:
-    typedef std::map<std::wstring, std::function<std::unique_ptr<Formatter>()>, ci_less> FormatterMap;
+    typedef std::function<std::unique_ptr<Formatter>()> FormatterFactory;
+    typedef std::map<std::wstring, std::tuple<UINT, FormatterFactory>, ci_less> FormatterMap;
 
     static std::unique_ptr<Formatter> Create(const std::wstring& type);
     static FormatterMap Formatters;
@@ -19,7 +20,7 @@ public:
     }
 
     void Write(_In_ std::wostream& out, _In_ ISetupInstance* pInstance);
-    void Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstance*> instances);
+    void Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstancePtr> instances);
 
     virtual bool ShowLogo() const
     {
@@ -32,7 +33,7 @@ protected:
 
     Formatter();
 
-    static std::wstring FormatDateISO9601(_In_ const FILETIME& value);
+    static std::wstring FormatDateISO8601(_In_ const FILETIME& value);
 
     virtual void StartDocument(_In_ std::wostream& out) {}
     virtual void StartArray(_In_ std::wostream& out) {}
