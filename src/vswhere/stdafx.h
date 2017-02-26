@@ -11,6 +11,8 @@
 
 // Windows headers
 #include <windows.h>
+#include <io.h>
+#include <fcntl.h>
 
 // STL headers
 #include <iomanip>
