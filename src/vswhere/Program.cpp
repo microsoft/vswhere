@@ -12,6 +12,8 @@ void WriteLogo(_In_ const CommandArgs& args, _In_ wostream& out);
 
 int wmain(_In_ int argc, _In_ LPCWSTR argv[])
 {
+    _setmode(_fileno(stdout), _O_U16TEXT);
+
     CommandArgs args;
     wostream& out = wcout;
 
