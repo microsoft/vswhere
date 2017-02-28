@@ -15,12 +15,24 @@ public:
     }
 
     win32_error(_In_ int code, _In_ const std::string message = "") :
-        system_error(code, std::system_category(), message)
+        system_error(code, std::system_category(), message),
+        m_message(format_message(code))
     {
     }
 
     win32_error(_In_ int code, _In_ const std::wstring message) :
-        system_error(code, std::system_category(), to_string(message))
+        system_error(code, std::system_category(), to_string(message)),
+        m_message(message)
     {
     }
+
+    const wchar_t* wwhat() const
+    {
+        return m_message.c_str();
+    }
+
+private:
+    static std::wstring format_message(_In_ int code);
+
+    std::wstring m_message;
 };

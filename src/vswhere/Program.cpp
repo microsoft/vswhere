@@ -57,7 +57,18 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
     }
     catch (const system_error& ex)
     {
-        out << ResourceManager::GetString(IDS_ERROR) << L" " << hex << showbase << ex.code().value() << L": " << ex.what() << endl;
+        out << ResourceManager::GetString(IDS_ERROR) << L" " << hex << showbase << ex.code().value() << L": ";
+
+        const auto* err = dynamic_cast<const win32_error*>(&ex);
+        if (err)
+        {
+            out << err->wwhat() << endl;
+        }
+        else
+        {
+            out << ex.what() << endl;
+        }
+
         return ex.code().value();
     }
     catch (const exception& ex)

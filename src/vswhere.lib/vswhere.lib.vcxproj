@@ -175,6 +175,7 @@
   <ItemGroup>
     <ClCompile Include="CommandArgs.cpp" />
     <ClCompile Include="CommandParser.cpp" />
+    <ClCompile Include="Exceptions.cpp" />
     <ClCompile Include="Formatter.cpp" />
     <ClCompile Include="InstanceSelector.cpp" />
     <ClCompile Include="JsonFormatter.cpp" />
