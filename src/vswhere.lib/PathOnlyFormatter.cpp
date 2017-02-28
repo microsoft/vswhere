@@ -7,10 +7,6 @@
 
 using namespace std;
 
-void PathOnlyFormatter::StartObject(_In_ std::wostream& out)
-{
-}
-
 void PathOnlyFormatter::WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ const std::wstring& value)
 {
     if (m_pathWritten) return;
@@ -19,8 +15,4 @@ void PathOnlyFormatter::WriteProperty(_In_ std::wostream& out, _In_ const std::w
         out << value;
         m_pathWritten = true;
     }
-}
-
-void PathOnlyFormatter::EndObject(_In_ std::wostream& out)
-{
 }

@@ -32,9 +32,7 @@ public:
     }
 
 protected:
-    void StartObject(_In_ std::wostream& out) override;
     void WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
-    void EndObject(_In_ std::wostream& out) override;
 
 private:
     bool m_pathWritten;
