@@ -50,6 +50,7 @@ _COM_SMARTPTR_TYPEDEF(ISetupPropertyStore, __uuidof(ISetupPropertyStore));
 #include "Formatter.h"
 #include "InstanceSelector.h"
 #include "JsonFormatter.h"
+#include "PathOnlyFormatter.h"
 #include "resource.h"
 #include "ResourceManager.h"
 #include "SafeArray.h"
