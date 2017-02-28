@@ -164,6 +164,7 @@
     <ClInclude Include="Formatter.h" />
     <ClInclude Include="InstanceSelector.h" />
     <ClInclude Include="JsonFormatter.h" />
+    <ClInclude Include="PathOnlyFormatter.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SafeArray.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Formatter.cpp" />
     <ClCompile Include="InstanceSelector.cpp" />
     <ClCompile Include="JsonFormatter.cpp" />
+    <ClCompile Include="PathOnlyFormatter.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

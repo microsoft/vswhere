@@ -26,6 +26,7 @@ Formatter::FormatterMap Formatter::Formatters =
 {
     { L"json", make_tuple(IDS_FORMAT_TEXT, JsonFormatter::Create) },
     { L"text", make_tuple(IDS_FORMAT_JSON, TextFormatter::Create) },
+    { L"path", make_tuple(IDS_FORMAT_PATH, PathOnlyFormatter::Create) },
 };
 
 std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
