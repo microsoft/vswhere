@@ -26,7 +26,10 @@ Formatter::FormatterMap Formatter::Formatters =
 {
     { L"json", make_tuple(IDS_FORMAT_TEXT, JsonFormatter::Create) },
     { L"text", make_tuple(IDS_FORMAT_JSON, TextFormatter::Create) },
+    { L"value", make_tuple(IDS_FORMAT_VALUE, ValueFormatter::Create) },
 };
+
+ci_equal Formatter::s_comparer;
 
 std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
 {
@@ -42,25 +45,25 @@ std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
     throw win32_error(ERROR_NOT_SUPPORTED);
 }
 
-void Formatter::Write(_In_ std::wostream& out, _In_ ISetupInstance* pInstance)
+void Formatter::Write(_In_ const CommandArgs& args, _In_ std::wostream& out, _In_ ISetupInstance* pInstance)
 {
     StartDocument(out);
     StartArray(out);
 
-    WriteInternal(out, pInstance);
+    WriteInternal(args, out, pInstance);
 
     EndArray(out);
     EndDocument(out);
 }
 
-void Formatter::Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstancePtr> instances)
+void Formatter::Write(_In_ const CommandArgs& args, _In_ std::wostream& out, _In_ std::vector<ISetupInstancePtr> instances)
 {
     StartDocument(out);
     StartArray(out);
 
     for (const auto& instance : instances)
     {
-        WriteInternal(out, instance);
+        WriteInternal(args, out, instance);
     }
 
     EndArray(out);
@@ -130,25 +133,36 @@ wstring Formatter::FormatDate(_In_ const FILETIME& value)
     return date + L" " + time;
 }
 
-void Formatter::WriteInternal(_In_ std::wostream& out, _In_ ISetupInstance* pInstance)
+void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ std::wostream& out, _In_ ISetupInstance* pInstance)
 {
     _ASSERTE(pInstance);
 
     StartObject(out);
 
+    const auto& specified = args.get_Property();
     bstr_t bstrValue;
+    bool found = false;
 
     for (const auto property : m_properties)
     {
-        auto hr = property.second(pInstance, bstrValue.GetAddress());
-        if (SUCCEEDED(hr))
+        if (specified.empty() || PropertyEqual(specified, property))
         {
-            wstring value = bstrValue;
-            WriteProperty(out, property.first, value);
+            found = true;
+
+            auto hr = property.second(pInstance, bstrValue.GetAddress());
+            if (SUCCEEDED(hr))
+            {
+                wstring value = bstrValue;
+                WriteProperty(out, property.first, value);
+            }
         }
     }
 
-    WriteProperties(out, pInstance);
+    if (specified.empty() || !found)
+    {
+        WriteProperties(args, out, pInstance);
+    }
+
     EndObject(out);
 }
 
@@ -176,7 +190,7 @@ void Formatter::WriteProperty(_In_ std::wostream& out, _In_ const wstring& name,
     }
 }
 
-void Formatter::WriteProperties(_In_ std::wostream& out, _In_ ISetupInstance* pInstance)
+void Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ std::wostream& out, _In_ ISetupInstance* pInstance)
 {
     _ASSERTE(pInstance);
 
@@ -200,19 +214,24 @@ void Formatter::WriteProperties(_In_ std::wostream& out, _In_ ISetupInstance* pI
         return;
     }
 
+    const auto& specified = args.get_Property();
     SafeArray<BSTR> saNames(psaNames);
+
     for (const auto& bstrName : saNames.Elements())
     {
         wstring name(bstrName);
-        variant_t vtValue;
-
-        auto it = find_if(m_properties.begin(), m_properties.end(), bind(Formatter::PropertyEqual, name, _1));
-        if (it == m_properties.end())
+        if (specified.empty() || s_comparer(name, specified))
         {
-            hr = store->GetValue(bstrName, vtValue.GetAddress());
-            if (SUCCEEDED(hr))
+            variant_t vtValue;
+
+            auto it = find_if(m_properties.begin(), m_properties.end(), bind(Formatter::PropertyEqual, name, _1));
+            if (it == m_properties.end())
             {
-                WriteProperty(out, name, vtValue);
+                hr = store->GetValue(bstrName, vtValue.GetAddress());
+                if (SUCCEEDED(hr))
+                {
+                    WriteProperty(out, name, vtValue);
+                }
             }
         }
     }
@@ -220,8 +239,7 @@ void Formatter::WriteProperties(_In_ std::wostream& out, _In_ ISetupInstance* pI
 
 bool Formatter::PropertyEqual(_In_ const std::wstring& name, _In_ PropertyArray::const_reference property)
 {
-    static ci_equal equal;
-    return equal(name, property.first);
+    return s_comparer(name, property.first);
 }
 
 HRESULT Formatter::GetInstanceId(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstanceId)

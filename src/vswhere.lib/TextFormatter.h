@@ -26,11 +26,6 @@ public:
     {
     }
 
-    bool ShowLogo() const override
-    {
-        return true;
-    }
-
 protected:
     void StartObject(_In_ std::wostream& out) override;
     void WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ const std::wstring& value) override;

@@ -22,6 +22,8 @@ const vector<wstring> CommandArgs::s_Products
     L"Microsoft.VisualStudio.Product.Community",
 };
 
+const wstring CommandArgs::s_Format = L"text";
+
 void CommandArgs::Parse(_In_ LPCWSTR wszCommandLine)
 {
     CommandParser parser;
@@ -90,6 +92,10 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
                 throw win32_error(ERROR_INVALID_PARAMETER, message);
             }
         }
+        else if (ArgumentEquals(arg.Value, L"property"))
+        {
+            m_property = ParseArgument(it, args.end(), arg);
+        }
         else if (ArgumentEquals(arg.Value, L"nologo"))
         {
             m_nologo = true;
@@ -105,6 +111,11 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
             auto message = ResourceManager::FormatString(IDS_E_UNKNOWNPARAM, arg.Value.c_str());
             throw win32_error(ERROR_INVALID_PARAMETER, message);
         }
+    }
+
+    if (!m_property.empty() && m_format.empty())
+    {
+        m_format = L"value";
     }
 }
 

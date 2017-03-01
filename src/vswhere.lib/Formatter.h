@@ -19,8 +19,8 @@ public:
     {
     }
 
-    void Write(_In_ std::wostream& out, _In_ ISetupInstance* pInstance);
-    void Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstancePtr> instances);
+    void Write(_In_ const CommandArgs& args, _In_ std::wostream& out, _In_ ISetupInstance* pInstance);
+    void Write(_In_ const CommandArgs& args, _In_ std::wostream& out, _In_ std::vector<ISetupInstancePtr> instances);
 
     virtual bool ShowLogo() const
     {
@@ -58,6 +58,8 @@ protected:
 private:
     static bool PropertyEqual(_In_ const std::wstring& name, _In_ PropertyArray::const_reference property);
 
+    static ci_equal s_comparer;
+
     HRESULT GetInstanceId(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstanceId);
     HRESULT GetInstallDate(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallDate);
     HRESULT GetInstallationName(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallationName);
@@ -66,9 +68,9 @@ private:
     HRESULT GetDisplayName(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrDisplayName);
     HRESULT GetDescription(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrDescription);
 
-    void WriteInternal(_In_ std::wostream& out, _In_ ISetupInstance* pInstance);
+    void WriteInternal(_In_ const CommandArgs& args, _In_ std::wostream& out, _In_ ISetupInstance* pInstance);
     void WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ const variant_t& value);
-    void WriteProperties(_In_ std::wostream& out, _In_ ISetupInstance* pInstance);
+    void WriteProperties(_In_ const CommandArgs& args, _In_ std::wostream& out, _In_ ISetupInstance* pInstance);
 
     PropertyArray m_properties;
 };
