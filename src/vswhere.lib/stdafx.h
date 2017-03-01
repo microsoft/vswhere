@@ -54,3 +54,4 @@ _COM_SMARTPTR_TYPEDEF(ISetupPropertyStore, __uuidof(ISetupPropertyStore));
 #include "ResourceManager.h"
 #include "SafeArray.h"
 #include "TextFormatter.h"
+#include "ValueFormatter.h"

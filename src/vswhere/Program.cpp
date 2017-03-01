@@ -52,7 +52,7 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
             WriteLogo(args, out);
         }
 
-        formatter->Write(out, instances);
+        formatter->Write(args, out, instances);
         return ERROR_SUCCESS;
     }
     catch (const system_error& ex)

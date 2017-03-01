@@ -110,6 +110,7 @@
     <ClCompile Include="TestHelper.cpp" />
     <ClCompile Include="TextFormatterTests.cpp" />
     <ClCompile Include="UtilitiesTests.cpp" />
+    <ClCompile Include="ValueFormatterTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\vswhere.lib\vswhere.lib.vcxproj">

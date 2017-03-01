@@ -11,7 +11,6 @@ public:
     CommandArgs() noexcept :
         m_all(false),
         m_latest(false),
-        m_format(L"text"),
         m_nologo(false),
         m_help(false)
     {
@@ -25,6 +24,7 @@ public:
         m_version(obj.m_version),
         m_latest(obj.m_latest),
         m_format(obj.m_format),
+        m_property(obj.m_property),
         m_nologo(obj.m_nologo),
         m_help(obj.m_help)
     {
@@ -67,7 +67,17 @@ public:
 
     const std::wstring& get_Format() const noexcept
     {
+        if (m_format.empty())
+        {
+            return s_Format;
+        }
+
         return m_format;
+    }
+
+    const std::wstring& get_Property() const noexcept
+    {
+        return m_property;
     }
 
     const bool get_Logo() const noexcept
@@ -87,6 +97,7 @@ public:
 
 private:
     static const std::vector<std::wstring> s_Products;
+    static const std::wstring s_Format;
 
     void Parse(_In_ std::vector<CommandParser::Token> args);
 
@@ -97,6 +108,7 @@ private:
     std::wstring m_version;
     bool m_latest;
     std::wstring m_format;
+    std::wstring m_property;
     bool m_nologo;
     bool m_help;
 };

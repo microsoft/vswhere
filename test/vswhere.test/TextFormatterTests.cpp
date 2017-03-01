@@ -13,6 +13,7 @@ TEST_CLASS(TextFormatterTests)
 public:
     TEST_METHOD(Write_Instance)
     {
+        CommandArgs args;
         TestInstance instance =
         {
             { L"InstanceId", L"a1b2c3" },
@@ -22,7 +23,7 @@ public:
         TextFormatter sut;
         wostringstream ostr;
 
-        sut.Write(ostr, &instance);
+        sut.Write(args, ostr, &instance);
 
         auto actual = ostr.str();
         auto expected =
@@ -34,6 +35,7 @@ public:
 
     TEST_METHOD(Write_Instances)
     {
+        CommandArgs args;
         TestInstance instance1 =
         {
             { L"InstanceId", L"a1b2c3" },
@@ -56,7 +58,7 @@ public:
         TextFormatter sut;
         wostringstream ostr;
 
-        sut.Write(ostr, instances);
+        sut.Write(args, ostr, instances);
 
         auto actual = ostr.str();
         auto expected =
