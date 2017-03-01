@@ -89,6 +89,9 @@
     <ClCompile Include="InstanceSelector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Exceptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ValueFormatter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

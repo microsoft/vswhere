@@ -20,6 +20,11 @@ Describe 'vswhere' {
             $instances = C:\bin\vswhere.exe -format json | ConvertFrom-Json
             $instances.Count | Should Be 2
         }
+
+        It 'returns 2 instances using "value"' {
+            $instances = C:\bin\vswhere.exe -property instanceId
+            $instances.Count | Should Be 2
+        }
     }
 
     Context '-all' {
@@ -30,6 +35,11 @@ Describe 'vswhere' {
 
         It 'returns 3 instances using "json"' {
             $instances = C:\bin\vswhere.exe -all -format json | ConvertFrom-Json
+            $instances.Count | Should Be 3
+        }
+
+        It 'returns 3 instances using "value"' {
+            $instances = C:\bin\vswhere.exe -all -property instanceId
             $instances.Count | Should Be 3
         }
     }
@@ -46,6 +56,11 @@ Describe 'vswhere' {
             $instances.Count | Should Be 1
             $instances[0].instanceId | Should Be 4
         }
+
+        It 'returns 1 instance using "value"' {
+            $instance = C:\bin\vswhere.exe -products microsoft.visualstudio.product.buildtools -property instanceId
+            $instance | Should Be 4
+        }
     }
 
     Context '-requires' {
@@ -59,6 +74,11 @@ Describe 'vswhere' {
             $instances = C:\bin\vswhere.exe -requires microsoft.visualstudio.workload.nativedesktop -format json | ConvertFrom-Json
             $instances.Count | Should Be 1
             $instances[0].instanceId | Should Be 2
+        }
+
+        It 'returns 1 instance using "value"' {
+            $instance = C:\bin\vswhere.exe -requires microsoft.visualstudio.workload.nativedesktop -property instanceId
+            $instance | Should Be 2
         }
     }
 
@@ -74,6 +94,11 @@ Describe 'vswhere' {
             $instances.Count | Should Be 1
             $instances[0].instanceId | Should Be 2
         }
+
+        It 'returns 1 instance using "value"' {
+            $instance = C:\bin\vswhere.exe -version '(15.0.26116,]' -property instanceId
+            $instance | Should Be 2
+        }
     }
 
     Context '-latest' {
@@ -87,6 +112,11 @@ Describe 'vswhere' {
             $instances = C:\bin\vswhere.exe -latest -format json | ConvertFrom-Json
             $instances.Count | Should Be 1
             $instances[0].instanceId | Should Be 2
+        }
+
+        It 'returns 1 instance using "value"' {
+            $instance = C:\bin\vswhere.exe -latest -property instanceId
+            $instance | Should Be 2
         }
 
         It 'returns all intrinsic properties' {
@@ -119,6 +149,11 @@ Describe 'vswhere' {
             $instances[0].instanceId | Should Be 3
         }
 
+        It 'returns 1 instance using "value"' {
+            $instance = C:\bin\vswhere.exe -latest -all -property instanceId
+            $instance | Should Be 3
+        }
+
         It 'returns all intrinsic properties' {
             $instances = C:\bin\vswhere.exe -latest -all -format json | ConvertFrom-Json
             $instances.Count | Should Be 1
@@ -133,6 +168,24 @@ Describe 'vswhere' {
             $instance.description | Should  Be 'Professional developer tools and services for small teams'
             $instance.channelId | Should Be 'VisualStudio.15.Release/public.d15rel/15.0.26117.0'
             $instance.enginePath | Should Be 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service'
+        }
+    }
+
+    Context '-property invalid' {
+        It 'returns 0 instances using "text"' {
+            $instanceIds = C:\bin\vswhere.exe -property invalid -format text | Select-String 'instanceId: \w+'
+            $instanceIds | Should BeNullOrEmpty
+        }
+
+        It 'returns 0 instances using "json"' {
+            $instances = C:\bin\vswhere.exe -property invalid -format json | ConvertFrom-Json
+            $instances.Count | Should Be 2
+            $instances | ForEach-Object { $_.instanceId | Should BeNullOrEmpty }
+        }
+
+        It 'returns 0 instances using "value"' {
+            $instances = C:\bin\vswhere.exe -property invalid
+            $instances | Should BeNullOrEmpty
         }
     }
 }
