@@ -8,15 +8,14 @@
 using namespace std;
 
 void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& query, _In_ IEnumSetupInstancesPtr& e);
-void WriteLogo(_In_ const CommandArgs& args, _In_ wostream& out);
+void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console);
 
 int wmain(_In_ int argc, _In_ LPCWSTR argv[])
 {
-    _setmode(_fileno(stdout), _O_U16TEXT);
-
     CommandArgs args;
-    wostream& out = wcout;
+    Console console(args);
 
+    console.Initialize();
     try
     {
         CoInitializer init;
@@ -24,8 +23,8 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         args.Parse(argc, argv);
         if (args.get_Help())
         {
-            WriteLogo(args, out);
-            args.Usage(out);
+            WriteLogo(args, console);
+            args.Usage(console);
 
             return ERROR_SUCCESS;
         }
@@ -49,10 +48,10 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         auto formatter = Formatter::Create(args.get_Format());
         if (formatter->ShowLogo())
         {
-            WriteLogo(args, out);
+            WriteLogo(args, console);
         }
 
-        formatter->Write(args, out, instances);
+        formatter->Write(args, console, instances);
         return ERROR_SUCCESS;
     }
     catch (const system_error& ex)
@@ -60,30 +59,30 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         const auto code = ex.code().value();
         if (ERROR_INVALID_PARAMETER == code)
         {
-            WriteLogo(args, out);
+            WriteLogo(args, console);
         }
 
-        out << ResourceManager::GetString(IDS_ERROR) << L" " << hex << showbase << code << L": ";
+        console.Write(L"%ls 0x%x: ", ResourceManager::GetString(IDS_ERROR).c_str(), code);
 
         const auto* err = dynamic_cast<const win32_error*>(&ex);
         if (err)
         {
-            out << err->wwhat() << endl;
+            console.WriteLine(err->wwhat());
         }
         else
         {
-            out << ex.what() << endl;
+            console.WriteLine(L"%hs", ex.what());
         }
 
         return ex.code().value();
     }
     catch (const exception& ex)
     {
-        out << ResourceManager::GetString(IDS_ERROR) << L": " << ex.what() << endl;
+        console.WriteLine(L"%ls: %hs", ResourceManager::GetString(IDS_ERROR).c_str(), ex.what());
     }
     catch (...)
     {
-        out << ResourceManager::GetString(IDS_ERROR) << L": " << ResourceManager::GetString(IDS_E_UNKNOWN) << endl;
+        console.WriteLine(L"%ls: %ls", ResourceManager::GetString(IDS_ERROR).c_str(), ResourceManager::GetString(IDS_E_UNKNOWN).c_str());
     }
 
     return E_FAIL;
@@ -128,12 +127,12 @@ void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& qu
     }
 }
 
-void WriteLogo(_In_ const CommandArgs& args, _In_ wostream& out)
+void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console)
 {
     if (args.get_Logo())
     {
-        out << ResourceManager::FormatString(IDS_PROGRAMINFO, FILE_VERSION_STRINGW) << endl;
-        out << ResourceManager::GetString(IDS_COPYRIGHT) << endl;
-        out << endl;
+        console.WriteLine(ResourceManager::FormatString(IDS_PROGRAMINFO, FILE_VERSION_STRINGW));
+        console.WriteLine(ResourceManager::GetString(IDS_COPYRIGHT));
+        console.WriteLine();
     }
 }

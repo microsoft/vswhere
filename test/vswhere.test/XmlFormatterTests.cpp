@@ -1,4 +1,4 @@
-// <copyright file="JsonFormatterTests.cpp" company="Microsoft Corporation">
+// <copyright file="XmlFormatterTests.cpp" company="Microsoft Corporation">
 // Copyright (C) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE.txt in the project root for license information.
 // </copyright>
@@ -8,7 +8,7 @@
 using namespace std;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-TEST_CLASS(JsonFormatterTests)
+TEST_CLASS(XmlFormatterTests)
 {
 public:
     TEST_METHOD(Write_Instance)
@@ -19,20 +19,21 @@ public:
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
-            { L"InstallDate", L"2017-02-23T01:22:35Z"}
+            { L"InstallDate", L"2017-02-23T01:22:35Z" }
         };
 
-        JsonFormatter sut;
+        XmlFormatter sut;
         sut.Write(args, console, &instance);
 
         auto expected =
-            L"[\n"
-            L"  {\n"
-            L"    \"instanceId\": \"a1b2c3\",\n"
-            L"    \"installDate\": \"2017-02-23T01:22:35Z\",\n"
-            L"    \"installationName\": \"test\"\n"
-            L"  }\n"
-            L"]\n";
+            L"<?xml version=\"1.0\"?>\n"
+            L"<instances>\n"
+            L"  <instance>\n"
+            L"    <instanceId>a1b2c3</instanceId>\n"
+            L"    <installDate>2017-02-23T01:22:35Z</installDate>\n"
+            L"    <installationName>test</installationName>\n"
+            L"  </instance>\n"
+            L"</instances>\n";
 
         Assert::AreEqual(expected, console);
     }
@@ -60,21 +61,22 @@ public:
             &instance2,
         };
 
-        JsonFormatter sut;
+        XmlFormatter sut;
         sut.Write(args, console, instances);
 
         auto expected =
-            L"[\n"
-            L"  {\n"
-            L"    \"instanceId\": \"a1b2c3\",\n"
-            L"    \"installationName\": \"test\"\n"
-            L"  },\n"
-            L"  {\n"
-            L"    \"instanceId\": \"b1c2d3\",\n"
-            L"    \"installationPath\": \"C:\\\\ShouldNotExist\",\n"
-            L"    \"installationVersion\": \"1.2.3.4\"\n"
-            L"  }\n"
-            L"]\n";
+            L"<?xml version=\"1.0\"?>\n"
+            L"<instances>\n"
+            L"  <instance>\n"
+            L"    <instanceId>a1b2c3</instanceId>\n"
+            L"    <installationName>test</installationName>\n"
+            L"  </instance>\n"
+            L"  <instance>\n"
+            L"    <instanceId>b1c2d3</instanceId>\n"
+            L"    <installationPath>C:\\ShouldNotExist</installationPath>\n"
+            L"    <installationVersion>1.2.3.4</installationVersion>\n"
+            L"  </instance>\n"
+            L"</instances>\n";
 
         Assert::AreEqual(expected, console);
     }
@@ -85,11 +87,13 @@ public:
         TestConsole console(args);
         vector<ISetupInstancePtr> instances;
 
-        JsonFormatter sut;
+        XmlFormatter sut;
         sut.Write(args, console, instances);
 
         auto expected =
-            L"[]\n";
+            L"<?xml version=\"1.0\"?>\n"
+            L"<instances>\n"
+            L"</instances>\n";
 
         Assert::AreEqual(expected, console);
     }

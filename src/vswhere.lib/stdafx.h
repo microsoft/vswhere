@@ -11,6 +11,8 @@
 
 // Windows headers
 #include <windows.h>
+#include <fcntl.h>
+#include <io.h>
 #include <shellapi.h>
 
 // CRT header files
@@ -25,11 +27,8 @@
 #include <codecvt>
 #include <functional>
 #include <iterator>
-#include <iostream>
-#include <locale>
 #include <map>
 #include <memory>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -47,6 +46,7 @@ _COM_SMARTPTR_TYPEDEF(ISetupPropertyStore, __uuidof(ISetupPropertyStore));
 #include "CoInitializer.h"
 #include "CommandParser.h"
 #include "CommandArgs.h"
+#include "Console.h"
 #include "Formatter.h"
 #include "InstanceSelector.h"
 #include "JsonFormatter.h"
@@ -55,3 +55,4 @@ _COM_SMARTPTR_TYPEDEF(ISetupPropertyStore, __uuidof(ISetupPropertyStore));
 #include "SafeArray.h"
 #include "TextFormatter.h"
 #include "ValueFormatter.h"
+#include "XmlFormatter.h"

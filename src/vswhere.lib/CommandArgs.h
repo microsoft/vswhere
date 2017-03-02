@@ -5,6 +5,8 @@
 
 #pragma once
 
+class Console;
+
 class CommandArgs
 {
 public:
@@ -93,7 +95,7 @@ public:
 
     void Parse(_In_ LPCWSTR wszCommandLine);
     void Parse(_In_ int argc, _In_ LPCWSTR argv[]);
-    void Usage(_In_ std::wostream& out) const;
+    void Usage(_In_ Console& console) const;
 
 private:
     static const std::vector<std::wstring> s_Products;

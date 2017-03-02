@@ -3,8 +3,6 @@
 
 Describe 'vswhere' {
     BeforeEach {
-        [Console]::OutputEncoding = [System.Text.Encoding]::Unicode
-        
         # Make sure localized values are returned consistently across machines.
         $enu = [System.Globalization.CultureInfo]::GetCultureInfo('en-US')
 
@@ -27,6 +25,11 @@ Describe 'vswhere' {
             $instances = C:\bin\vswhere.exe -property instanceId
             $instances.Count | Should Be 2
         }
+
+        It 'returns 2 instances using "xml"' {
+            $instances = [xml](C:\bin\vswhere.exe -format xml)
+            $instances.instances.instance.Count | Should Be 2
+        }
     }
 
     Context '-all' {
@@ -43,6 +46,11 @@ Describe 'vswhere' {
         It 'returns 3 instances using "value"' {
             $instances = C:\bin\vswhere.exe -all -property instanceId
             $instances.Count | Should Be 3
+        }
+
+        It 'returns 3 instances using "xml"' {
+            $instances = [xml](C:\bin\vswhere.exe -all -format xml)
+            $instances.instances.instance.Count | Should Be 3
         }
     }
 
@@ -63,6 +71,12 @@ Describe 'vswhere' {
             $instance = C:\bin\vswhere.exe -products microsoft.visualstudio.product.buildtools -property instanceId
             $instance | Should Be 4
         }
+
+        It 'returns 1 instance using "xml"' {
+            $instances = [xml](C:\bin\vswhere.exe -products microsoft.visualstudio.product.buildtools -format xml)
+            @($instances.instances.instance).Count | Should Be 1
+            @($instances.instances.instance)[0].instanceId | Should Be 4
+        }
     }
 
     Context '-requires' {
@@ -82,7 +96,13 @@ Describe 'vswhere' {
             $instance = C:\bin\vswhere.exe -requires microsoft.visualstudio.workload.nativedesktop -property instanceId
             $instance | Should Be 2
         }
-    }
+ 
+        It 'returns 1 instance using "xml"' {
+            $instances = [xml](C:\bin\vswhere.exe -requires microsoft.visualstudio.workload.nativedesktop -format xml)
+            @($instances.instances.instance).Count | Should Be 1
+            @($instances.instances.instance)[0].instanceId | Should Be 2
+        }
+   }
 
     Context '-version' {
         It 'returns 1 instance using "text"' {
@@ -100,6 +120,12 @@ Describe 'vswhere' {
         It 'returns 1 instance using "value"' {
             $instance = C:\bin\vswhere.exe -version '(15.0.26116,]' -property instanceId
             $instance | Should Be 2
+        }
+
+        It 'returns 1 instance using "xml"' {
+            $instances = [xml](C:\bin\vswhere.exe -version '(15.0.26116,]' -format xml)
+            @($instances.instances.instance).Count | Should Be 1
+            @($instances.instances.instance)[0].instanceId | Should Be 2
         }
     }
 
@@ -119,6 +145,12 @@ Describe 'vswhere' {
         It 'returns 1 instance using "value"' {
             $instance = C:\bin\vswhere.exe -latest -property instanceId
             $instance | Should Be 2
+        }
+
+        It 'returns 1 instance using "xml"' {
+            $instances = [xml](C:\bin\vswhere.exe -latest -format xml)
+            @($instances.instances.instance).Count | Should Be 1
+            @($instances.instances.instance)[0].instanceId | Should Be 2
         }
 
         It 'returns all intrinsic properties' {
@@ -156,6 +188,12 @@ Describe 'vswhere' {
             $instance | Should Be 3
         }
 
+        It 'returns 1 instance using "xml"' {
+            $instances = [xml](C:\bin\vswhere.exe -latest -all -format xml)
+            @($instances.instances.instance).Count | Should Be 1
+            @($instances.instances.instance)[0].instanceId | Should Be 3
+        }
+
         It 'returns all intrinsic properties' {
             $instances = C:\bin\vswhere.exe -latest -all -format json | ConvertFrom-Json
             $instances.Count | Should Be 1
@@ -188,6 +226,12 @@ Describe 'vswhere' {
         It 'returns 0 instances using "value"' {
             $instances = C:\bin\vswhere.exe -property invalid
             $instances | Should BeNullOrEmpty
+        }
+
+        It 'returns 0 instances using "xml"' {
+            $instances = [xml](C:\bin\vswhere.exe -property invalid -format xml)
+            @($instances.instances.instance).Count | Should Be 2
+            @($instances.instances.instance) | ForEach-Object { $_.instanceId | Should BeNullOrEmpty }
         }
     }
 }
