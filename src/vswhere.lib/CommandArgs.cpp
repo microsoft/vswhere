@@ -22,6 +22,8 @@ const vector<wstring> CommandArgs::s_Products
     L"Microsoft.VisualStudio.Product.Community",
 };
 
+const wstring CommandArgs::s_Format = L"text";
+
 void CommandArgs::Parse(_In_ LPCWSTR wszCommandLine)
 {
     CommandParser parser;
@@ -90,6 +92,10 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
                 throw win32_error(ERROR_INVALID_PARAMETER, message);
             }
         }
+        else if (ArgumentEquals(arg.Value, L"property"))
+        {
+            m_property = ParseArgument(it, args.end(), arg);
+        }
         else if (ArgumentEquals(arg.Value, L"nologo"))
         {
             m_nologo = true;
@@ -106,20 +112,26 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
             throw win32_error(ERROR_INVALID_PARAMETER, message);
         }
     }
+
+    if (!m_property.empty() && m_format.empty())
+    {
+        m_format = L"value";
+    }
 }
 
-void CommandArgs::Usage(_In_ std::wostream& out) const
+void CommandArgs::Usage(_In_ Console& console) const
 {
     auto pos = m_path.find_last_of(L"\\");
     auto path = ++pos != wstring::npos ? m_path.substr(pos) : m_path;
-    out << ResourceManager::FormatString(IDS_USAGE, path.c_str()) << endl;
+
+    console.WriteLine(ResourceManager::FormatString(IDS_USAGE, path.c_str()));
 
     for (const auto& formatter : Formatter::Formatters)
     {
         UINT nID;
 
         tie(nID, ignore) = formatter.second;
-        out << ResourceManager::FormatString(nID, formatter.first.c_str()) << endl;
+        console.WriteLine(ResourceManager::FormatString(nID, formatter.first.c_str()));
     }
 }
 

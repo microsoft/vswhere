@@ -7,13 +7,15 @@
 
 using namespace std;
 
-void WriteLogo(_In_ const CommandArgs& args, _In_ wostream& out);
+void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& query, _In_ IEnumSetupInstancesPtr& e);
+void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console);
 
 int wmain(_In_ int argc, _In_ LPCWSTR argv[])
 {
     CommandArgs args;
-    wostream& out = wcout;
+    Console console(args);
 
+    console.Initialize();
     try
     {
         CoInitializer init;
@@ -21,8 +23,8 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         args.Parse(argc, argv);
         if (args.get_Help())
         {
-            WriteLogo(args, out);
-            args.Usage(out);
+            WriteLogo(args, console);
+            args.Usage(console);
 
             return ERROR_SUCCESS;
         }
@@ -30,44 +32,14 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         ISetupConfigurationPtr query;
         IEnumSetupInstancesPtr e;
 
-        auto hr = query.CreateInstance(__uuidof(SetupConfiguration));
-        if (FAILED(hr))
-        {
-            if (REGDB_E_CLASSNOTREG == hr)
-            {
-                WriteLogo(args, out);
-                return ERROR_SUCCESS;
-            }
-        }
-
-        // If all instances are requested, try to get the proper enumerator; otherwise, fall back to original enumerator.
-        if (args.get_All())
-        {
-            ISetupConfiguration2Ptr query2;
-
-            hr = query->QueryInterface(&query2);
-            if (SUCCEEDED(hr))
-            {
-                hr = query2->EnumAllInstances(&e);
-                if (FAILED(hr))
-                {
-                    throw win32_error(hr);
-                }
-            }
-        }
-
-        if (!e)
-        {
-            hr = query->EnumInstances(&e);
-            if (FAILED(hr))
-            {
-                throw win32_error(hr);
-            }
-        }
+        GetEnumerator(args, query, e);
 
         // Attempt to get the ISetupHelper.
         ISetupHelperPtr helper;
-        query->QueryInterface(&helper);
+        if (query)
+        {
+            query->QueryInterface(&helper);
+        }
 
         InstanceSelector selector(args, helper);
         auto instances = selector.Select(e);
@@ -76,35 +48,91 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         auto formatter = Formatter::Create(args.get_Format());
         if (formatter->ShowLogo())
         {
-            WriteLogo(args, out);
+            WriteLogo(args, console);
         }
 
-        formatter->Write(out, instances);
+        formatter->Write(args, console, instances);
         return ERROR_SUCCESS;
     }
     catch (const system_error& ex)
     {
-        out << ResourceManager::GetString(IDS_ERROR) << L" " << hex << showbase << ex.code().value() << L": " << ex.what() << endl;
+        const auto code = ex.code().value();
+        if (ERROR_INVALID_PARAMETER == code)
+        {
+            WriteLogo(args, console);
+        }
+
+        console.Write(L"%ls 0x%x: ", ResourceManager::GetString(IDS_ERROR).c_str(), code);
+
+        const auto* err = dynamic_cast<const win32_error*>(&ex);
+        if (err)
+        {
+            console.WriteLine(err->wwhat());
+        }
+        else
+        {
+            console.WriteLine(L"%hs", ex.what());
+        }
+
         return ex.code().value();
     }
     catch (const exception& ex)
     {
-        out << ResourceManager::GetString(IDS_ERROR) << L": " << ex.what() << endl;
+        console.WriteLine(L"%ls: %hs", ResourceManager::GetString(IDS_ERROR).c_str(), ex.what());
     }
     catch (...)
     {
-        out << ResourceManager::GetString(IDS_ERROR) << L": " << ResourceManager::GetString(IDS_E_UNKNOWN) << endl;
+        console.WriteLine(L"%ls: %ls", ResourceManager::GetString(IDS_ERROR).c_str(), ResourceManager::GetString(IDS_E_UNKNOWN).c_str());
     }
 
     return E_FAIL;
 }
 
-void WriteLogo(_In_ const CommandArgs& args, _In_ wostream& out)
+void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& query, _In_ IEnumSetupInstancesPtr& e)
+{
+    auto hr = query.CreateInstance(__uuidof(SetupConfiguration));
+    if (FAILED(hr))
+    {
+        if (REGDB_E_CLASSNOTREG == hr)
+        {
+            return;
+        }
+
+        throw win32_error(hr);
+    }
+
+    // If all instances are requested, try to get the proper enumerator; otherwise, fall back to original enumerator.
+    if (args.get_All())
+    {
+        ISetupConfiguration2Ptr query2;
+
+        hr = query->QueryInterface(&query2);
+        if (SUCCEEDED(hr))
+        {
+            hr = query2->EnumAllInstances(&e);
+            if (FAILED(hr))
+            {
+                throw win32_error(hr);
+            }
+        }
+    }
+
+    if (!e)
+    {
+        hr = query->EnumInstances(&e);
+        if (FAILED(hr))
+        {
+            throw win32_error(hr);
+        }
+    }
+}
+
+void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console)
 {
     if (args.get_Logo())
     {
-        out << ResourceManager::FormatString(IDS_PROGRAMINFO, FILE_VERSION_STRINGW) << endl;
-        out << ResourceManager::GetString(IDS_COPYRIGHT) << endl;
-        out << endl;
+        console.WriteLine(ResourceManager::FormatString(IDS_PROGRAMINFO, FILE_VERSION_STRINGW));
+        console.WriteLine(ResourceManager::GetString(IDS_COPYRIGHT));
+        console.WriteLine();
     }
 }

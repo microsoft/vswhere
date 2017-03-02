@@ -19,8 +19,8 @@ public:
     {
     }
 
-    void Write(_In_ std::wostream& out, _In_ ISetupInstance* pInstance);
-    void Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstancePtr> instances);
+    void Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance);
+    void Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ std::vector<ISetupInstancePtr> instances);
 
     virtual bool ShowLogo() const
     {
@@ -35,27 +35,31 @@ protected:
 
     static std::wstring FormatDateISO8601(_In_ const FILETIME& value);
 
-    virtual void StartDocument(_In_ std::wostream& out) {}
-    virtual void StartArray(_In_ std::wostream& out) {}
-    virtual void StartObject(_In_ std::wostream& out) {}
-    virtual void WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ const std::wstring& value) {}
-    virtual void EndObject(_In_ std::wostream& out) {}
-    virtual void EndArray(_In_ std::wostream& out) {}
-    virtual void EndDocument(_In_ std::wostream& out) {}
+    virtual void StartDocument(_In_ Console& console) {}
+    virtual void StartArray(_In_ Console& console) {}
+    virtual void StartObject(_In_ Console& console) {}
+    virtual void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value) {}
+    virtual void EndObject(_In_ Console& console) {}
+    virtual void EndArray(_In_ Console& console) {}
+    virtual void EndDocument(_In_ Console& console) {}
 
-    virtual void WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ bool value)
+    virtual void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ bool value)
     {
-        WriteProperty(out, name, std::to_wstring(value));
+        WriteProperty(console, name, std::to_wstring(value));
     }
 
-    virtual void WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ long long value)
+    virtual void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ long long value)
     {
-        WriteProperty(out, name, std::to_wstring(value));
+        WriteProperty(console, name, std::to_wstring(value));
     }
 
     virtual std::wstring FormatDate(_In_ const FILETIME& value);
 
 private:
+    static bool PropertyEqual(_In_ const std::wstring& name, _In_ PropertyArray::const_reference property);
+
+    static ci_equal s_comparer;
+
     HRESULT GetInstanceId(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstanceId);
     HRESULT GetInstallDate(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallDate);
     HRESULT GetInstallationName(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallationName);
@@ -64,7 +68,9 @@ private:
     HRESULT GetDisplayName(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrDisplayName);
     HRESULT GetDescription(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrDescription);
 
-    void WriteInternal(_In_ std::wostream& out, _In_ ISetupInstance* pInstance);
+    void WriteInternal(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance);
+    void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const variant_t& value);
+    void WriteProperties(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance);
 
     PropertyArray m_properties;
 };

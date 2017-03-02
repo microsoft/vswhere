@@ -119,11 +119,12 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>MinSpace</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,6 +158,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Console.h" />
     <ClInclude Include="CoInitializer.h" />
     <ClInclude Include="CommandArgs.h" />
     <ClInclude Include="CommandParser.h" />
@@ -171,10 +173,14 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TextFormatter.h" />
     <ClInclude Include="Utilities.h" />
+    <ClInclude Include="ValueFormatter.h" />
+    <ClInclude Include="XmlFormatter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="CommandArgs.cpp" />
     <ClCompile Include="CommandParser.cpp" />
+    <ClCompile Include="Exceptions.cpp" />
     <ClCompile Include="Formatter.cpp" />
     <ClCompile Include="InstanceSelector.cpp" />
     <ClCompile Include="JsonFormatter.cpp" />
@@ -187,6 +193,8 @@
     </ClCompile>
     <ClCompile Include="TextFormatter.cpp" />
     <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="ValueFormatter.cpp" />
+    <ClCompile Include="XmlFormatter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

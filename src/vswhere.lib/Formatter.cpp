@@ -26,7 +26,11 @@ Formatter::FormatterMap Formatter::Formatters =
 {
     { L"json", make_tuple(IDS_FORMAT_TEXT, JsonFormatter::Create) },
     { L"text", make_tuple(IDS_FORMAT_JSON, TextFormatter::Create) },
+    { L"value", make_tuple(IDS_FORMAT_VALUE, ValueFormatter::Create) },
+    { L"xml", make_tuple(IDS_FORMAT_XML, XmlFormatter::Create) },
 };
+
+ci_equal Formatter::s_comparer;
 
 std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
 {
@@ -42,29 +46,29 @@ std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
     throw win32_error(ERROR_NOT_SUPPORTED);
 }
 
-void Formatter::Write(_In_ std::wostream& out, _In_ ISetupInstance* pInstance)
+void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance)
 {
-    StartDocument(out);
-    StartArray(out);
+    StartDocument(console);
+    StartArray(console);
 
-    WriteInternal(out, pInstance);
+    WriteInternal(args, console, pInstance);
 
-    EndArray(out);
-    EndDocument(out);
+    EndArray(console);
+    EndDocument(console);
 }
 
-void Formatter::Write(_In_ std::wostream& out, _In_ std::vector<ISetupInstancePtr> instances)
+void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ std::vector<ISetupInstancePtr> instances)
 {
-    StartDocument(out);
-    StartArray(out);
+    StartDocument(console);
+    StartArray(console);
 
     for (const auto& instance : instances)
     {
-        WriteInternal(out, instance);
+        WriteInternal(args, console, instance);
     }
 
-    EndArray(out);
-    EndDocument(out);
+    EndArray(console);
+    EndDocument(console);
 }
 
 wstring Formatter::FormatDateISO8601(_In_ const FILETIME& value)
@@ -130,23 +134,113 @@ wstring Formatter::FormatDate(_In_ const FILETIME& value)
     return date + L" " + time;
 }
 
-void Formatter::WriteInternal(_In_ std::wostream& out, _In_ ISetupInstance* pInstance)
+void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance)
 {
-    StartObject(out);
+    _ASSERTE(pInstance);
 
+    StartObject(console);
+
+    const auto& specified = args.get_Property();
     bstr_t bstrValue;
+    bool found = false;
 
     for (const auto property : m_properties)
     {
-        auto hr = property.second(pInstance, bstrValue.GetAddress());
-        if (SUCCEEDED(hr))
+        if (specified.empty() || PropertyEqual(specified, property))
         {
-            wstring value = bstrValue;
-            WriteProperty(out, property.first, value);
+            found = true;
+
+            auto hr = property.second(pInstance, bstrValue.GetAddress());
+            if (SUCCEEDED(hr))
+            {
+                wstring value = bstrValue;
+                WriteProperty(console, property.first, value);
+            }
         }
     }
 
-    EndObject(out);
+    if (specified.empty() || !found)
+    {
+        WriteProperties(args, console, pInstance);
+    }
+
+    EndObject(console);
+}
+
+void Formatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ const variant_t& value)
+{
+    switch (value.vt)
+    {
+    case VT_BOOL:
+        WriteProperty(console, name, VARIANT_TRUE == value.boolVal);
+        break;
+
+    case VT_BSTR:
+        WriteProperty(console, name, wstring(value.bstrVal));
+        break;
+
+    case VT_I1:
+    case VT_I2:
+    case VT_I4:
+    case VT_I8:
+    case VT_UI1:
+    case VT_UI2:
+    case VT_UI4:
+        WriteProperty(console, name, value.llVal);
+        break;
+    }
+}
+
+void Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance)
+{
+    _ASSERTE(pInstance);
+
+    ISetupPropertyStorePtr store;
+    LPSAFEARRAY psaNames = NULL;
+
+    auto hr = pInstance->QueryInterface(&store);
+    if (FAILED(hr))
+    {
+        if (E_NOINTERFACE != hr)
+        {
+            throw win32_error(hr);
+        }
+
+        return;
+    }
+
+    hr = store->GetNames(&psaNames);
+    if (FAILED(hr))
+    {
+        return;
+    }
+
+    const auto& specified = args.get_Property();
+    SafeArray<BSTR> saNames(psaNames);
+
+    for (const auto& bstrName : saNames.Elements())
+    {
+        wstring name(bstrName);
+        if (specified.empty() || s_comparer(name, specified))
+        {
+            variant_t vtValue;
+
+            auto it = find_if(m_properties.begin(), m_properties.end(), bind(Formatter::PropertyEqual, name, _1));
+            if (it == m_properties.end())
+            {
+                hr = store->GetValue(bstrName, vtValue.GetAddress());
+                if (SUCCEEDED(hr))
+                {
+                    WriteProperty(console, name, vtValue);
+                }
+            }
+        }
+    }
+}
+
+bool Formatter::PropertyEqual(_In_ const std::wstring& name, _In_ PropertyArray::const_reference property)
+{
+    return s_comparer(name, property.first);
 }
 
 HRESULT Formatter::GetInstanceId(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstanceId)

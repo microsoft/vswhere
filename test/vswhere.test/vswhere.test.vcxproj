@@ -93,6 +93,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TestConsole.h" />
     <ClInclude Include="TestEnumInstances.h" />
     <ClInclude Include="TestHelper.h" />
     <ClInclude Include="TestInstance.h" />
@@ -100,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandArgsTests.cpp" />
+    <ClCompile Include="ExceptionsTests.cpp" />
     <ClCompile Include="InstanceSelectorTests.cpp" />
     <ClCompile Include="JsonFormatterTests.cpp" />
     <ClCompile Include="Module.cpp" />
@@ -107,9 +109,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TestConsole.cpp" />
     <ClCompile Include="TestHelper.cpp" />
     <ClCompile Include="TextFormatterTests.cpp" />
     <ClCompile Include="UtilitiesTests.cpp" />
+    <ClCompile Include="ValueFormatterTests.cpp" />
+    <ClCompile Include="XmlFormatterTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\vswhere.lib\vswhere.lib.vcxproj">

@@ -7,6 +7,24 @@ _vswhere_ is designed to be a redistributable, single-file executable that can b
 
 You can emit different formats for information based on what your scripts can consume, including plain text, JSON, and XML. Pull requests may be accepted for other common formats as well.
 
+## Example
+
+If you wanted to find MSBuild - now installed under the Visual Studio 2017 and newer installation root - you could script a command like the following to find the latest version installed.
+
+```batch
+@echo off
+
+for /f "usebackq tokens=1* delims=: " %%i in (`vswhere -latest -requires Microsoft.Component.MSBuild`) do (
+  if /i "%%i"=="installationPath" set InstallDir=%%j
+)
+
+if exist "%InstallDir%\MSBuild\15.0\Bin\MSBuild.exe" (
+  "%InstallDir%\MSBuild\15.0\Bin\MSBuild.exe" %*
+)
+```
+
+You can find more [examples](https://github.com/Microsoft/vswhere/wiki/Examples) in our wiki.
+
 ## Feedback
 
 To file issues or suggestions, please use the [Issues](https://github.com/Microsoft/vswhere/issues) page for this project on GitHub.
