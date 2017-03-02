@@ -17,7 +17,7 @@ void TextFormatter::StartObject(_In_ Console& console)
 
 void TextFormatter::WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value)
 {
-    console.Write(L"%ls: %ls\n", name.c_str(), value.c_str());
+    console.WriteLine(L"%ls: %ls", name.c_str(), value.c_str());
 }
 
 void TextFormatter::EndObject(_In_ Console& console)

@@ -1,4 +1,4 @@
-// <copyright file="Console.h" company="Microsoft Corporation">
+// <copyright file="Console.cpp" company="Microsoft Corporation">
 // Copyright (C) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE.txt in the project root for license information.
 // </copyright>
@@ -22,12 +22,7 @@ void Console::Initialize() noexcept
     }
 }
 
-void Console::Write(_In_ const std::wstring& value)
-{
-    Write(value.c_str(), NULL);
-}
-
-void Console::Write(_In_ LPCWSTR wzFormat, ...)
+void __cdecl Console::Write(_In_ LPCWSTR wzFormat, ...)
 {
     va_list args;
 
@@ -36,19 +31,33 @@ void Console::Write(_In_ LPCWSTR wzFormat, ...)
     va_end(args);
 }
 
-void Console::WriteLine()
+void __cdecl Console::Write(_In_ const std::wstring& value)
 {
+    Write(value.c_str(), NULL);
+}
+
+void __cdecl Console::WriteLine(_In_ LPCWSTR wzFormat, ...)
+{
+    if (wzFormat)
+    {
+        va_list args;
+
+        va_start(args, wzFormat);
+        Write(wzFormat, args);
+        va_end(args);
+    }
+
     Write(L"\n", NULL);
 }
 
-void Console::WriteLine(_In_ const std::wstring& value)
+void __cdecl Console::WriteLine(_In_ const std::wstring& value)
 {
     Write(L"%ls\n", value.c_str());
 }
 
-void __cdecl Console::Write(_In_ LPCWSTR wzFormat, va_list args)
+void Console::Write(_In_ LPCWSTR wzFormat, va_list args)
 {
-    ::vwprintf_s(wzFormat, args);
+    ::_vwprintf_p(wzFormat, args);
 }
 
 bool Console::IsConsole(_In_ FILE* f) const noexcept

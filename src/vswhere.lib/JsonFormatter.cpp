@@ -25,10 +25,10 @@ void JsonFormatter::StartObject(_In_ Console& console)
     }
     else
     {
-        console.Write(L",\n");
+        console.WriteLine(L",");
     }
 
-    console.Write(L"%ls{\n", m_padding.c_str());
+    console.WriteLine(L"%ls{", m_padding.c_str());
     Push();
 
     m_arrayStart = false;
@@ -38,7 +38,7 @@ void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& nam
 {
     if (!m_objectStart)
     {
-        console.Write(L",\n");
+        console.WriteLine(L",");
     }
 
     auto escaped = replace_all(value, L"\\", L"\\\\");
@@ -51,7 +51,7 @@ void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& nam
 {
     if (!m_objectStart)
     {
-        console.Write(L",\n");
+        console.WriteLine(L",");
     }
 
     console.Write(L"%ls\"%ls\": %ls", m_padding.c_str(), name.c_str(), (value ? L"true" : L"false"));
@@ -63,7 +63,7 @@ void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& nam
 {
     if (!m_objectStart)
     {
-        console.Write(L",\n");
+        console.WriteLine(L",");
     }
 
     console.Write(L"%ls\"%ls\": %d", m_padding.c_str(), name.c_str(), value);
@@ -91,7 +91,7 @@ void JsonFormatter::EndArray(_In_ Console& console)
 
 void JsonFormatter::EndDocument(_In_ Console& console)
 {
-    console.Write(L"\n");
+    console.WriteLine();
 }
 
 wstring JsonFormatter::FormatDate(_In_ const FILETIME& value)

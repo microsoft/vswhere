@@ -67,22 +67,22 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         const auto* err = dynamic_cast<const win32_error*>(&ex);
         if (err)
         {
-            console.Write(L"%ls\n", err->wwhat());
+            console.WriteLine(err->wwhat());
         }
         else
         {
-            console.Write(L"%hs\n", ex.what());
+            console.WriteLine(L"%hs", ex.what());
         }
 
         return ex.code().value();
     }
     catch (const exception& ex)
     {
-        console.Write(L"%ls: %hs\n", ResourceManager::GetString(IDS_ERROR).c_str(), ex.what());
+        console.WriteLine(L"%ls: %hs", ResourceManager::GetString(IDS_ERROR).c_str(), ex.what());
     }
     catch (...)
     {
-        console.Write(L"%ls: %ls\n", ResourceManager::GetString(IDS_ERROR).c_str(), ResourceManager::GetString(IDS_E_UNKNOWN).c_str());
+        console.WriteLine(L"%ls: %ls", ResourceManager::GetString(IDS_ERROR).c_str(), ResourceManager::GetString(IDS_E_UNKNOWN).c_str());
     }
 
     return E_FAIL;

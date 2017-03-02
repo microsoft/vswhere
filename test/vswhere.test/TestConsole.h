@@ -30,7 +30,7 @@ public:
     }
 
 protected:
-    void __cdecl Write(_In_ LPCWSTR wzFormat, va_list args) override;
+    void Write(_In_ LPCWSTR wzFormat, va_list args) override;
 
 private:
     std::wstring m_output;

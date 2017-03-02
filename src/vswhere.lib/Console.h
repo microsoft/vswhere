@@ -20,13 +20,13 @@ public:
 
     virtual void Initialize() noexcept;
 
-    void Write(_In_ const std::wstring& value);
-    void Write(_In_ LPCWSTR wzFormat, ...);
-    void WriteLine();
-    void WriteLine(_In_ const std::wstring& value);
+    void __cdecl Write(_In_ LPCWSTR wzFormat, ...);
+    void __cdecl Write(_In_ const std::wstring& value);
+    void __cdecl WriteLine(_In_ LPCWSTR wzFormat = NULL, ...);
+    void __cdecl WriteLine(_In_ const std::wstring& value);
 
 protected:
-    virtual void __cdecl Write(_In_ LPCWSTR wzFormat, va_list args);
+    virtual void Write(_In_ LPCWSTR wzFormat, va_list args);
 
 private:
     bool IsConsole(_In_ FILE* f) const noexcept;
