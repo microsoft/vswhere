@@ -7,20 +7,20 @@
 
 using namespace std;
 
-void TextFormatter::StartObject(_In_ std::wostream& out)
+void TextFormatter::StartObject(_In_ Console& console)
 {
     if (m_objectEnd)
     {
-        out << endl;
+        console.WriteLine();
     }
 }
 
-void TextFormatter::WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ const std::wstring& value)
+void TextFormatter::WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value)
 {
-    out << name << L": " << value << endl;
+    console.Write(L"%ls: %ls\n", name.c_str(), value.c_str());
 }
 
-void TextFormatter::EndObject(_In_ std::wostream& out)
+void TextFormatter::EndObject(_In_ Console& console)
 {
     m_objectEnd = true;
 }

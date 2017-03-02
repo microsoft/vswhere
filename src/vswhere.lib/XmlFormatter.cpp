@@ -7,38 +7,38 @@
 
 using namespace std;
 
-void XmlFormatter::StartDocument(_In_ wostream& out)
+void XmlFormatter::StartDocument(_In_ Console& console)
 {
-    out << L"<?xml version=\"1.0\" encoding=\"utf-16\"?>" << endl;
+    console.Write(L"<?xml version=\"1.0\"?>\n");
 }
 
-void XmlFormatter::StartArray(_In_ wostream& out)
+void XmlFormatter::StartArray(_In_ Console& console)
 {
-    out << m_padding << L"<instances>" << endl;
+    console.Write(L"%ls<instances>\n", m_padding.c_str());
     Push();
 }
 
-void XmlFormatter::StartObject(_In_ wostream& out)
+void XmlFormatter::StartObject(_In_ Console& console)
 {
-    out << m_padding << L"<instance>" << endl;
+    console.Write(L"%ls<instance>\n", m_padding.c_str());
     Push();
 }
 
-void XmlFormatter::WriteProperty(_In_ wostream& out, _In_ const wstring& name, _In_ const wstring& value)
+void XmlFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ const wstring& value)
 {
-    out << m_padding << L"<" << name << L">" << value << L"</" << name << L">" << endl;
+    console.Write(L"%ls<%ls>%ls</%ls>\n", m_padding.c_str(), name.c_str(), value.c_str(), name.c_str());
 }
 
-void XmlFormatter::EndObject(_In_ wostream& out)
+void XmlFormatter::EndObject(_In_ Console& console)
 {
     Pop();
-    out << m_padding << L"</instance>" << endl;
+    console.Write(L"%ls</instance>\n", m_padding.c_str());
 }
 
-void XmlFormatter::EndArray(_In_ wostream& out)
+void XmlFormatter::EndArray(_In_ Console& console)
 {
     Pop();
-    out << m_padding << L"</instances>" << endl;
+    console.Write(L"%ls</instances>\n", m_padding.c_str());
 }
 
 wstring XmlFormatter::FormatDate(_In_ const FILETIME& value)

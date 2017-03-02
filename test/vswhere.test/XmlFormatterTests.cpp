@@ -14,6 +14,7 @@ public:
     TEST_METHOD(Write_Instance)
     {
         CommandArgs args;
+        TestConsole console(args);
         TestInstance instance =
         {
             { L"InstanceId", L"a1b2c3" },
@@ -22,13 +23,10 @@ public:
         };
 
         XmlFormatter sut;
-        wostringstream ostr;
+        sut.Write(args, console, &instance);
 
-        sut.Write(args, ostr, &instance);
-
-        auto actual = ostr.str();
         auto expected =
-            L"<?xml version=\"1.0\" encoding=\"utf-16\"?>\n"
+            L"<?xml version=\"1.0\"?>\n"
             L"<instances>\n"
             L"  <instance>\n"
             L"    <instanceId>a1b2c3</instanceId>\n"
@@ -37,12 +35,13 @@ public:
             L"  </instance>\n"
             L"</instances>\n";
 
-        Assert::AreEqual(expected, actual.c_str());
+        Assert::AreEqual(expected, console);
     }
 
     TEST_METHOD(Write_Instances)
     {
         CommandArgs args;
+        TestConsole console(args);
         TestInstance instance1 =
         {
             { L"InstanceId", L"a1b2c3" },
@@ -63,13 +62,10 @@ public:
         };
 
         XmlFormatter sut;
-        wostringstream ostr;
+        sut.Write(args, console, instances);
 
-        sut.Write(args, ostr, instances);
-
-        auto actual = ostr.str();
         auto expected =
-            L"<?xml version=\"1.0\" encoding=\"utf-16\"?>\n"
+            L"<?xml version=\"1.0\"?>\n"
             L"<instances>\n"
             L"  <instance>\n"
             L"    <instanceId>a1b2c3</instanceId>\n"
@@ -82,25 +78,23 @@ public:
             L"  </instance>\n"
             L"</instances>\n";
 
-        Assert::AreEqual(expected, actual.c_str());
+        Assert::AreEqual(expected, console);
     }
 
     TEST_METHOD(Write_No_Instances)
     {
         CommandArgs args;
+        TestConsole console(args);
         vector<ISetupInstancePtr> instances;
 
         XmlFormatter sut;
-        wostringstream ostr;
+        sut.Write(args, console, instances);
 
-        sut.Write(args, ostr, instances);
-
-        auto actual = ostr.str();
         auto expected =
-            L"<?xml version=\"1.0\" encoding=\"utf-16\"?>\n"
+            L"<?xml version=\"1.0\"?>\n"
             L"<instances>\n"
             L"</instances>\n";
 
-        Assert::AreEqual(expected, actual.c_str());
+        Assert::AreEqual(expected, console);
     }
 };

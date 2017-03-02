@@ -27,9 +27,9 @@ public:
     }
 
 protected:
-    void StartObject(_In_ std::wostream& out) override;
-    void WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
-    void EndObject(_In_ std::wostream& out) override;
+    void StartObject(_In_ Console& console) override;
+    void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
+    void EndObject(_In_ Console& console) override;
 
 private:
     bool m_objectEnd;

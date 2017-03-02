@@ -157,6 +157,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Console.h" />
     <ClInclude Include="CoInitializer.h" />
     <ClInclude Include="CommandArgs.h" />
     <ClInclude Include="CommandParser.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="XmlFormatter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="CommandArgs.cpp" />
     <ClCompile Include="CommandParser.cpp" />
     <ClCompile Include="Exceptions.cpp" />

@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void ValueFormatter::WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ const std::wstring& value)
+void ValueFormatter::WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value)
 {
-    out << value << endl;
+    console.WriteLine(value);
 }
