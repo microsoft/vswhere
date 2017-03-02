@@ -35,14 +35,14 @@ public:
     }
 
 protected:
-    void StartArray(_In_ std::wostream& out) override;
-    void StartObject(_In_ std::wostream& out) override;
-    void WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
-    void WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ bool value) override;
-    void WriteProperty(_In_ std::wostream& out, _In_ const std::wstring& name, _In_ long long value) override;
-    void EndObject(_In_ std::wostream& out) override;
-    void EndArray(_In_ std::wostream& out) override;
-    void EndDocument(_In_ std::wostream& out) override;
+    void StartArray(_In_ Console& console) override;
+    void StartObject(_In_ Console& console) override;
+    void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
+    void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ bool value) override;
+    void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ long long value) override;
+    void EndObject(_In_ Console& console) override;
+    void EndArray(_In_ Console& console) override;
+    void EndDocument(_In_ Console& console) override;
     std::wstring FormatDate(_In_ const FILETIME& value) override;
 
 private:

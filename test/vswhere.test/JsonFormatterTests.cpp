@@ -14,6 +14,7 @@ public:
     TEST_METHOD(Write_Instance)
     {
         CommandArgs args;
+        TestConsole console(args);
         TestInstance instance =
         {
             { L"InstanceId", L"a1b2c3" },
@@ -22,11 +23,8 @@ public:
         };
 
         JsonFormatter sut;
-        wostringstream ostr;
+        sut.Write(args, console, &instance);
 
-        sut.Write(args, ostr, &instance);
-
-        auto actual = ostr.str();
         auto expected =
             L"[\n"
             L"  {\n"
@@ -36,12 +34,13 @@ public:
             L"  }\n"
             L"]\n";
 
-        Assert::AreEqual(expected, actual.c_str());
+        Assert::AreEqual(expected, console);
     }
 
     TEST_METHOD(Write_Instances)
     {
         CommandArgs args;
+        TestConsole console(args);
         TestInstance instance1 =
         {
             { L"InstanceId", L"a1b2c3" },
@@ -62,11 +61,8 @@ public:
         };
 
         JsonFormatter sut;
-        wostringstream ostr;
+        sut.Write(args, console, instances);
 
-        sut.Write(args, ostr, instances);
-
-        auto actual = ostr.str();
         auto expected =
             L"[\n"
             L"  {\n"
@@ -80,23 +76,21 @@ public:
             L"  }\n"
             L"]\n";
 
-        Assert::AreEqual(expected, actual.c_str());
+        Assert::AreEqual(expected, console);
     }
 
     TEST_METHOD(Write_No_Instances)
     {
         CommandArgs args;
+        TestConsole console(args);
         vector<ISetupInstancePtr> instances;
 
         JsonFormatter sut;
-        wostringstream ostr;
+        sut.Write(args, console, instances);
 
-        sut.Write(args, ostr, instances);
-
-        auto actual = ostr.str();
         auto expected =
             L"[]\n";
 
-        Assert::AreEqual(expected, actual.c_str());
+        Assert::AreEqual(expected, console);
     }
 };

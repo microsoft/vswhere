@@ -119,18 +119,19 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
     }
 }
 
-void CommandArgs::Usage(_In_ std::wostream& out) const
+void CommandArgs::Usage(_In_ Console& console) const
 {
     auto pos = m_path.find_last_of(L"\\");
     auto path = ++pos != wstring::npos ? m_path.substr(pos) : m_path;
-    out << ResourceManager::FormatString(IDS_USAGE, path.c_str()) << endl;
+
+    console.WriteLine(ResourceManager::FormatString(IDS_USAGE, path.c_str()));
 
     for (const auto& formatter : Formatter::Formatters)
     {
         UINT nID;
 
         tie(nID, ignore) = formatter.second;
-        out << ResourceManager::FormatString(nID, formatter.first.c_str()) << endl;
+        console.WriteLine(ResourceManager::FormatString(nID, formatter.first.c_str()));
     }
 }
 

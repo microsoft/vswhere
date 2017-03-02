@@ -7,91 +7,91 @@
 
 using namespace std;
 
-void JsonFormatter::StartArray(_In_ wostream& out)
+void JsonFormatter::StartArray(_In_ Console& console)
 {
     m_arrayStart = true;
 
-    out << m_padding << L"[";
+    console.Write(L"%ls[", m_padding.c_str());
     Push();
 }
 
-void JsonFormatter::StartObject(_In_ wostream& out)
+void JsonFormatter::StartObject(_In_ Console& console)
 {
     m_objectStart = true;
 
     if (m_arrayStart)
     {
-        out << endl;
+        console.WriteLine();
     }
     else
     {
-        out << L"," << endl;
+        console.Write(L",\n");
     }
 
-    out << m_padding << L"{" << endl;
+    console.Write(L"%ls{\n", m_padding.c_str());
     Push();
 
     m_arrayStart = false;
 }
 
-void JsonFormatter::WriteProperty(_In_ wostream& out, _In_ const wstring& name, _In_ const wstring& value)
+void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ const wstring& value)
 {
     if (!m_objectStart)
     {
-        out << L"," << endl;
+        console.Write(L",\n");
     }
 
     auto escaped = replace_all(value, L"\\", L"\\\\");
-    out << m_padding << L"\"" << name << L"\": \"" << escaped << L"\"";
+    console.Write(L"%ls\"%ls\": \"%ls\"", m_padding.c_str(), name.c_str(), escaped.c_str());
 
     m_objectStart = false;
 }
 
-void JsonFormatter::WriteProperty(_In_ wostream& out, _In_ const wstring& name, _In_ bool value)
+void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ bool value)
 {
     if (!m_objectStart)
     {
-        out << L"," << endl;
+        console.Write(L",\n");
     }
 
-    out << m_padding << L"\"" << name << L"\": " << (value ? L"true" : L"false");
+    console.Write(L"%ls\"%ls\": %ls", m_padding.c_str(), name.c_str(), (value ? L"true" : L"false"));
 
     m_objectStart = false;
 }
 
-void JsonFormatter::WriteProperty(_In_ wostream& out, _In_ const wstring& name, _In_ long long value)
+void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ long long value)
 {
     if (!m_objectStart)
     {
-        out << L"," << endl;
+        console.Write(L",\n");
     }
 
-    out << m_padding << L"\"" << name << L"\": " << value;
+    console.Write(L"%ls\"%ls\": %d", m_padding.c_str(), name.c_str(), value);
 
     m_objectStart = false;
 }
 
-void JsonFormatter::EndObject(_In_ wostream& out)
+void JsonFormatter::EndObject(_In_ Console& console)
 {
     Pop();
-    out << endl << m_padding << L"}";
+    console.Write(L"\n%ls}", m_padding.c_str());
 }
 
-void JsonFormatter::EndArray(_In_ wostream& out)
+void JsonFormatter::EndArray(_In_ Console& console)
 {
     Pop();
 
     if (!m_arrayStart)
     {
-        out << endl;
+        console.WriteLine();
     }
 
-    out << m_padding << L"]";
+    console.Write(L"%ls]", m_padding.c_str());
 }
 
-void JsonFormatter::EndDocument(_In_ wostream& out)
+void JsonFormatter::EndDocument(_In_ Console& console)
 {
-    out << endl;
+    console.Write(L"\n");
 }
 
 wstring JsonFormatter::FormatDate(_In_ const FILETIME& value)

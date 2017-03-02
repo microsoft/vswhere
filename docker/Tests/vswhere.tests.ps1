@@ -3,8 +3,6 @@
 
 Describe 'vswhere' {
     BeforeEach {
-        [Console]::OutputEncoding = [System.Text.Encoding]::Unicode
-        
         # Make sure localized values are returned consistently across machines.
         $enu = [System.Globalization.CultureInfo]::GetCultureInfo('en-US')
 
