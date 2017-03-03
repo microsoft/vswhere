@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|AnyCPU">
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|AnyCPU">
+      <Configuration>Release</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\vswhere\vswhere.vcxproj">
+      <PackageDirectory>Tools</PackageDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\LICENSE.txt">
+      <Link>tools\LICENSE.txt</Link>
+    </Content>
+    <None Include="packages.config" />
+    <Content Include="build\vswhere.props" />
+    <Content Include="tools\VERIFICATION.txt" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>87c09ce6-ba2d-4fc3-92e4-44253e87cb69</ProjectGuid>
+    <OutputPath>$(SolutionDir)bin\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NuProjPath Condition="Exists('$(SolutionDir)packages\NuProj.0.11.14-beta\tools\')">$(SolutionDir)packages\NuProj.0.11.14-beta\tools\</NuProjPath>
+    <NuProjPath Condition=" '$(NuProjPath)' == '' ">$(MSBuildExtensionsPath)\NuProj\</NuProjPath>
+    <VersionDependsOn>$(VersionDependsOn);GetPackageVersion</VersionDependsOn>
+  </PropertyGroup>
+  <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
+  <PropertyGroup Label="Configuration">
+    <Id>vswhere</Id>
+    <Version>1.0.0</Version>
+    <Title>Visual Studio Locator</Title>
+    <Authors>Microsoft Corporation</Authors>
+    <Owners>Microsoft Corporation</Owners>
+    <Summary>Locate Visual Studio 2017 and newer installations </Summary>
+    <Description>Locate Visual Studio 2017 and newer installations </Description>
+    <ReleaseNotes>
+    </ReleaseNotes>
+    <ProjectUrl>https://github.com/Microsoft/vswhere</ProjectUrl>
+    <LicenseUrl>https://github.com/Microsoft/vswhere/raw/develop/LICENSE.txt</LicenseUrl>
+    <Copyright>Copyright (C) Microsoft Corporation. All rights reserved.</Copyright>
+    <Tags>vs vs2017 visualstudio</Tags>
+    <GenerateSymbolPackage>false</GenerateSymbolPackage>
+  </PropertyGroup>
+  <Target Name="GetPackageVersion" DependsOnTargets="GetBuildVersion">
+    <PropertyGroup>
+      <Version>$(BuildVersionSimple)</Version>
+    </PropertyGroup>
+  </Target>
+  <Import Project="$(NuProjPath)\NuProj.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\packages\Nerdbank.GitVersioning.1.5.97\build\NerdBank.GitVersioning.targets" Condition="Exists('..\..\packages\Nerdbank.GitVersioning.1.5.97\build\NerdBank.GitVersioning.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\Nerdbank.GitVersioning.1.5.97\build\NerdBank.GitVersioning.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Nerdbank.GitVersioning.1.5.97\build\NerdBank.GitVersioning.targets'))" />
+  </Target>
+</Project>
