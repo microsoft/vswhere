@@ -222,4 +222,22 @@ public:
         Assert::AreEqual(L"test", args.get_Property().c_str());
         Assert::AreEqual(L"text", args.get_Format().c_str());
     }
+
+    TEST_METHOD(Parse_Products_Asterisk)
+    {
+        CommandArgs args;
+        Assert::AreEqual<size_t>(3, args.get_Products().size());
+
+        args.Parse(L"vswhere.exe -products *");
+        Assert::IsTrue(args.get_Products().empty());
+    }
+
+    TEST_METHOD(Parse_Products_Asterisk_Multiple)
+    {
+        CommandArgs args;
+        Assert::AreEqual<size_t>(3, args.get_Products().size());
+
+        args.Parse(L"vswhere.exe -products A * B");
+        Assert::IsTrue(args.get_Products().empty());
+    }
 };

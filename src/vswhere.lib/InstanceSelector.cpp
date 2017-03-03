@@ -175,13 +175,19 @@ bool InstanceSelector::IsProductMatch(_In_ ISetupInstance2* pInstance) const
         return false;
     }
 
+    // Asterisk on command line will clear the array to find any products.
+    const auto products = m_args.get_Products();
+    if (products.empty())
+    {
+        return true;
+    }
+
     const auto productId = GetId(product);
     if (productId.empty())
     {
         return false;
     }
 
-    const auto products = m_args.get_Products();
     const auto ci_equal_productId = bind(ci_equal(), productId, _1);
     const auto it = find_if(products.begin(), products.end(), ci_equal_productId);
     if (it == products.end())
@@ -196,7 +202,7 @@ bool InstanceSelector::IsWorkloadMatch(_In_ ISetupInstance2* pInstance) const
 {
     _ASSERT(pInstance);
 
-    auto requires = m_args.get_Requires();
+    const auto requires = m_args.get_Requires();
     if (requires.empty())
     {
         // No workloads required matches every instance.

@@ -234,4 +234,12 @@ Describe 'vswhere' {
             @($instances.instances.instance) | ForEach-Object { $_.instanceId | Should BeNullOrEmpty }
         }
     }
+
+    Context '-products *' {
+        It 'returns 3 instances using "json"' {
+            $instances = C:\bin\vswhere.exe -products * -format json | ConvertFrom-Json
+            $instances.Count | Should Be 3
+            $instances | ForEach-Object { $_.instanceId | Should Not BeNullOrEmpty }
+        }
+    }
 }
