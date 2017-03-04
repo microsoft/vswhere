@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>vswhere</id>
+    <version>__VALUE_FROM_NUPROJ__</version>
+    <title>__VALUE_FROM_NUPROJ__</title>
+    <authors>__VALUE_FROM_NUPROJ__</authors>
+    <owners>__VALUE_FROM_NUPROJ__</owners>
+    <licenseUrl>__VALUE_FROM_NUPROJ__</licenseUrl>
+    <projectUrl>__VALUE_FROM_NUPROJ__</projectUrl>
+    <description>__VALUE_FROM_NUPROJ__</description>
+    <summary>__VALUE_FROM_NUPROJ__</summary>
+    <releaseNotes>__VALUE_FROM_NUPROJ__</releaseNotes>
+    <copyright>__VALUE_FROM_NUPROJ__</copyright>
+    <tags>__VALUE_FROM_NUPROJ__</tags>
+    <packageSourceUrl>https://github.com/Microsoft/vswhere/tree/master/pkg/vswhere</packageSourceUrl>
+    <docsUrl>https://github.com/Microsoft/vswhere/wiki</docsUrl>
+    <bugTrackerUrl>https://github.com/Microsoft/vswhere/issues</bugTrackerUrl>
+    <projectSourceUrl>https://github.com/Microsoft/vswhere/tree/master</projectSourceUrl>
+  </metadata>
+</package>

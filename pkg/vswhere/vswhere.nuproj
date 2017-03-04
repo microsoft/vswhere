@@ -13,16 +13,20 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\vswhere\vswhere.vcxproj">
       <PackageDirectory>Tools</PackageDirectory>
-      <PackageOutputGroups>BuiltProjectOutputGroup;BuiltProjectOutputGroupDependencies;</PackageOutputGroups>
+      <PackageOutputGroups>
+        BuiltProjectOutputGroup;
+        BuiltProjectOutputGroupDependencies;
+      </PackageOutputGroups>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="build\vswhere.props" />
+    <Content Include="tools\VERIFICATION.txt" />
     <Content Include="..\..\LICENSE.txt">
       <Link>tools\LICENSE.txt</Link>
     </Content>
     <None Include="packages.config" />
-    <Content Include="build\vswhere.props" />
-    <Content Include="tools\VERIFICATION.txt" />
+    <None Include="vswhere.nuspec" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>87c09ce6-ba2d-4fc3-92e4-44253e87cb69</ProjectGuid>
@@ -42,17 +46,18 @@
     <Owners>Microsoft Corporation</Owners>
     <Summary>Locate Visual Studio 2017 and newer installations </Summary>
     <Description>Locate Visual Studio 2017 and newer installations </Description>
-    <ReleaseNotes>
-    </ReleaseNotes>
     <ProjectUrl>https://github.com/Microsoft/vswhere</ProjectUrl>
     <LicenseUrl>https://github.com/Microsoft/vswhere/raw/develop/LICENSE.txt</LicenseUrl>
     <Copyright>Copyright (C) Microsoft Corporation. All rights reserved.</Copyright>
+    <DevelopmentDependency>true</DevelopmentDependency>
     <Tags>vs vs2017 visualstudio</Tags>
     <GenerateSymbolPackage>false</GenerateSymbolPackage>
+    <NuSpecTemplate>vswhere.nuspec</NuSpecTemplate>
   </PropertyGroup>
   <Target Name="GetPackageVersion" DependsOnTargets="GetBuildVersion">
     <PropertyGroup>
       <Version>$(BuildVersionSimple)</Version>
+      <ReleaseNotes>https://github.com/Microsoft/vswhere/releases/tag/$(PackageVersion)</ReleaseNotes>
     </PropertyGroup>
   </Target>
   <Import Project="$(NuProjPath)\NuProj.targets" />
