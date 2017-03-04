@@ -113,6 +113,14 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         }
     }
 
+    // Clear the products array with asterisk to find any product.
+    auto it = find(m_products.begin(), m_products.end(), wstring(L"*"));
+    if (it != m_products.end())
+    {
+        m_productsAll = true;
+        m_products.clear();
+    }
+
     if (!m_property.empty() && m_format.empty())
     {
         m_format = L"value";

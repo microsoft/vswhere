@@ -12,6 +12,7 @@ class CommandArgs
 public:
     CommandArgs() noexcept :
         m_all(false),
+        m_productsAll(false),
         m_latest(false),
         m_nologo(false),
         m_help(false)
@@ -21,6 +22,7 @@ public:
     CommandArgs(const CommandArgs& obj) :
         m_path(obj.m_path),
         m_all(obj.m_all),
+        m_productsAll(obj.m_productsAll),
         m_products(obj.m_products),
         m_requires(obj.m_requires),
         m_version(obj.m_version),
@@ -44,7 +46,7 @@ public:
 
     const std::vector<std::wstring>& get_Products() const noexcept
     {
-        if (m_products.empty())
+        if (!m_productsAll && m_products.empty())
         {
             return s_Products;
         }
@@ -105,6 +107,7 @@ private:
 
     std::wstring m_path;
     bool m_all;
+    bool m_productsAll;
     std::vector<std::wstring> m_products;
     std::vector<std::wstring> m_requires;
     std::wstring m_version;
