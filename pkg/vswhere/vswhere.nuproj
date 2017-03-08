@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\vswhere\vswhere.vcxproj">
       <PackageDirectory>Tools</PackageDirectory>
+      <PackageOutputGroups>BuiltProjectOutputGroup;BuiltProjectOutputGroupDependencies;</PackageOutputGroups>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
