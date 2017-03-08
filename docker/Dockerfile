@@ -19,7 +19,7 @@ RUN $ErrorActionPreference = 'Stop' ; \
     Start-Process -Wait -FilePath 'C:\Program Files\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x64\msvsmon.exe' -ArgumentList '/prepcomputer', '/private', '/quiet'
 
 # Download and register current query APIs
-ENV API_VERSION="1.7.13-rc"
+ENV API_VERSION="1.8.24"
 RUN $ErrorActionPreference = 'Stop' ; \
     $VerbosePreference = 'Continue' ; \
     Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.VisualStudio.Setup.Configuration.Native/${env:API_VERSION}" -OutFile C:\Downloads\Microsoft.VisualStudio.Setup.Configuration.Native.zip ; \
