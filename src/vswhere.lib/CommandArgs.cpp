@@ -77,6 +77,10 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         {
             m_latest = true;
         }
+        else if (ArgumentEquals(arg.Value, L"legacy"))
+        {
+            m_legacy = true;
+        }
         else if (ArgumentEquals(arg.Value, L"format"))
         {
             auto format = ParseArgument(it, args.end(), arg);
@@ -119,6 +123,15 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
     {
         m_productsAll = true;
         m_products.clear();
+    }
+
+    if (m_legacy)
+    {
+        if (!m_products.empty() || !m_requires.empty())
+        {
+            auto message = ResourceManager::GetString(IDS_E_LEGACY);
+            throw win32_error(ERROR_INVALID_PARAMETER, message);
+        }
     }
 
     if (!m_property.empty() && m_format.empty())

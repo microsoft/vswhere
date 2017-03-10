@@ -400,4 +400,205 @@ public:
         InstanceSelector sut(args, &helper);
         Assert::ExpectException<win32_error>([&] { sut.Less(&a, &b); });
     }
+
+    TEST_METHOD(Select_No_Legacy)
+    {
+        TestPackageReference product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestInstance::MapType properties =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+        };
+
+        TestInstance instance(&product, {}, properties);
+        TestEnumInstances instances =
+        {
+            &instance,
+        };
+
+        TestLegacyProvider legacy =
+        {
+            { L"14.0", L"C:\\VisualStudio\\14.0" },
+        };
+
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        InstanceSelector sut(args, legacy);
+        auto selected = sut.Select(&instances);
+
+        Assert::AreEqual<size_t>(1, selected.size());
+
+        bstr_t bstrInstanceId;
+        Assert::AreEqual(S_OK, selected[0]->GetInstanceId(bstrInstanceId.GetAddress()));
+        Assert::AreEqual(L"a1b2c3", bstrInstanceId);
+    }
+
+    TEST_METHOD(Select_Missing_Legacy)
+    {
+        TestPackageReference product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestInstance::MapType properties =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+        };
+
+        TestInstance instance(&product, {}, properties);
+        TestEnumInstances instances =
+        {
+            &instance,
+        };
+
+        TestLegacyProvider legacy = {};
+
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -legacy");
+
+        InstanceSelector sut(args, legacy);
+        auto selected = sut.Select(&instances);
+
+        Assert::AreEqual<size_t>(1, selected.size());
+    }
+
+    TEST_METHOD(Select_With_Legacy)
+    {
+        TestPackageReference product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestInstance::MapType properties =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+        };
+
+        TestInstance instance(&product, {}, properties);
+        TestEnumInstances instances =
+        {
+            &instance,
+        };
+
+        TestLegacyProvider legacy =
+        {
+            { L"14.0", L"C:\\VisualStudio\\14.0" },
+        };
+
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -legacy");
+
+        InstanceSelector sut(args, legacy);
+        auto selected = sut.Select(&instances);
+
+        Assert::AreEqual<size_t>(2, selected.size());
+    }
+
+    TEST_METHOD(Select_Only_Legacy)
+    {
+        TestPackageReference product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestInstance::MapType properties =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+        };
+
+        TestInstance instance(&product, {}, properties);
+        TestEnumInstances instances =
+        {
+            &instance,
+        };
+
+        TestLegacyProvider legacy =
+        {
+            { L"14.0", L"C:\\VisualStudio\\14.0" },
+        };
+
+        TestHelper helper(MAKEVERSION(14, 0, 0, 0), MAKEVERSION(14, USHRT_MAX, USHRT_MAX, USHRT_MAX));
+
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -legacy -version [14.0,15.0)");
+
+        InstanceSelector sut(args, legacy, &helper);
+        auto selected = sut.Select(&instances);
+
+        Assert::AreEqual<size_t>(1, selected.size());
+
+        bstr_t bstrInstanceId;
+        Assert::AreEqual(S_OK, selected[0]->GetInstanceId(bstrInstanceId.GetAddress()));
+        Assert::AreEqual(L"VisualStudio.14.0", bstrInstanceId);
+    }
+
+    TEST_METHOD(Select_No_New)
+    {
+        TestLegacyProvider legacy =
+        {
+            { L"14.0", L"C:\\VisualStudio\\14.0" },
+        };
+
+        TestHelper helper(MAKEVERSION(14, 0, 0, 0), MAKEVERSION(14, USHRT_MAX, USHRT_MAX, USHRT_MAX));
+
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -legacy");
+
+        InstanceSelector sut(args, legacy, &helper);
+        auto selected = sut.Select(NULL);
+
+        Assert::AreEqual<size_t>(1, selected.size());
+
+        bstr_t bstrInstanceId;
+        Assert::AreEqual(S_OK, selected[0]->GetInstanceId(bstrInstanceId.GetAddress()));
+        Assert::AreEqual(L"VisualStudio.14.0", bstrInstanceId);
+    }
+
+    TEST_METHOD(Select_Legacy_Range)
+    {
+        TestPackageReference product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestInstance::MapType properties =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+        };
+
+        TestInstance instance(&product, {}, properties);
+        TestEnumInstances instances =
+        {
+            &instance,
+        };
+
+        TestLegacyProvider legacy =
+        {
+            { L"10.0", L"C:\\VisualStudio\\10.0" },
+            { L"14.0", L"C:\\VisualStudio\\14.0" },
+        };
+
+        TestHelper helper(MAKEVERSION(14, 0, 0, 0), MAKEVERSION(14, USHRT_MAX, USHRT_MAX, USHRT_MAX));
+
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -legacy -version [14.0,15.0)");
+
+        InstanceSelector sut(args, legacy, &helper);
+        auto selected = sut.Select(&instances);
+
+        Assert::AreEqual<size_t>(1, selected.size());
+
+        bstr_t bstrInstanceId;
+        Assert::AreEqual(S_OK, selected[0]->GetInstanceId(bstrInstanceId.GetAddress()));
+        Assert::AreEqual(L"VisualStudio.14.0", bstrInstanceId);
+    }
 };
