@@ -8,8 +8,9 @@
 using namespace std;
 using std::placeholders::_1;
 
-InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_opt_ ISetupHelper* pHelper) :
+InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_ ILegacyProvider& provider, _In_opt_ ISetupHelper* pHelper) :
     m_args(args),
+    m_provider(provider),
     m_ullMinimumVersion(0),
     m_ullMaximumVersion(0)
 {
@@ -112,6 +113,28 @@ vector<ISetupInstancePtr> InstanceSelector::Select(_In_opt_ IEnumSetupInstances*
                 }
             }
         } while (SUCCEEDED(hr) && celtFetched);
+    }
+
+    if (m_args.get_Legacy() && m_provider.HasLegacyInstances())
+    {
+        vector<LPCWSTR> versions =
+        {
+            L"14.0",
+            L"12.0",
+            L"11.0",
+            L"10.0",
+        };
+
+        for (auto version : versions)
+        {
+            ISetupInstancePtr instance;
+
+            // Currently only support version checks.
+            if (m_provider.TryGetLegacyInstance(version, &instance) && IsVersionMatch(instance))
+            {
+                instances.push_back(instance);
+            }
+        }
     }
 
     if (m_args.get_Latest() && 1 < instances.size())

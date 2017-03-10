@@ -97,6 +97,7 @@
     <ClInclude Include="TestEnumInstances.h" />
     <ClInclude Include="TestHelper.h" />
     <ClInclude Include="TestInstance.h" />
+    <ClInclude Include="TestLegacyProvider.h" />
     <ClInclude Include="TestPackageReference.h" />
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +112,7 @@
     </ClCompile>
     <ClCompile Include="TestConsole.cpp" />
     <ClCompile Include="TestHelper.cpp" />
+    <ClCompile Include="TestLegacyProvider.cpp" />
     <ClCompile Include="TextFormatterTests.cpp" />
     <ClCompile Include="UtilitiesTests.cpp" />
     <ClCompile Include="ValueFormatterTests.cpp" />
