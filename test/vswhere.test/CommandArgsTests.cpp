@@ -20,6 +20,7 @@ public:
         Assert::IsFalse(args.get_All());
         Assert::AreEqual<size_t>(0, args.get_Version().length());
         Assert::IsFalse(args.get_Latest());
+        Assert::IsFalse(args.get_Legacy());
         Assert::AreEqual(L"text", args.get_Format().c_str());
         Assert::AreEqual<size_t>(0, args.get_Property().length());
         Assert::IsFalse(args.get_Help());
@@ -239,5 +240,39 @@ public:
 
         args.Parse(L"vswhere.exe -products A * B");
         Assert::IsTrue(args.get_Products().empty());
+    }
+
+    TEST_METHOD(Parse_Legacy)
+    {
+        CommandArgs args;
+        Assert::IsFalse(args.get_Legacy());
+
+        args.Parse(L"vswhere.exe -legacy");
+        Assert::IsTrue(args.get_Legacy());
+    }
+
+    TEST_METHOD(Parse_Legacy_Products_Throws)
+    {
+        CommandArgs args;
+        Assert::IsFalse(args.get_Legacy());
+
+        Assert::ExpectException<win32_error>([&] { args.Parse(L"vswhere.exe -legacy -products A"); });
+    }
+
+    TEST_METHOD(Parse_Legacy_Products_Asterisk)
+    {
+        CommandArgs args;
+        Assert::IsFalse(args.get_Legacy());
+
+        args.Parse(L"vswhere.exe -legacy -products *");
+        Assert::IsTrue(args.get_Legacy());
+    }
+
+    TEST_METHOD(Parse_Legacy_Requires_Throws)
+    {
+        CommandArgs args;
+        Assert::IsFalse(args.get_Legacy());
+
+        Assert::ExpectException<win32_error>([&] { args.Parse(L"vswhere.exe -legacy -requires A"); });
     }
 };

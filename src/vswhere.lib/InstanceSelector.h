@@ -8,9 +8,15 @@
 class InstanceSelector
 {
 public:
-    InstanceSelector(_In_ const CommandArgs& args, _In_opt_ ISetupHelper* pHelper = NULL);
+    InstanceSelector(_In_ const CommandArgs& args, _In_opt_ ISetupHelper* pHelper = NULL) :
+        InstanceSelector(args, LegacyProvider::Instance, pHelper)
+    {
+    }
+
+    InstanceSelector(_In_ const CommandArgs& args, _In_ ILegacyProvider& provider, _In_opt_ ISetupHelper* pHelper = NULL);
     InstanceSelector(_In_ const InstanceSelector& obj) :
         m_args(obj.m_args),
+        m_provider(obj.m_provider),
         m_helper(obj.m_helper),
         m_ullMinimumVersion(obj.m_ullMinimumVersion),
         m_ullMaximumVersion(obj.m_ullMaximumVersion)
@@ -32,6 +38,7 @@ private:
     }
 
     const CommandArgs& m_args;
+    const ILegacyProvider& m_provider;
     ULONGLONG m_ullMinimumVersion;
     ULONGLONG m_ullMaximumVersion;
     ISetupHelperPtr m_helper;
