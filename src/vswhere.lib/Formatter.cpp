@@ -24,8 +24,8 @@ Formatter::Formatter()
 
 Formatter::FormatterMap Formatter::Formatters =
 {
-    { L"json", make_tuple(IDS_FORMAT_TEXT, JsonFormatter::Create) },
-    { L"text", make_tuple(IDS_FORMAT_JSON, TextFormatter::Create) },
+    { L"json", make_tuple(IDS_FORMAT_JSON, JsonFormatter::Create) },
+    { L"text", make_tuple(IDS_FORMAT_TEXT, TextFormatter::Create) },
     { L"value", make_tuple(IDS_FORMAT_VALUE, ValueFormatter::Create) },
     { L"xml", make_tuple(IDS_FORMAT_XML, XmlFormatter::Create) },
 };
