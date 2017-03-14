@@ -33,7 +33,6 @@ InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_ ILegacyPro
 
 bool InstanceSelector::Less(const ISetupInstancePtr& a, const ISetupInstancePtr&  b) const
 {
-    static ci_equal equal;
     static ci_less less;
 
     bstr_t bstrVersionA, bstrVersionB;
@@ -61,6 +60,12 @@ bool InstanceSelector::Less(const ISetupInstancePtr& a, const ISetupInstancePtr&
                 // a is less than b if we can't parse version for a but can for b.
                 return SUCCEEDED(hrB);
             }
+        }
+        else
+        {
+            // If ISetupHelper is not available we have only legacy products, or very early pre-releases of VS2017.
+            // For version 10.0 and newer either should lexigraphically sort correctly.
+            return less(wstring(bstrVersionA), wstring(bstrVersionB));
         }
     }
     else
