@@ -51,4 +51,39 @@ Describe 'vswhere -legacy' {
             $instances.Count | Should Be 2
         }
     }
+
+    Context 'no instances' {
+        BeforeEach {
+             New-Item HKLM:\Software\WOW6432Node\Microsoft\VisualStudio\SxS\VS7 -Force | ForEach-Object {
+                 foreach ($version in '10.0', '14.0') {
+                     $_ | New-ItemProperty -Name $version -Value "C:\VisualStudio\$version" -Force
+                 }
+             }
+
+             Start-Process -Wait -FilePath C:\Windows\SysWOW64\regsvr32.exe -ArgumentList @(
+                 '/s',
+                 '/u',
+                 'C:\Downloads\Microsoft.VisualStudio.Setup.Configuration.Native\tools\x86\Microsoft.VisualStudio.Setup.Configuration.Native.dll'
+             )
+        }
+
+        AfterEach {
+             Start-Process -Wait -FilePath C:\Windows\SysWOW64\regsvr32.exe -ArgumentList @(
+                 '/s',
+                 'C:\Downloads\Microsoft.VisualStudio.Setup.Configuration.Native\tools\x86\Microsoft.VisualStudio.Setup.Configuration.Native.dll'
+             )
+        }
+
+        It 'returns 2 instances' {
+            $instances = C:\bin\vswhere.exe -legacy -format json | ConvertFrom-Json
+            $instances.Count | Should Be 2
+        }
+
+        It '-latest returns latest instance' {
+            $instances = C:\bin\vswhere.exe -legacy -latest -format json | ConvertFrom-Json
+            $instances.Count | Should Be 1
+            $instances[0].instanceId | Should Be 'VisualStudio.14.0'
+            $instances[0].installationPath | Should Be 'C:\VisualStudio\14.0'
+        }
+    }
 }
