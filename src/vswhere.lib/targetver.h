@@ -11,6 +11,6 @@
 #undef  _WIN32_WINNT
 #endif
 
-#define _WIN32_WINNT 0x0601
+#define _WIN32_WINNT 0x0501
 
 #include <sdkddkver.h>

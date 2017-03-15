@@ -104,28 +104,28 @@ wstring Formatter::FormatDate(_In_ const FILETIME& value)
     }
 
     // Format date
-    auto cch = ::GetDateFormatEx(LOCALE_NAME_USER_DEFAULT, DATE_SHORTDATE, &st, NULL, NULL, 0, NULL);
+    auto cch = ::GetDateFormatW(LOCALE_USER_DEFAULT, DATE_SHORTDATE, &st, NULL, NULL, 0);
     if (!cch)
     {
         throw win32_error();
     }
 
     date.resize(cch - 1);
-    cch = ::GetDateFormatEx(LOCALE_NAME_USER_DEFAULT, DATE_SHORTDATE, &st, NULL, const_cast<LPWSTR>(date.c_str()), cch, NULL);
+    cch = ::GetDateFormatW(LOCALE_USER_DEFAULT, DATE_SHORTDATE, &st, NULL, const_cast<LPWSTR>(date.c_str()), cch);
     if (!cch)
     {
         throw win32_error();
     }
 
     // Format time
-    cch = ::GetTimeFormatEx(LOCALE_NAME_USER_DEFAULT, 0, &st, NULL, NULL, 0);
+    cch = ::GetTimeFormatW(LOCALE_USER_DEFAULT, 0, &st, NULL, NULL, 0);
     if (!cch)
     {
         throw win32_error();
     }
 
     time.reserve(cch - 1);
-    cch = ::GetTimeFormatEx(LOCALE_NAME_USER_DEFAULT, 0, &st, NULL, const_cast<LPWSTR>(time.c_str()), cch);
+    cch = ::GetTimeFormatW(LOCALE_USER_DEFAULT, 0, &st, NULL, const_cast<LPWSTR>(time.c_str()), cch);
     if (!cch)
     {
         throw win32_error();
