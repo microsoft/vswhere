@@ -23,4 +23,5 @@
 #include "TestEnumInstances.h"
 #include "TestHelper.h"
 #include "TestInstance.h"
+#include "TestLegacyProvider.h"
 #include "TestPackageReference.h"

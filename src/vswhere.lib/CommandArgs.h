@@ -14,6 +14,7 @@ public:
         m_all(false),
         m_productsAll(false),
         m_latest(false),
+        m_legacy(false),
         m_nologo(false),
         m_help(false)
     {
@@ -27,6 +28,7 @@ public:
         m_requires(obj.m_requires),
         m_version(obj.m_version),
         m_latest(obj.m_latest),
+        m_legacy(obj.m_legacy),
         m_format(obj.m_format),
         m_property(obj.m_property),
         m_nologo(obj.m_nologo),
@@ -67,6 +69,11 @@ public:
     const bool get_Latest() const noexcept
     {
         return m_latest;
+    }
+
+    const bool get_Legacy() const noexcept
+    {
+        return m_legacy;
     }
 
     const std::wstring& get_Format() const noexcept
@@ -112,6 +119,7 @@ private:
     std::vector<std::wstring> m_requires;
     std::wstring m_version;
     bool m_latest;
+    bool m_legacy;
     std::wstring m_format;
     std::wstring m_property;
     bool m_nologo;

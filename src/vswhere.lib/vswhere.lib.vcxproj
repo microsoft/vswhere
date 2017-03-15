@@ -164,8 +164,11 @@
     <ClInclude Include="CommandParser.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="Formatter.h" />
+    <ClInclude Include="ILegacyProvider.h" />
     <ClInclude Include="InstanceSelector.h" />
     <ClInclude Include="JsonFormatter.h" />
+    <ClInclude Include="LegacyInstance.h" />
+    <ClInclude Include="LegacyProvider.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SafeArray.h" />
@@ -184,6 +187,8 @@
     <ClCompile Include="Formatter.cpp" />
     <ClCompile Include="InstanceSelector.cpp" />
     <ClCompile Include="JsonFormatter.cpp" />
+    <ClCompile Include="LegacyInstance.cpp" />
+    <ClCompile Include="LegacyProvider.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -204,7 +209,7 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Native.1.7.13-rc\build\native\Microsoft.VisualStudio.Setup.Configuration.Native.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Native.1.7.13-rc\build\native\Microsoft.VisualStudio.Setup.Configuration.Native.targets')" />
+    <Import Project="..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Native.1.8.24\build\native\Microsoft.VisualStudio.Setup.Configuration.Native.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Native.1.8.24\build\native\Microsoft.VisualStudio.Setup.Configuration.Native.targets')" />
     <Import Project="..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets" Condition="Exists('..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets')" />
     <Import Project="..\..\packages\NuProj.Common.0.11.14-beta\build\NuProj.Common.targets" Condition="Exists('..\..\packages\NuProj.Common.0.11.14-beta\build\NuProj.Common.targets')" />
   </ImportGroup>
@@ -212,7 +217,7 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Native.1.7.13-rc\build\native\Microsoft.VisualStudio.Setup.Configuration.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Native.1.7.13-rc\build\native\Microsoft.VisualStudio.Setup.Configuration.Native.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Native.1.8.24\build\native\Microsoft.VisualStudio.Setup.Configuration.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Native.1.8.24\build\native\Microsoft.VisualStudio.Setup.Configuration.Native.targets'))" />
     <Error Condition="!Exists('..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props'))" />
     <Error Condition="!Exists('..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets'))" />
     <Error Condition="!Exists('..\..\packages\NuProj.Common.0.11.14-beta\build\NuProj.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NuProj.Common.0.11.14-beta\build\NuProj.Common.targets'))" />

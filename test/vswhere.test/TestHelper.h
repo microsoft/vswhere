@@ -5,7 +5,7 @@
 
 #pragma once
 
-#define MAKEVERSION(major, minor, build, revision) ULONGLONG(major) << 24 || ULONGLONG(minor) << 16 || ULONGLONG(build) << 8 || ULONGLONG(revision)
+#define MAKEVERSION(major, minor, build, revision) ULONGLONG(major) << 24 | ULONGLONG(minor) << 16 | ULONGLONG(build) << 8 | ULONGLONG(revision)
 
 class TestHelper :
     public ISetupHelper
@@ -79,6 +79,18 @@ public:
         if (equal(pwszVersion, L"2.0"))
         {
             *pullVersion = MAKEVERSION(2, 0, 0, 0);
+            return S_OK;
+        }
+
+        if (equal(pwszVersion, L"10.0"))
+        {
+            *pullVersion = MAKEVERSION(10, 0, 0, 0);
+            return S_OK;
+        }
+
+        if (equal(pwszVersion, L"14.0"))
+        {
+            *pullVersion = MAKEVERSION(14, 0, 0, 0);
             return S_OK;
         }
 

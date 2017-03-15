@@ -8,8 +8,9 @@
 using namespace std;
 using std::placeholders::_1;
 
-InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_opt_ ISetupHelper* pHelper) :
+InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_ ILegacyProvider& provider, _In_opt_ ISetupHelper* pHelper) :
     m_args(args),
+    m_provider(provider),
     m_ullMinimumVersion(0),
     m_ullMaximumVersion(0)
 {
@@ -32,7 +33,6 @@ InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_opt_ ISetup
 
 bool InstanceSelector::Less(const ISetupInstancePtr& a, const ISetupInstancePtr&  b) const
 {
-    static ci_equal equal;
     static ci_less less;
 
     bstr_t bstrVersionA, bstrVersionB;
@@ -60,6 +60,12 @@ bool InstanceSelector::Less(const ISetupInstancePtr& a, const ISetupInstancePtr&
                 // a is less than b if we can't parse version for a but can for b.
                 return SUCCEEDED(hrB);
             }
+        }
+        else
+        {
+            // If ISetupHelper is not available we have only legacy products, or very early pre-releases of VS2017.
+            // For version 10.0 and newer either should lexigraphically sort correctly.
+            return less(wstring(bstrVersionA), wstring(bstrVersionB));
         }
     }
     else
@@ -112,6 +118,28 @@ vector<ISetupInstancePtr> InstanceSelector::Select(_In_opt_ IEnumSetupInstances*
                 }
             }
         } while (SUCCEEDED(hr) && celtFetched);
+    }
+
+    if (m_args.get_Legacy() && m_provider.HasLegacyInstances())
+    {
+        vector<LPCWSTR> versions =
+        {
+            L"14.0",
+            L"12.0",
+            L"11.0",
+            L"10.0",
+        };
+
+        for (auto version : versions)
+        {
+            ISetupInstancePtr instance;
+
+            // Currently only support version checks.
+            if (m_provider.TryGetLegacyInstance(version, &instance) && IsVersionMatch(instance))
+            {
+                instances.push_back(instance);
+            }
+        }
     }
 
     if (m_args.get_Latest() && 1 < instances.size())
