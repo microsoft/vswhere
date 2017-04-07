@@ -8,12 +8,13 @@
 using namespace std;
 
 void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& query, _In_ IEnumSetupInstancesPtr& e);
-void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console);
+void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console, _In_ Module& module);
 
 int wmain(_In_ int argc, _In_ LPCWSTR argv[])
 {
     CommandArgs args;
     Console console(args);
+    Module queryModule;
 
     console.Initialize();
     try
@@ -23,7 +24,7 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         args.Parse(argc, argv);
         if (args.get_Help())
         {
-            WriteLogo(args, console);
+            WriteLogo(args, console, queryModule);
             args.Usage(console);
 
             return ERROR_SUCCESS;
@@ -33,6 +34,9 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         IEnumSetupInstancesPtr e;
 
         GetEnumerator(args, query, e);
+
+        // Try to get information about the query module for later.
+        queryModule.FromIUnknown(static_cast<IUnknown*>(query));
 
         // Attempt to get the ISetupHelper.
         ISetupHelperPtr helper;
@@ -48,7 +52,7 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         auto formatter = Formatter::Create(args.get_Format());
         if (formatter->ShowLogo())
         {
-            WriteLogo(args, console);
+            WriteLogo(args, console, queryModule);
         }
 
         formatter->Write(args, console, instances);
@@ -59,7 +63,7 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         const auto code = ex.code().value();
         if (ERROR_INVALID_PARAMETER == code)
         {
-            WriteLogo(args, console);
+            WriteLogo(args, console, queryModule);
         }
 
         console.Write(L"%ls 0x%x: ", ResourceManager::GetString(IDS_ERROR).c_str(), code);
@@ -127,11 +131,14 @@ void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& qu
     }
 }
 
-void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console)
+void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console, _In_ Module& module)
 {
     if (args.get_Logo())
     {
-        console.WriteLine(ResourceManager::FormatString(IDS_PROGRAMINFO, FILE_VERSION_STRINGW));
+        const auto version = module.get_FileVersion();
+        const auto nID = version.empty() ? IDS_PROGRAMINFO : IDS_PROGRAMINFOEX;
+
+        console.WriteLine(ResourceManager::FormatString(nID, FILE_VERSION_STRINGW, version.c_str()));
         console.WriteLine(ResourceManager::GetString(IDS_COPYRIGHT));
         console.WriteLine();
     }
