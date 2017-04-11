@@ -57,6 +57,7 @@ _COM_SMARTPTR_TYPEDEF(ISetupPropertyStore, __uuidof(ISetupPropertyStore));
 #include "LegacyInstance.h"
 #include "InstanceSelector.h"
 #include "JsonFormatter.h"
+#include "Module.h"
 #include "resource.h"
 #include "ResourceManager.h"
 #include "SafeArray.h"

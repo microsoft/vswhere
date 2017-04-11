@@ -21,9 +21,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -45,15 +42,15 @@
     <ClInclude Include="TestLegacyProvider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TestModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CommandArgsTests.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Module.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UtilitiesTests.cpp">
@@ -84,6 +81,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestLegacyProvider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
