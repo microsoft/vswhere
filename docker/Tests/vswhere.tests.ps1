@@ -10,7 +10,41 @@ Describe 'vswhere' {
         [System.Globalization.CultureInfo]::CurrentUICulture = $enu
     }
 
+    Context '(query provider not registered)' {
+        BeforeAll {
+             Start-Process -Wait -FilePath C:\Windows\SysWOW64\regsvr32.exe -ArgumentList @(
+                 '/s',
+                 '/u',
+                 'C:\Downloads\Microsoft.VisualStudio.Setup.Configuration.Native\tools\x86\Microsoft.VisualStudio.Setup.Configuration.Native.dll'
+             )
+        }
+
+        AfterAll {
+             Start-Process -Wait -FilePath C:\Windows\SysWOW64\regsvr32.exe -ArgumentList @(
+                 '/s',
+                 'C:\Downloads\Microsoft.VisualStudio.Setup.Configuration.Native\tools\x86\Microsoft.VisualStudio.Setup.Configuration.Native.dll'
+             )
+        }
+
+        It 'header contains no query version' {
+            $output = C:\bin\vswhere.exe
+            $output[0] | Should Match 'Visual Studio Locator version \d+\.\d+\.\d+'
+            $output[0] | Should Not Match '\[query version \d+\.\d+.*\]'
+        }
+
+        It 'returns 0 instances' {
+            $instances = C:\bin\vswhere.exe -format json | ConvertFrom-Json
+            $instances.Count | Should Be 0
+        }
+    }
+
     Context '(no arguments)' {
+        It 'header contains no query version' {
+            $output = C:\bin\vswhere.exe
+            $output[0] | Should Match 'Visual Studio Locator version \d+\.\d+\.\d+'
+            $output[0] | Should Match '\[query version \d+\.\d+.*\]'
+        }
+
         It 'returns 2 instances using "text"' {
             $instanceIds = C:\bin\vswhere.exe | Select-String 'instanceId: \w+'
             $instanceIds.Count | Should Be 2

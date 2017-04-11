@@ -28,8 +28,8 @@ public:
         }
     }
 
-    // Avoid throwing non-catastrphic exceptions since information is for diagnostics only.
-    void FromIUnknown(_In_ const IUnknown* pUnk) noexcept;
+    // Avoid throwing non-catastrophic exceptions since information is for diagnostics only.
+    void FromIUnknown(_In_opt_ const IUnknown* pUnk) noexcept;
     const std::wstring& get_Path() noexcept;
     const std::wstring& get_FileVersion() noexcept;
 

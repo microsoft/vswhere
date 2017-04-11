@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void Module::FromIUnknown(_In_ const IUnknown* pUnk) noexcept
+void Module::FromIUnknown(_In_opt_ const IUnknown* pUnk) noexcept
 {
     typedef struct IUnknownVtbl
     {
@@ -16,8 +16,11 @@ void Module::FromIUnknown(_In_ const IUnknown* pUnk) noexcept
         ULONG(STDMETHODCALLTYPE *Release)(ISetupConfiguration*);
     } IUnknownVtbl;
 
-    auto pVtbl = reinterpret_cast<const IUnknownVtbl*>(pUnk);
-    ::GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, reinterpret_cast<LPCWSTR>(pVtbl->QueryInterface), &m_hModule);
+    if (pUnk)
+    {
+        auto pVtbl = reinterpret_cast<const IUnknownVtbl*>(pUnk);
+        ::GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, reinterpret_cast<LPCWSTR>(pVtbl->QueryInterface), &m_hModule);
+    }
 }
 
 const wstring& Module::get_Path() noexcept

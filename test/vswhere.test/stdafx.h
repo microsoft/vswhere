@@ -18,7 +18,7 @@
 
 // Project headers
 #include <stdafx.h>
-#include "Module.h"
+#include "TestModule.h"
 #include "TestConsole.h"
 #include "TestEnumInstances.h"
 #include "TestHelper.h"
