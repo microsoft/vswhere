@@ -78,5 +78,10 @@ Describe 'vswhere -legacy' {
             $instances[0].instanceId | Should Be 'VisualStudio.14.0'
             $instances[0].installationPath | Should Be 'C:\VisualStudio\14.0'
         }
+
+        It '-version with no helper fails' {
+            C:\bin\vswhere.exe -legacy -version 14.0
+            $LASTEXITCODE | Should Be 87
+        }
     }
 }

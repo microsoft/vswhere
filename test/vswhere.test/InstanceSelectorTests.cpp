@@ -601,4 +601,12 @@ public:
         Assert::AreEqual(S_OK, selected[0]->GetInstanceId(bstrInstanceId.GetAddress()));
         Assert::AreEqual(L"VisualStudio.14.0", bstrInstanceId);
     }
+
+    TEST_METHOD(New_Range_No_Helper)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -legacy -version 14.0");
+
+        Assert::ExpectException<win32_error>([&] { InstanceSelector(args, NULL); });
+    }
 };

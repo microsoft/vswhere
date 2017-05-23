@@ -10,15 +10,15 @@ using std::placeholders::_1;
 
 InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_ ILegacyProvider& provider, _In_opt_ ISetupHelper* pHelper) :
     m_args(args),
+    m_helper(pHelper),
     m_provider(provider),
     m_ullMinimumVersion(0),
     m_ullMaximumVersion(0)
 {
-    m_helper = pHelper;
-    if (m_helper)
+    auto version = args.get_Version();
+    if (!version.empty())
     {
-        auto version = args.get_Version();
-        if (!version.empty())
+        if (m_helper)
         {
             auto hr = m_helper->ParseVersionRange(version.c_str(), &m_ullMinimumVersion, &m_ullMaximumVersion);
             if (FAILED(hr))
@@ -27,6 +27,11 @@ InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_ ILegacyPro
                 auto message = ResourceManager::FormatString(IDS_E_INVALIDVERSION, version.c_str());
                 throw win32_error(ERROR_INVALID_PARAMETER, message);
             }
+        }
+        else
+        {
+            auto message = ResourceManager::GetString(IDS_E_UNSUPPORTEDRANGE);
+            throw win32_error(ERROR_INVALID_PARAMETER, message.c_str());
         }
     }
 }
