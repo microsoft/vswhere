@@ -54,24 +54,17 @@ Describe 'vswhere -legacy' {
 
     Context 'no instances' {
         BeforeEach {
-             New-Item HKLM:\Software\WOW6432Node\Microsoft\VisualStudio\SxS\VS7 -Force | ForEach-Object {
-                 foreach ($version in '10.0', '14.0') {
-                     $_ | New-ItemProperty -Name $version -Value "C:\VisualStudio\$version" -Force
-                 }
-             }
+            New-Item HKLM:\Software\WOW6432Node\Microsoft\VisualStudio\SxS\VS7 -Force | ForEach-Object {
+                foreach ($version in '10.0', '14.0') {
+                    $_ | New-ItemProperty -Name $version -Value "C:\VisualStudio\$version" -Force
+                }
+            }
 
-             Start-Process -Wait -FilePath C:\Windows\SysWOW64\regsvr32.exe -ArgumentList @(
-                 '/s',
-                 '/u',
-                 'C:\Downloads\Microsoft.VisualStudio.Setup.Configuration.Native\tools\x86\Microsoft.VisualStudio.Setup.Configuration.Native.dll'
-             )
+            Rename-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\Software\Wow6432Node\Classes\CLSID\{177F0C4A-1CD3-4DE7-A32C-71DBBB9FA36D}\InprocServer32' -Name '(Default)' -NewName '_Default'
         }
 
         AfterEach {
-             Start-Process -Wait -FilePath C:\Windows\SysWOW64\regsvr32.exe -ArgumentList @(
-                 '/s',
-                 'C:\Downloads\Microsoft.VisualStudio.Setup.Configuration.Native\tools\x86\Microsoft.VisualStudio.Setup.Configuration.Native.dll'
-             )
+            Rename-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\Software\Wow6432Node\Classes\CLSID\{177F0C4A-1CD3-4DE7-A32C-71DBBB9FA36D}\InprocServer32' -Name '_Default' -NewName '(Default)'
         }
 
         It 'returns 2 instances' {

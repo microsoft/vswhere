@@ -12,18 +12,11 @@ Describe 'vswhere' {
 
     Context '(query provider not registered)' {
         BeforeAll {
-             Start-Process -Wait -FilePath C:\Windows\SysWOW64\regsvr32.exe -ArgumentList @(
-                 '/s',
-                 '/u',
-                 'C:\Downloads\Microsoft.VisualStudio.Setup.Configuration.Native\tools\x86\Microsoft.VisualStudio.Setup.Configuration.Native.dll'
-             )
+            Rename-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\Software\Wow6432Node\Classes\CLSID\{177F0C4A-1CD3-4DE7-A32C-71DBBB9FA36D}\InprocServer32' -Name '(Default)' -NewName '_Default'
         }
 
         AfterAll {
-             Start-Process -Wait -FilePath C:\Windows\SysWOW64\regsvr32.exe -ArgumentList @(
-                 '/s',
-                 'C:\Downloads\Microsoft.VisualStudio.Setup.Configuration.Native\tools\x86\Microsoft.VisualStudio.Setup.Configuration.Native.dll'
-             )
+            Rename-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\Software\Wow6432Node\Classes\CLSID\{177F0C4A-1CD3-4DE7-A32C-71DBBB9FA36D}\InprocServer32' -Name '_Default' -NewName '(Default)'
         }
 
         It 'header contains no query version' {

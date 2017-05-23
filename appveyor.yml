@@ -2,6 +2,8 @@ configuration:
   - Debug
   - Release
 
+image: Visual Studio 2017
+
 environment:
   TreatWarningsAsErrors: true
 
@@ -23,9 +25,8 @@ cache:
 before_build:
   - nuget restore
 
-test:
-  assemblies:
-    - bin\$(configuration)\*.test.dll
+test_script:
+  - tools\test.cmd -v
 
 artifacts:
   - path: bin\$(configuration)
