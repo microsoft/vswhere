@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>vswhere</id>
+    <version>$Version$</version>
+    <title>Visual Studio Locator</title>
+    <authors>Microsoft Corporation</authors>
+    <owners>Microsoft Corporation</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/Microsoft/vswhere/tree/$CommitId$/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/Microsoft/vswhere</projectUrl>
+    <description>Locate Visual Studio 2017 and newer installations</description>
+    <summary>Locate Visual Studio 2017 and newer installations</summary>
+    <copyright>Copyright (C) Microsoft Corporation. All rights reserved.</copyright>
+    <tags>vs vs2017 visualstudio</tags>
+    <developmentDependency>true</developmentDependency>
+    <!--packageSourceUrl>https://github.com/Microsoft/vswhere/tree/$CommitId$/pkg/vswhere</packageSourceUrl-->
+    <!--docsUrl>https://github.com/Microsoft/vswhere/wiki</docsUrl-->
+    <!--bugTrackerUrl>https://github.com/Microsoft/vswhere/issues</bugTrackerUrl-->
+    <!--projectSourceUrl>https://github.com/Microsoft/vswhere/tree/$CommitId$</projectSourceUrl-->
+  </metadata>
+  <files>
+    <file src="build\vswhere.props" target="build\"/>
+    <file src="..\..\bin\$Configuration$\vswhere.exe" target="tools\"/>
+    <file src="..\..\LICENSE.txt" target="tools\"/>
+    <file src="tools\VERIFICATION.txt" target="tools\"/>
+  </files>
+</package>
