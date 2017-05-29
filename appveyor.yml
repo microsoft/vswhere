@@ -22,8 +22,15 @@ notifications:
 cache:
   - packages -> **\packages.config
 
-before_build:
+install:
   - nuget restore
+
+build:
+  parallel: true
+  verbosity: detailed
+
+after_build:
+  - nuget pack -OutputDirectory "bin\%CONFIGURATION%" -Version "%GitBuildVersionSimple%" -Properties "Configuration=%CONFIGURATION%;CommitId=%APPVEYOR_REPO_COMMIT%" pkg\vswhere\vswhere.nuspec
 
 test_script:
   - tools\test.cmd -v
