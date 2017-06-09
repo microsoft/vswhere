@@ -4,9 +4,10 @@
     <id>vswhere</id>
     <version>$Version$</version>
     <title>Visual Studio Locator</title>
-    <authors>Microsoft Corporation</authors>
-    <owners>Microsoft Corporation</owners>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <iconUrl>https://go.microsoft.com/fwlink/?linkid=839265</iconUrl>
     <licenseUrl>https://github.com/Microsoft/vswhere/tree/$CommitId$/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/Microsoft/vswhere</projectUrl>
     <description>Locate Visual Studio 2017 and newer installations</description>
