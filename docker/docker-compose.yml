@@ -1,0 +1,19 @@
+# Copyright (C) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT license. See LICENSE.txt in the project root for license information.
+
+version: "2.1"
+services:
+  test:
+    build: .
+    volumes:
+      - ../bin/${CONFIGURATION:-Debug}:C:/bin:ro
+      - ./Instances:C:/ProgramData/Microsoft/VisualStudio/Packages/_Instances:ro
+      - ./Tests:C:/Tests
+      - C:/VS/Community
+      - C:/VS/Professional
+      - C:/VS/Enterprise
+      - C:/BuildTools
+    network_mode: nat
+    expose:
+      - "3702/udp"
+      - "4022-4023"

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <BuildDependsOn>
       GenerateVersionInfo;
+      SetCloudVersionVariables;
       $(BuildDependsOn)
     </BuildDependsOn>
   </PropertyGroup>
@@ -47,5 +48,9 @@
     <ItemGroup>
       <FileWrites Include="$(_VersionInfoFile)"/>
     </ItemGroup>
+  </Target>
+  <Target Name="SetCloudVersionVariables" DependsOnTargets="GetBuildVersion">
+    <Exec Condition="'$(APPVEYOR)'=='True'" Command="appveyor SetVariable -Name GitBuildVersionSimple -Value &quot;$(BuildVersionSimple)&quot;"/>
+    <Message Condition="'$(SYSTEM_TEAMPROJECTID)'!=''" Text="##vso[task.setvariable variable=GitBuildVersionSimple;]$(BuildVersionSimple)"/>
   </Target>
 </Project>

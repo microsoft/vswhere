@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
+MinimumVisualStudioVersion = 15.0.26228.4
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{20C5861F-C1E5-4BFB-B082-209793FBDCA5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2F0C5F28-FD43-4045-85E8-BBD98B6B66B5}"
@@ -18,10 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pkg", "pkg", "{A2C0B2B6-0E25-4A8D-96F6-9F44C615AE00}"
-EndProject
-Project("{FF286327-C783-4F7A-AB73-9BCBAD0D4460}") = "vswhere", "pkg\vswhere\vswhere.nuproj", "{87C09CE6-BA2D-4FC3-92E4-44253E87CB69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +37,6 @@ Global
 		{4CCF39CB-4794-44E2-AA57-D215F13CF606}.Debug|x86.Build.0 = Debug|Win32
 		{4CCF39CB-4794-44E2-AA57-D215F13CF606}.Release|x86.ActiveCfg = Release|Win32
 		{4CCF39CB-4794-44E2-AA57-D215F13CF606}.Release|x86.Build.0 = Release|Win32
-		{87C09CE6-BA2D-4FC3-92E4-44253E87CB69}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{87C09CE6-BA2D-4FC3-92E4-44253E87CB69}.Debug|x86.Build.0 = Debug|Any CPU
-		{87C09CE6-BA2D-4FC3-92E4-44253E87CB69}.Release|x86.ActiveCfg = Release|Any CPU
-		{87C09CE6-BA2D-4FC3-92E4-44253E87CB69}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +45,5 @@ Global
 		{210864F0-9A29-4479-B830-B802EE3F4D92} = {20C5861F-C1E5-4BFB-B082-209793FBDCA5}
 		{76268871-D5A5-46BD-9805-41DB1C3072D1} = {2F0C5F28-FD43-4045-85E8-BBD98B6B66B5}
 		{4CCF39CB-4794-44E2-AA57-D215F13CF606} = {20C5861F-C1E5-4BFB-B082-209793FBDCA5}
-		{87C09CE6-BA2D-4FC3-92E4-44253E87CB69} = {A2C0B2B6-0E25-4A8D-96F6-9F44C615AE00}
 	EndGlobalSection
 EndGlobal
