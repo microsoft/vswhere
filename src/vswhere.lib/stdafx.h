@@ -44,6 +44,7 @@ _COM_SMARTPTR_TYPEDEF(ISetupInstance, __uuidof(ISetupInstance));
 _COM_SMARTPTR_TYPEDEF(ISetupInstance2, __uuidof(ISetupInstance2));
 _COM_SMARTPTR_TYPEDEF(ISetupPackageReference, __uuidof(ISetupPackageReference));
 _COM_SMARTPTR_TYPEDEF(ISetupPropertyStore, __uuidof(ISetupPropertyStore));
+_COM_SMARTPTR_TYPEDEF(ISetupInstanceCatalog, __uuidof(ISetupInstanceCatalog));
 
 #include "Utilities.h"
 #include "Exceptions.h"

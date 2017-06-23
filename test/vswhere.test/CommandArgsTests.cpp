@@ -21,6 +21,7 @@ public:
         Assert::AreEqual<size_t>(0, args.get_Version().length());
         Assert::IsFalse(args.get_Latest());
         Assert::IsFalse(args.get_Legacy());
+        Assert::IsFalse(args.get_Prerelease());
         Assert::AreEqual(L"text", args.get_Format().c_str());
         Assert::AreEqual<size_t>(0, args.get_Property().length());
         Assert::IsFalse(args.get_Help());
@@ -120,6 +121,15 @@ public:
 
         args.Parse(L"vswhere.exe -latest");
         Assert::IsTrue(args.get_Latest());
+    }
+
+    TEST_METHOD(Parse_Prerelease)
+    {
+        CommandArgs args;
+        Assert::IsFalse(args.get_Prerelease());
+
+        args.Parse(L"vswhere.exe -prerelease");
+        Assert::IsTrue(args.get_Prerelease());
     }
 
     TEST_METHOD(Parse_Format_EOL)

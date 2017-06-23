@@ -13,6 +13,7 @@ services:
       - C:/VS/Professional
       - C:/VS/Enterprise
       - C:/BuildTools
+      - C:/VS/Preview
     network_mode: nat
     expose:
       - "3702/udp"

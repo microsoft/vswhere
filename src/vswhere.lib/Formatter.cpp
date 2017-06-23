@@ -17,6 +17,7 @@ Formatter::Formatter()
         { L"installationName", bind(&Formatter::GetInstallationName, this, _1, _2) },
         { L"installationPath", bind(&Formatter::GetInstallationPath, this, _1, _2) },
         { L"installationVersion", bind(&Formatter::GetInstallationVersion, this, _1, _2) },
+        { L"isPrerelease", bind(&Formatter::GetIsPrerelease, this, _1, _2) },
         { L"displayName", bind(&Formatter::GetDisplayName, this, _1, _2) },
         { L"description", bind(&Formatter::GetDescription, this, _1, _2) },
     };
@@ -141,7 +142,7 @@ void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& consol
     StartObject(console);
 
     const auto& specified = args.get_Property();
-    bstr_t bstrValue;
+    variant_t vtValue;
     bool found = false;
 
     for (const auto property : m_properties)
@@ -150,11 +151,10 @@ void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& consol
         {
             found = true;
 
-            auto hr = property.second(pInstance, bstrValue.GetAddress());
+            auto hr = property.second(pInstance, vtValue.GetAddress());
             if (SUCCEEDED(hr))
             {
-                wstring value = bstrValue;
-                WriteProperty(console, property.first, value);
+                WriteProperty(console, property.first, vtValue);
             }
         }
     }
@@ -243,14 +243,32 @@ bool Formatter::PropertyEqual(_In_ const std::wstring& name, _In_ PropertyArray:
     return s_comparer(name, property.first);
 }
 
-HRESULT Formatter::GetInstanceId(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstanceId)
+HRESULT Formatter::GetStringProperty(_In_ std::function<HRESULT(_Out_ BSTR*)> pfn, _Out_ VARIANT* pvt)
 {
-    return pInstance->GetInstanceId(pbstrInstanceId);
+    _ASSERTE(pfn);
+    _ASSERTE(pvt);
+
+    variant_t vt;
+
+    auto hr = pfn(&vt.bstrVal);
+    if (SUCCEEDED(hr))
+    {
+        vt.vt = VT_BSTR;
+        *pvt = vt.Detach();
+    }
+
+    return hr;
 }
 
-HRESULT Formatter::GetInstallDate(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallDate)
+HRESULT Formatter::GetInstanceId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstanceId)
+{
+    return GetStringProperty(bind(&ISetupInstance::GetInstanceId, pInstance, _1), pvtInstanceId);
+}
+
+HRESULT Formatter::GetInstallDate(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallDate)
 {
     FILETIME ft = {};
+    variant_t vt;
 
     auto hr = pInstance->GetInstallDate(&ft);
     if (SUCCEEDED(hr))
@@ -258,40 +276,62 @@ HRESULT Formatter::GetInstallDate(_In_ ISetupInstance* pInstance, _Out_ BSTR* pb
         auto value = FormatDate(ft);
         if (!value.empty())
         {
-            *pbstrInstallDate = ::SysAllocString(value.c_str());
-            if (!*pbstrInstallDate)
+            vt.bstrVal = ::SysAllocString(value.c_str());
+            if (!*vt.bstrVal)
             {
                 throw win32_error(ERROR_OUTOFMEMORY);
             }
+
+            vt.vt = VT_BSTR;
+            *pvtInstallDate = vt.Detach();
         }
     }
 
     return hr;
 }
 
-HRESULT Formatter::GetInstallationName(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallationName)
+HRESULT Formatter::GetInstallationName(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallationName)
 {
-    return pInstance->GetInstallationName(pbstrInstallationName);
+    return GetStringProperty(bind(&ISetupInstance::GetInstallationName, pInstance, _1), pvtInstallationName);
 }
 
-HRESULT Formatter::GetInstallationPath(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallationPath)
+HRESULT Formatter::GetInstallationPath(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallationPath)
 {
-    return pInstance->GetInstallationPath(pbstrInstallationPath);
+    return GetStringProperty(bind(&ISetupInstance::GetInstallationPath, pInstance, _1), pvtInstallationPath);
 }
 
-HRESULT Formatter::GetInstallationVersion(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallationVersion)
+HRESULT Formatter::GetInstallationVersion(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallationVersion)
 {
-    return pInstance->GetInstallationVersion(pbstrInstallationVersion);
+    return GetStringProperty(bind(&ISetupInstance::GetInstallationVersion, pInstance, _1), pvtInstallationVersion);
 }
 
-HRESULT Formatter::GetDisplayName(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrDisplayName)
+HRESULT Formatter::GetIsPrerelease(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsPrerelease)
+{
+    ISetupInstanceCatalogPtr catalog;
+    variant_t vt;
+
+    auto hr = pInstance->QueryInterface(&catalog);
+    if (SUCCEEDED(hr))
+    {
+        hr = catalog->IsPrerelease(&vt.boolVal);
+        if (SUCCEEDED(hr))
+        {
+            vt.vt = VT_BOOL;
+            *pvtIsPrerelease = vt.Detach();
+        }
+    }
+
+    return hr;
+}
+
+HRESULT Formatter::GetDisplayName(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtDisplayName)
 {
     auto lcid = ::GetUserDefaultLCID();
-    return pInstance->GetDisplayName(lcid, pbstrDisplayName);
+    return GetStringProperty(bind(&ISetupInstance::GetDisplayName, pInstance, lcid, _1), pvtDisplayName);
 }
 
-HRESULT Formatter::GetDescription(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrDescription)
+HRESULT Formatter::GetDescription(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtDescription)
 {
     auto lcid = ::GetUserDefaultLCID();
-    return pInstance->GetDescription(lcid, pbstrDescription);
+    return GetStringProperty(bind(&ISetupInstance::GetDescription, pInstance, lcid, _1), pvtDescription);
 }

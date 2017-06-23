@@ -28,7 +28,7 @@ public:
     }
 
 protected:
-    typedef std::function<HRESULT(_In_ ISetupInstance*, _Out_ BSTR*)> PropertyFunction;
+    typedef std::function<HRESULT(_In_ ISetupInstance*, _Out_ VARIANT*)> PropertyFunction;
     typedef std::vector<std::pair<std::wstring, PropertyFunction>> PropertyArray;
 
     Formatter();
@@ -57,16 +57,19 @@ protected:
 
 private:
     static bool PropertyEqual(_In_ const std::wstring& name, _In_ PropertyArray::const_reference property);
+    static HRESULT GetStringProperty(_In_ std::function<HRESULT(_Out_ BSTR*)> pfn, _Out_ VARIANT* pvt);
 
     static ci_equal s_comparer;
 
-    HRESULT GetInstanceId(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstanceId);
-    HRESULT GetInstallDate(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallDate);
-    HRESULT GetInstallationName(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallationName);
-    HRESULT GetInstallationPath(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallationPath);
-    HRESULT GetInstallationVersion(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrInstallationVersion);
-    HRESULT GetDisplayName(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrDisplayName);
-    HRESULT GetDescription(_In_ ISetupInstance* pInstance, _Out_ BSTR* pbstrDescription);
+    HRESULT GetInstanceId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstanceId);
+    HRESULT GetInstallDate(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallDate);
+    HRESULT GetInstallationName(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallationName);
+    HRESULT GetInstallationPath(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallationPath);
+    HRESULT GetInstallationVersion(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallationVersion);
+    HRESULT GetIsPrerelease(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsPrerelease);
+    HRESULT GetDisplayName(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtDisplayName);
+    HRESULT GetDescription(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtDescription);
+
 
     void WriteInternal(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance);
     void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const variant_t& value);

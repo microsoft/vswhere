@@ -164,12 +164,25 @@ bool InstanceSelector::IsMatch(_In_ ISetupInstance* pInstance) const
 
     HRESULT hr = S_OK;
     ISetupInstance2Ptr instance;
+    ISetupInstanceCatalogPtr catalog;
 
     hr = pInstance->QueryInterface(&instance);
     if (FAILED(hr))
     {
         // Only VS products were released before ISetupInstance2 was released, so if no workload requirements assume it matches.
         return m_args.get_Requires().empty();
+    }
+
+    hr = pInstance->QueryInterface(&catalog);
+    if (SUCCEEDED(hr))
+    {
+        VARIANT_BOOL fPrerelease = VARIANT_FALSE;
+
+        hr = catalog->IsPrerelease(&fPrerelease);
+        if (SUCCEEDED(hr) && fPrerelease && !m_args.get_Prerelease())
+        {
+            return false;
+        }
     }
 
     if (!IsProductMatch(instance))

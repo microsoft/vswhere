@@ -15,6 +15,7 @@ public:
         m_productsAll(false),
         m_latest(false),
         m_legacy(false),
+        m_prerelease(false),
         m_nologo(false),
         m_help(false)
     {
@@ -29,6 +30,7 @@ public:
         m_version(obj.m_version),
         m_latest(obj.m_latest),
         m_legacy(obj.m_legacy),
+        m_prerelease(obj.m_prerelease),
         m_format(obj.m_format),
         m_property(obj.m_property),
         m_nologo(obj.m_nologo),
@@ -76,6 +78,11 @@ public:
         return m_legacy;
     }
 
+    const bool get_Prerelease() const noexcept
+    {
+        return m_prerelease;
+    }
+
     const std::wstring& get_Format() const noexcept
     {
         if (m_format.empty())
@@ -120,6 +127,7 @@ private:
     std::wstring m_version;
     bool m_latest;
     bool m_legacy;
+    bool m_prerelease;
     std::wstring m_format;
     std::wstring m_property;
     bool m_nologo;
