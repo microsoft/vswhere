@@ -27,7 +27,6 @@ install:
 
 build:
   parallel: true
-  verbosity: detailed
 
 after_build:
   - nuget pack -OutputDirectory "bin\%CONFIGURATION%" -Version "%GitBuildVersionSimple%" -Properties "Configuration=%CONFIGURATION%;CommitId=%APPVEYOR_REPO_COMMIT%" pkg\vswhere\vswhere.nuspec
