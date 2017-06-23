@@ -81,6 +81,10 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         {
             m_legacy = true;
         }
+        else if (ArgumentEquals(arg.Value, L"prerelease"))
+        {
+            m_prerelease = true;
+        }
         else if (ArgumentEquals(arg.Value, L"format"))
         {
             auto format = ParseArgument(it, args.end(), arg);

@@ -2,6 +2,12 @@
 # Licensed under the MIT license. See LICENSE.txt in the project root for license information.
 
 Describe 'vswhere' {
+    BeforeAll {
+        # Always write to 32-bit registry key.
+        $key = New-Item -Path Registry::HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\Setup\Reboot -Force
+        $null = $key | New-ItemProperty -Name 3 -Value 1 -Force
+    }
+
     BeforeEach {
         # Make sure localized values are returned consistently across machines.
         $enu = [System.Globalization.CultureInfo]::GetCultureInfo('en-US')
@@ -267,6 +273,25 @@ Describe 'vswhere' {
             $instances = C:\bin\vswhere.exe -products * -format json | ConvertFrom-Json
             $instances.Count | Should Be 3
             $instances | ForEach-Object { $_.instanceId | Should Not BeNullOrEmpty }
+        }
+    }
+
+    Context '-prerelease' {
+        It 'returns 4 instances' {
+            $instances = C:\bin\vswhere.exe -prerelease -format json | ConvertFrom-Json
+            $instances.Count | Should Be 3
+        }
+
+        It '-products * returns 4 instances' {
+            $instances = C:\bin\vswhere.exe -prerelease -products * -format json | ConvertFrom-Json
+            $instances.Count | Should Be 4
+        }
+
+        It '-latest returns prerelease' {
+            $instances = C:\bin\vswhere.exe -prerelease -latest -format json | ConvertFrom-Json
+            $instances.Count | Should Be 1
+            $instances[0].InstanceId | Should Be 5
+            $instances[0].IsPrerelease | Should Be $true
         }
     }
 }

@@ -1,0 +1,81 @@
+{
+    "channelId": "VisualStudio.15.Preview",
+    "installationName": "VisualStudioPreview/15.3.0-pre.3.0+26612.0.d15rel",
+    "installationVersion": "15.3.26612.0",
+    "installationPath": "C:\\VS\\Preview",
+    "installDate": "2017-04-17T10:00:00Z",
+    "catalogInfo": {
+        "id": "VisualStudioPreview/15.3.0-pre.3.0+26612.0.d15rel",
+        "buildBranch": "d15rel",
+        "buildVersion": "15.3.26612.0",
+        "manifestName": "VisualStudioPreview",
+        "manifestType": "installer",
+        "productDisplayVersion": "15.3.0 Preview 3.0 [26612.0.d15rel]",
+        "productLineVersion": "2017",
+        "productMilestone": "Preview",
+        "productMilestoneIsPreRelease": "True",
+        "productName": "Visual Studio",
+        "productPatchVersion": "0",
+        "productPreReleaseMilestoneSuffix": "3.0",
+        "productSemanticVersion": "15.3.0-pre.3.0+26612.0.d15rel"
+    },
+    "product": {
+        "id": "Microsoft.VisualStudio.Product.Enterprise",
+        "version": "15.0.26612.0",
+        "type": "Product"
+    },
+    "localizedResources": [
+        {
+            "language": "en-us",
+            "title": "Visual Studio Enterprise 2017",
+            "description": "Microsoft DevOps solution for productivity and coordination across teams of any size"
+        },
+        {
+            "language": "de-de",
+            "title": "Visual Studio Enterprise 2017",
+            "description": "Microsoft DevOps-Lösung für Produktivität und Koordination von Teams beliebiger Größe"
+        }
+    ],
+    "launchParams": {
+        "fileName": "Common7\\IDE\\devenv.exe"
+    },
+    "enginePath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\resources\\app\\ServiceHub\\Services\\Microsoft.VisualStudio.Setup.Service",
+    "properties": {
+        "nickname": "Preview"
+    },
+    "selectedPackages": [
+        {
+            "id": "Microsoft.VisualStudio.Product.Enterprise",
+            "version": "15.0.26117.0",
+            "type": "Product",
+            "selectedState": "IndividuallySelected"
+        }
+    ],
+    "packages": [
+        {
+            "id": "Microsoft.VisualStudio.Workload.ManagedDesktop",
+            "version": "15.0.26117.0",
+            "type": "Workload"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Workload.NativeDesktop",
+            "version": "15.0.26117.0",
+            "type": "Workload"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Workload.CoreEditor",
+            "version": "15.0.26117.0",
+            "type": "Workload"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Branding.Enterprise",
+            "version": "15.0.26117.0",
+            "type": "Vsix"
+        },
+        {
+            "id": "Microsoft.VisualStudio.Product.Enterprise",
+            "version": "15.0.26117.0",
+            "type": "Product"
+        }
+    ]
+}

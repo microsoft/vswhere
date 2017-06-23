@@ -2,6 +2,12 @@
 # Licensed under the MIT license. See LICENSE.txt in the project root for license information.
 
 Describe 'vswhere -legacy' {
+    BeforeAll {
+        # Always write to 32-bit registry key.
+        $key = New-Item -Path Registry::HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\Setup\Reboot -Force
+        $null = $key | New-ItemProperty -Name 3 -Value 1 -Force
+    }
+
     BeforeEach {
         # Make sure localized values are returned consistently across machines.
         $enu = [System.Globalization.CultureInfo]::GetCultureInfo('en-US')
