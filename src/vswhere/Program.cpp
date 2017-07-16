@@ -21,6 +21,20 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
     {
         CoInitializer init;
 
+        // Create the query object early to print version in logo.
+        ISetupConfigurationPtr query;
+        auto hr = query.CreateInstance(__uuidof(SetupConfiguration));
+        if (FAILED(hr))
+        {
+            if (REGDB_E_CLASSNOTREG != hr)
+            {
+                throw win32_error(hr);
+            }
+        }
+
+        // Try to get information about the query module for later.
+        queryModule.FromIUnknown(static_cast<IUnknown*>(query));
+
         args.Parse(argc, argv);
         if (args.get_Help())
         {
@@ -30,13 +44,8 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
             return ERROR_SUCCESS;
         }
 
-        ISetupConfigurationPtr query;
         IEnumSetupInstancesPtr e;
-
         GetEnumerator(args, query, e);
-
-        // Try to get information about the query module for later.
-        queryModule.FromIUnknown(static_cast<IUnknown*>(query));
 
         // Attempt to get the ISetupHelper.
         ISetupHelperPtr helper;
@@ -94,15 +103,9 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
 
 void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& query, _In_ IEnumSetupInstancesPtr& e)
 {
-    auto hr = query.CreateInstance(__uuidof(SetupConfiguration));
-    if (FAILED(hr))
+    if (!query)
     {
-        if (REGDB_E_CLASSNOTREG == hr)
-        {
-            return;
-        }
-
-        throw win32_error(hr);
+        return;
     }
 
     // If all instances are requested, try to get the proper enumerator; otherwise, fall back to original enumerator.
@@ -110,7 +113,7 @@ void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& qu
     {
         ISetupConfiguration2Ptr query2;
 
-        hr = query->QueryInterface(&query2);
+        auto hr = query->QueryInterface(&query2);
         if (SUCCEEDED(hr))
         {
             hr = query2->EnumAllInstances(&e);
@@ -123,7 +126,7 @@ void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& qu
 
     if (!e)
     {
-        hr = query->EnumInstances(&e);
+        auto hr = query->EnumInstances(&e);
         if (FAILED(hr))
         {
             throw win32_error(hr);

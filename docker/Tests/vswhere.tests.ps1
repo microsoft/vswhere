@@ -38,7 +38,7 @@ Describe 'vswhere' {
     }
 
     Context '(no arguments)' {
-        It 'header contains no query version' {
+        It 'header contains query version' {
             $output = C:\bin\vswhere.exe
             $output[0] | Should Match 'Visual Studio Locator version \d+\.\d+\.\d+'
             $output[0] | Should Match '\[query version \d+\.\d+.*\]'
@@ -62,6 +62,24 @@ Describe 'vswhere' {
         It 'returns 2 instances using "xml"' {
             $instances = [xml](C:\bin\vswhere.exe -format xml)
             $instances.instances.instance.Count | Should Be 2
+        }
+    }
+
+    Context '-' {
+        It 'header contains query version' {
+            $output = C:\bin\vswhere.exe -
+            $output[0] | Should Match 'Visual Studio Locator version \d+\.\d+\.\d+'
+            $output[0] | Should Match '\[query version \d+\.\d+.*\]'
+
+            $LASTEXITCODE | Should Be 87
+        }
+    }
+
+    Context '-help' {
+        It 'header contains query version' {
+            $output = C:\bin\vswhere.exe -help
+            $output[0] | Should Match 'Visual Studio Locator version \d+\.\d+\.\d+'
+            $output[0] | Should Match '\[query version \d+\.\d+.*\]'
         }
     }
 
