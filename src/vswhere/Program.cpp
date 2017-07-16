@@ -44,15 +44,21 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
             return ERROR_SUCCESS;
         }
 
-        IEnumSetupInstancesPtr e;
-        GetEnumerator(args, query, e);
-
         // Attempt to get the ISetupHelper.
         ISetupHelperPtr helper;
         if (query)
         {
             query->QueryInterface(&helper);
         }
+
+        if (!args.get_Version().empty() && !query)
+        {
+            auto message = ResourceManager::GetString(IDS_E_VERSION);
+            throw win32_error(ERROR_INVALID_PARAMETER, message);
+        }
+
+        IEnumSetupInstancesPtr e;
+        GetEnumerator(args, query, e);
 
         InstanceSelector selector(args, helper);
         auto instances = selector.Select(e);

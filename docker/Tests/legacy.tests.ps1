@@ -84,5 +84,22 @@ Describe 'vswhere -legacy' {
             $instances[0].instanceId | Should Be 'VisualStudio.14.0'
             $instances[0].installationPath | Should Be 'C:\VisualStudio\14.0'
         }
+
+        It '-version is not supported' {
+            C:\bin\vswhere.exe -legacy -version 14.0
+            $LASTEXITCODE | Should Be 87
+        }
+    }
+
+    Context '-legacy' {
+        It '-products "any" is not supported' {
+            C:\bin\vswhere.exe -legacy -products any
+            $LASTEXITCODE | Should Be 87
+        }
+
+        It '-requires "any" is not supported' {
+            C:\bin\vswhere.exe -legacy -requires any
+            $LASTEXITCODE | Should Be 87
+        }
     }
 }
