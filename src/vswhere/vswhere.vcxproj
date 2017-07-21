@@ -15,6 +15,7 @@
     <ProjectGuid>{210864F0-9A29-4479-B830-B802EE3F4D92}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>vswhere</RootNamespace>
+    <TargetUniversalCRTVersion>10.0.14393.0</TargetUniversalCRTVersion>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
