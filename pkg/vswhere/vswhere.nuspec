@@ -15,10 +15,11 @@
     <copyright>Copyright (C) Microsoft Corporation. All rights reserved.</copyright>
     <tags>vs vs2017 visualstudio</tags>
     <developmentDependency>true</developmentDependency>
-    <!--packageSourceUrl>https://github.com/Microsoft/vswhere/tree/$CommitId$/pkg/vswhere</packageSourceUrl-->
-    <!--docsUrl>https://github.com/Microsoft/vswhere/wiki</docsUrl-->
-    <!--bugTrackerUrl>https://github.com/Microsoft/vswhere/issues</bugTrackerUrl-->
-    <!--projectSourceUrl>https://github.com/Microsoft/vswhere/tree/$CommitId$</projectSourceUrl-->
+    <projectSourceUrl>https://github.com/Microsoft/vswhere/tree/$CommitId$</projectSourceUrl>
+    <packageSourceUrl>https://github.com/Microsoft/vswhere/tree/$CommitId$/pkg/vswhere</packageSourceUrl>
+    <docsUrl>https://github.com/Microsoft/vswhere/wiki</docsUrl>
+    <bugTrackerUrl>https://github.com/Microsoft/vswhere/issues</bugTrackerUrl>
+    <releaseNotes>https://github.com/Microsoft/vswhere/releases/tag/$Version$</releaseNotes>
   </metadata>
   <files>
     <file src="build\vswhere.props" target="build\"/>

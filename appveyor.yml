@@ -29,7 +29,7 @@ build:
   parallel: true
 
 after_build:
-  - nuget pack -OutputDirectory "bin\%CONFIGURATION%" -Version "%GitBuildVersionSimple%" -Properties "Configuration=%CONFIGURATION%;CommitId=%APPVEYOR_REPO_COMMIT%" pkg\vswhere\vswhere.nuspec
+  - tools\choco.cmd pack pkg\vswhere\vswhere.nuspec --out "bin\%CONFIGURATION%" --version "%GitBuildVersionSimple%" "Configuration=%CONFIGURATION%" "CommitId=%APPVEYOR_REPO_COMMIT%"
 
 test_script:
   - tools\test.cmd -v
