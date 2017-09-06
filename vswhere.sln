@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 15.0.26228.4
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{20C5861F-C1E5-4BFB-B082-209793FBDCA5}"
 EndProject
@@ -15,6 +15,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vswhere.lib", "src\vswhere.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EC52ABCD-D322-41A0-AE25-D3D1F05C9EEC}"
 	ProjectSection(SolutionItems) = preProject
+		CONTRIBUTING.md = CONTRIBUTING.md
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 	EndProjectSection
@@ -45,5 +46,8 @@ Global
 		{210864F0-9A29-4479-B830-B802EE3F4D92} = {20C5861F-C1E5-4BFB-B082-209793FBDCA5}
 		{76268871-D5A5-46BD-9805-41DB1C3072D1} = {2F0C5F28-FD43-4045-85E8-BBD98B6B66B5}
 		{4CCF39CB-4794-44E2-AA57-D215F13CF606} = {20C5861F-C1E5-4BFB-B082-209793FBDCA5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B8B58651-8009-4980-AE0B-69997634A2E9}
 	EndGlobalSection
 EndGlobal
