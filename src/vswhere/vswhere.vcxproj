@@ -120,7 +120,6 @@
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\..\packages\Nerdbank.GitVersioning.1.5.97\build\NerdBank.GitVersioning.targets" Condition="Exists('..\..\packages\Nerdbank.GitVersioning.1.5.97\build\NerdBank.GitVersioning.targets')" />
     <Import Project="..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets" Condition="Exists('..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets')" />
-    <Import Project="..\..\packages\NuProj.Common.0.11.14-beta\build\NuProj.Common.targets" Condition="Exists('..\..\packages\NuProj.Common.0.11.14-beta\build\NuProj.Common.targets')" />
     <Import Project="..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Native.1.11.2290\build\native\Microsoft.VisualStudio.Setup.Configuration.Native.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Native.1.11.2290\build\native\Microsoft.VisualStudio.Setup.Configuration.Native.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -130,7 +129,6 @@
     <Error Condition="!Exists('..\..\packages\Nerdbank.GitVersioning.1.5.97\build\NerdBank.GitVersioning.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Nerdbank.GitVersioning.1.5.97\build\NerdBank.GitVersioning.targets'))" />
     <Error Condition="!Exists('..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props'))" />
     <Error Condition="!Exists('..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets'))" />
-    <Error Condition="!Exists('..\..\packages\NuProj.Common.0.11.14-beta\build\NuProj.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NuProj.Common.0.11.14-beta\build\NuProj.Common.targets'))" />
     <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Native.1.11.2290\build\native\Microsoft.VisualStudio.Setup.Configuration.Native.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.Setup.Configuration.Native.1.11.2290\build\native\Microsoft.VisualStudio.Setup.Configuration.Native.targets'))" />
   </Target>
 </Project>
