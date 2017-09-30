@@ -5,7 +5,6 @@
 
 #pragma once
 
-
 class TestInstance :
     public ISetupInstance2
 {
@@ -151,7 +150,34 @@ public:
         _Out_ BSTR* pbstrAbsolutePath
     )
     {
-        return E_NOTIMPL;
+        if (!pbstrAbsolutePath)
+        {
+            return E_POINTER;
+        }
+
+        bstr_t bstrPath;
+
+        auto hr = GetInstallationPath(bstrPath.GetAddress());
+        if (SUCCEEDED(hr))
+        {
+            std::experimental::filesystem::v1::path absolutePath((LPWSTR)bstrPath);
+
+            hr = GetProductPath(bstrPath.GetAddress());
+            if (SUCCEEDED(hr))
+            {
+                absolutePath.append((LPWSTR)bstrPath);
+
+                *pbstrAbsolutePath = ::SysAllocString(absolutePath.c_str());
+                if (!*pbstrAbsolutePath)
+                {
+                    return E_OUTOFMEMORY;
+                }
+
+                return S_OK;
+            }
+        }
+
+        return E_FAIL;
     }
 
     // ISetupInstance2
@@ -277,6 +303,10 @@ private:
         if (SUCCEEDED(hr))
         {
             *pbstrValue = ::SysAllocString(value.c_str());
+            if (!*pbstrValue)
+            {
+                return E_OUTOFMEMORY;
+            }
         }
 
         return hr;

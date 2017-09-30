@@ -66,10 +66,11 @@ private:
     HRESULT GetInstallationName(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallationName);
     HRESULT GetInstallationPath(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallationPath);
     HRESULT GetInstallationVersion(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallationVersion);
+    HRESULT GetProductId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtProductId);
+    HRESULT GetProductPath(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtProductPath);
     HRESULT GetIsPrerelease(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsPrerelease);
     HRESULT GetDisplayName(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtDisplayName);
     HRESULT GetDescription(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtDescription);
-
 
     void WriteInternal(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance);
     void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const variant_t& value);
