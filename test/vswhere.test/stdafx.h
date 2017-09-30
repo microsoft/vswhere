@@ -14,6 +14,7 @@
 #include <windows.h>
 
 // STL headers
+#include <filesystem>
 #include <unordered_map>
 
 // Project headers

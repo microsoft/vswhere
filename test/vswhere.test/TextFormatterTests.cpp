@@ -67,4 +67,59 @@ public:
 
         Assert::AreEqual(expected, console);
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_ProductId)
+        TEST_WORKITEM(104)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_ProductId)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+
+        TestPackageReference product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestInstance::MapType properties =
+        {
+            { L"InstanceId", L"a1b2c3" },
+        };
+
+        TestInstance instance(&product, {}, properties);
+
+        TextFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"instanceId: a1b2c3\n"
+            L"productId: Microsoft.VisualStudio.Product.Enterprise\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_ProductPath)
+        TEST_WORKITEM(104)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_ProductPath)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationPath", L"C:\\ShouldNotExist" },
+            { L"ProductPath", L"Common7\\IDE\\devenv.exe" },
+        };
+
+        TextFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"instanceId: a1b2c3\n"
+            L"installationPath: C:\\ShouldNotExist\n"
+            L"productPath: C:\\ShouldNotExist\\Common7\\IDE\\devenv.exe\n";
+
+        Assert::AreEqual(expected, console);
+    }
 };

@@ -17,6 +17,8 @@ Formatter::Formatter()
         { L"installationName", bind(&Formatter::GetInstallationName, this, _1, _2) },
         { L"installationPath", bind(&Formatter::GetInstallationPath, this, _1, _2) },
         { L"installationVersion", bind(&Formatter::GetInstallationVersion, this, _1, _2) },
+        { L"productId", bind(&Formatter::GetProductId, this, _1, _2) },
+        { L"productPath", bind(&Formatter::GetProductPath, this, _1, _2) },
         { L"isPrerelease", bind(&Formatter::GetIsPrerelease, this, _1, _2) },
         { L"displayName", bind(&Formatter::GetDisplayName, this, _1, _2) },
         { L"description", bind(&Formatter::GetDescription, this, _1, _2) },
@@ -303,6 +305,58 @@ HRESULT Formatter::GetInstallationPath(_In_ ISetupInstance* pInstance, _Out_ VAR
 HRESULT Formatter::GetInstallationVersion(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallationVersion)
 {
     return GetStringProperty(bind(&ISetupInstance::GetInstallationVersion, pInstance, _1), pvtInstallationVersion);
+}
+
+HRESULT Formatter::GetProductId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtProductId)
+{
+    ISetupInstance2Ptr instance;
+
+    auto hr = pInstance->QueryInterface(&instance);
+    if (SUCCEEDED(hr))
+    {
+        ISetupPackageReferencePtr reference;
+
+        hr = instance->GetProduct(&reference);
+        if (SUCCEEDED(hr))
+        {
+            variant_t vt;
+
+            hr = reference->GetId(&vt.bstrVal);
+            if (SUCCEEDED(hr))
+            {
+                vt.vt = VT_BSTR;
+                *pvtProductId = vt.Detach();
+            }
+        }
+    }
+
+    return hr;
+}
+
+HRESULT Formatter::GetProductPath(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtProductPath)
+{
+    ISetupInstance2Ptr instance;
+
+    auto hr = pInstance->QueryInterface(&instance);
+    if (SUCCEEDED(hr))
+    {
+        bstr_t bstrProductPath;
+
+        hr = instance->GetProductPath(bstrProductPath.GetAddress());
+        if (SUCCEEDED(hr))
+        {
+            variant_t vt;
+
+            hr = instance->ResolvePath(bstrProductPath, &vt.bstrVal);
+            if (SUCCEEDED(hr))
+            {
+                vt.vt = VT_BSTR;
+                *pvtProductPath = vt.Detach();
+            }
+        }
+    }
+
+    return hr;
 }
 
 HRESULT Formatter::GetIsPrerelease(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsPrerelease)

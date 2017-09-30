@@ -219,6 +219,18 @@ Describe 'vswhere' {
             $instance.channelId | Should Be 'VisualStudio.15.Release/public.d15rel/15.0.26117.0'
             $instance.enginePath | Should Be 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service'
         }
+
+        It '-property productId' {
+            $instances = C:\bin\vswhere.exe -latest -property productId -format json | ConvertFrom-Json
+            $instances.Count | Should Be 1
+            $instances[0].productId | Should Be 'Microsoft.VisualStudio.Product.Enterprise'
+        }
+
+        It '-property productPath' {
+            $instances = C:\bin\vswhere.exe -latest -property productPath -format json | ConvertFrom-Json
+            $instances.Count | Should Be 1
+            $instances[0].productPath | Should Be 'C:\VS\Enterprise\Common7\IDE\devenv.exe'
+        }
     }
 
     Context '-latest -all' {
