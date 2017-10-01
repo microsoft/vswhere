@@ -18,9 +18,18 @@ void XmlFormatter::StartArray(_In_ Console& console)
     Push();
 }
 
-void XmlFormatter::StartObject(_In_ Console& console)
+void XmlFormatter::StartObject(_In_ Console& console, _In_opt_ const wstring& name)
 {
-    console.WriteLine(L"%ls<instance>", m_padding.c_str());
+    if (name.empty())
+    {
+        m_objects.push(L"instance");
+    }
+    else
+    {
+        m_objects.push(name);
+    }
+
+    console.WriteLine(L"%ls<%ls>", m_padding.c_str(), m_objects.top().c_str());
     Push();
 }
 
@@ -32,7 +41,11 @@ void XmlFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name
 void XmlFormatter::EndObject(_In_ Console& console)
 {
     Pop();
-    console.WriteLine(L"%ls</instance>", m_padding.c_str());
+
+    const auto& name = m_objects.top();
+    console.WriteLine(L"%ls</%ls>", m_padding.c_str(), name.c_str());
+
+    m_objects.pop();
 }
 
 void XmlFormatter::EndArray(_In_ Console& console)

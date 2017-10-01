@@ -105,6 +105,7 @@
     <ClInclude Include="TestInstance.h" />
     <ClInclude Include="TestLegacyProvider.h" />
     <ClInclude Include="TestPackageReference.h" />
+    <ClInclude Include="TestPropertyStore.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandArgsTests.cpp" />

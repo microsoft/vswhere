@@ -267,7 +267,24 @@ public:
         _Outptr_result_maybenull_ ISetupPropertyStore** ppProperties
     )
     {
-        return E_NOTIMPL;
+        if (!ppProperties)
+        {
+            return E_POINTER;
+        }
+
+        auto hr = S_OK;
+        *ppProperties = nullptr;
+
+        if (!m_additionalProperties.empty())
+        {
+            *ppProperties = new (std::nothrow) TestPropertyStore(m_additionalProperties);
+            if (!*ppProperties)
+            {
+                hr = E_OUTOFMEMORY;
+            }
+        }
+
+        return hr;
     }
 
     STDMETHODIMP GetEnginePath(
@@ -275,6 +292,12 @@ public:
     )
     {
         return TryGetBSTR(L"EnginePath", pbstrEnginePath);
+    }
+
+    // Other
+    void AssignAdditionalProperties(_In_ const TestPropertyStore& additionalProperties)
+    {
+        m_additionalProperties = additionalProperties;
     }
 
 private:
@@ -335,5 +358,6 @@ private:
     ISetupPackageReferencePtr m_product;
     std::vector<ISetupPackageReferencePtr> m_packages;
     MapType m_properties;
+    TestPropertyStore m_additionalProperties;
     ULONG m_ulRef;
 };

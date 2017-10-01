@@ -15,17 +15,15 @@ public:
     }
 
     JsonFormatter() :
-        Formatter(),
-        m_arrayStart(false),
-        m_objectStart(false)
+        Formatter()
     {
     }
 
     JsonFormatter(_In_ const JsonFormatter& obj) :
         Formatter(obj),
-        m_arrayStart(obj.m_arrayStart),
-        m_objectStart(obj.m_objectStart),
-        m_padding(obj.m_padding)
+        m_padding(obj.m_padding),
+        m_requiresSep(obj.m_requiresSep),
+        m_objects(obj.m_objects)
     {
     }
 
@@ -36,7 +34,7 @@ public:
 
 protected:
     void StartArray(_In_ Console& console) override;
-    void StartObject(_In_ Console& console) override;
+    void StartObject(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;
     void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
     void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ bool value) override;
     void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ long long value) override;
@@ -61,7 +59,7 @@ private:
         }
     }
 
-    bool m_arrayStart;
-    bool m_objectStart;
     std::wstring m_padding;
+    std::stack<bool> m_requiresSep;
+    std::stack<std::wstring> m_objects;
 };

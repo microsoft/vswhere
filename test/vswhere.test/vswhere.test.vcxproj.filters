@@ -45,6 +45,9 @@
     <ClInclude Include="TestModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TestPropertyStore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
