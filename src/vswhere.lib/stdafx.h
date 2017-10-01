@@ -33,6 +33,7 @@
 #include <iterator>
 #include <map>
 #include <memory>
+#include <stack>
 #include <string>
 #include <vector>
 

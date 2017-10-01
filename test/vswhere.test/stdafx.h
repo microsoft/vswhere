@@ -23,6 +23,7 @@
 #include "TestConsole.h"
 #include "TestEnumInstances.h"
 #include "TestHelper.h"
+#include "TestPropertyStore.h"
 #include "TestInstance.h"
 #include "TestLegacyProvider.h"
 #include "TestPackageReference.h"
