@@ -17,8 +17,7 @@
 
 // Project headers
 #include <stdafx.h>
-#include <VersionInfo.h>
+#include <vswhere.Version.rc>
 
 _COM_SMARTPTR_TYPEDEF(ISetupConfiguration, __uuidof(ISetupConfiguration));
 _COM_SMARTPTR_TYPEDEF(ISetupConfiguration2, __uuidof(ISetupConfiguration2));
-

@@ -13,7 +13,10 @@ param (
 
     [Parameter()]
     [ValidateSet('Unit', 'Integration')]
-    [string[]] $Type = @('Unit', 'Integration')
+    [string[]] $Type = @('Unit', 'Integration'),
+
+    [Parameter()]
+    [switch] $Download = $env:APPVEYOR -eq 'true'
 )
 
 if (-not $Configuration) {
@@ -75,7 +78,13 @@ if ($Type -contains 'Unit')
 if ($Type -contains 'Integration')
 {
     # Run docker integration tests.
-    if (get-command docker-compose -ea SilentlyContinue) {
+    $cmd = (get-command docker-compose -ea SilentlyContinue).Path
+    if (-not $cmd -and $Download) {
+        invoke-webrequest 'https://github.com/docker/compose/releases/download/1.11.2/docker-compose-Windows-x86_64.exe' -outfile "${env:TEMP}\docker-compose.exe"
+        $cmd = "${env:TEMP}\docker-compose.exe"
+    }
+
+    if ($cmd) {
         [string] $path = if ($env:APPVEYOR -eq 'true') {
             $no_tty = '-T'
             resolve-path "$PSScriptRoot\..\docker\appveyor\docker-compose.yml"
@@ -88,7 +97,7 @@ if ($Type -contains 'Integration')
         }
 
         write-verbose "Running tests in '$path'"
-        docker-compose -f "$path" $verbose run $no_tty --rm test -c Invoke-Pester C:\Tests -EnableExit -OutputFile C:\Tests\Results.xml -OutputFormat NUnitXml
+        & $cmd -f "$path" $verbose run $no_tty --rm test -c Invoke-Pester C:\Tests -EnableExit -OutputFile C:\Tests\Results.xml -OutputFormat NUnitXml
         if (-not $?) {
             $Failed = $true
         }
@@ -101,6 +110,8 @@ if ($Type -contains 'Integration')
             $wc = new-object System.Net.WebClient
             $wc.UploadFile($url, $path)
         }
+    } else {
+        write-warning 'Failed to find docker-compose; integration tests will not be performed.'
     }
 
     if ($Failed) {

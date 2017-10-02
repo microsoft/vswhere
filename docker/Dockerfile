@@ -1,7 +1,7 @@
 # Copyright (C) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT license. See LICENSE.txt in the project root for license information.
 
-FROM heaths/vssetup:1.11.2290
+FROM heaths/vssetup:latest
 SHELL ["powershell.exe", "-ExecutionPolicy", "Bypass", "-Command"]
 
 # Download and install Remote Debugger
