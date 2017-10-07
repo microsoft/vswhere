@@ -148,7 +148,7 @@ void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& consol
 
     StartObject(console);
 
-    const auto& specified = args.get_Property();
+    wstring specified = args.get_Property();
     variant_t vtValue;
     bool found = false;
 
@@ -184,7 +184,7 @@ void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& consol
                     wstring name(L"properties");
                     StartObject(console, name);
 
-                    WriteProperties(args, console, store, name);
+                    found = WriteProperties(args, console, store, name);
 
                     EndObject(console);
                 }
@@ -243,6 +243,8 @@ bool Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ Console& cons
 {
     _ASSERTE(pProperties);
 
+    static ci_less less;
+
     LPSAFEARRAY psaNames = NULL;
     auto found = false;
 
@@ -269,14 +271,25 @@ bool Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ Console& cons
     }
 
     SafeArray<BSTR> saNames(psaNames);
-    for (const auto& bstrName : saNames.Elements())
+    
+    auto elems = saNames.Elements();
+    sort(elems.begin(), elems.end(), less);
+
+    for (const auto& bstrName : elems)
     {
         wstring name(bstrName);
         if (specified.empty() || (found = s_comparer(name, specified)))
         {
             variant_t vtValue;
 
-            auto it = find_if(m_properties.begin(), m_properties.end(), bind(Formatter::PropertyEqual, name, _1));
+            auto it = m_properties.end();
+
+            // Don't check if we already handled nested properties as top-level properties.
+            if (prefix.empty())
+            {
+                it = find_if(m_properties.begin(), m_properties.end(), bind(Formatter::PropertyEqual, name, _1));
+            }
+
             if (it == m_properties.end())
             {
                 hr = pProperties->GetValue(bstrName, vtValue.GetAddress());

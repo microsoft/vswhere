@@ -19,29 +19,27 @@ void JsonFormatter::StartObject(_In_ Console& console, _In_opt_ const wstring& n
 {
     if (m_requiresSep.top())
     {
-        console.WriteLine(L",");
+        console.Write(L",");
     }
     else
     {
         // Do not write new line when starting subsequent object immediately after previous object.
         if (m_objects.empty())
         {
-            console.WriteLine();
+            m_requiresSep.top() = true;
         }
-
-        m_requiresSep.top() = true;
     }
 
     m_requiresSep.push(false);
-    m_objects.push(name);
 
-    if (!name.empty())
+    if (name.empty())
     {
-        console.WriteLine(L"%ls\"%ls\": {", m_padding.c_str(), name.c_str());
+        m_objects.push(JsonScope(m_padding, JsonScope::empty, true));
+        m_objects.top().WriteStart(console);
     }
     else
     {
-        console.WriteLine(L"%ls{", m_padding.c_str());
+        m_objects.push(JsonScope(m_padding, name));
     }
 
     Push();
@@ -49,45 +47,22 @@ void JsonFormatter::StartObject(_In_ Console& console, _In_opt_ const wstring& n
 
 void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ const wstring& value)
 {
-    if (m_requiresSep.top())
-    {
-        console.WriteLine(L",");
-    }
-    else
-    {
-        m_requiresSep.top() = true;
-    }
+    StartProperty(console);
 
     auto escaped = replace_all(value, L"\\", L"\\\\");
-    console.Write(L"%ls\"%ls\": \"%ls\"", m_padding.c_str(), name.c_str(), escaped.c_str());
+    console.Write(L"\n%ls\"%ls\": \"%ls\"", m_padding.c_str(), name.c_str(), escaped.c_str());
 }
 
 void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ bool value)
 {
-    if (m_requiresSep.top())
-    {
-        console.WriteLine(L",");
-    }
-    else
-    {
-        m_requiresSep.top() = true;
-    }
-
-    console.Write(L"%ls\"%ls\": %ls", m_padding.c_str(), name.c_str(), (value ? L"true" : L"false"));
+    StartProperty(console);
+    console.Write(L"\n%ls\"%ls\": %ls", m_padding.c_str(), name.c_str(), (value ? L"true" : L"false"));
 }
 
 void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ long long value)
 {
-    if (m_requiresSep.top())
-    {
-        console.WriteLine(L",");
-    }
-    else
-    {
-        m_requiresSep.top() = true;
-    }
-
-    console.Write(L"%ls\"%ls\": %d", m_padding.c_str(), name.c_str(), value);
+    StartProperty(console);
+    console.Write(L"\n%ls\"%ls\": %d", m_padding.c_str(), name.c_str(), value);
 }
 
 void JsonFormatter::EndObject(_In_ Console& console)
@@ -95,9 +70,9 @@ void JsonFormatter::EndObject(_In_ Console& console)
     Pop();
 
     m_requiresSep.pop();
-    m_objects.pop();
 
-    console.Write(L"\n%ls}", m_padding.c_str());
+    m_objects.top().WriteEnd(console);
+    m_objects.pop();
 }
 
 void JsonFormatter::EndArray(_In_ Console& console)
@@ -122,4 +97,18 @@ void JsonFormatter::EndDocument(_In_ Console& console)
 wstring JsonFormatter::FormatDate(_In_ const FILETIME& value)
 {
     return FormatDateISO8601(value);
+}
+
+void JsonFormatter::StartProperty(_In_ Console& console)
+{
+    m_objects.top().WriteStart(console);
+
+    if (m_requiresSep.top())
+    {
+        console.Write(L",");
+    }
+    else
+    {
+        m_requiresSep.top() = true;
+    }
 }

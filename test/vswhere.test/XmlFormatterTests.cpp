@@ -100,8 +100,8 @@ public:
 
     BEGIN_TEST_METHOD_ATTRIBUTE(Writes_With_Properties)
         TEST_WORKITEM(104)
-    END_TEST_METHOD_ATTRIBUTE()
-    TEST_METHOD(Writes_With_Properties)
+        END_TEST_METHOD_ATTRIBUTE()
+        TEST_METHOD(Writes_With_Properties)
     {
         CommandArgs args;
         TestConsole console(args);
@@ -142,8 +142,8 @@ public:
 
     BEGIN_TEST_METHOD_ATTRIBUTE(Writes_All_Properties)
         TEST_WORKITEM(104)
-    END_TEST_METHOD_ATTRIBUTE()
-    TEST_METHOD(Writes_All_Properties)
+        END_TEST_METHOD_ATTRIBUTE()
+        TEST_METHOD(Writes_All_Properties)
     {
         CommandArgs args;
         args.Parse(L"vswhere.exe -property properties");
@@ -183,8 +183,8 @@ public:
 
     BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Specified_Property)
         TEST_WORKITEM(104)
-    END_TEST_METHOD_ATTRIBUTE()
-    TEST_METHOD(Writes_Specified_Property)
+        END_TEST_METHOD_ATTRIBUTE()
+        TEST_METHOD(Writes_Specified_Property)
     {
         // Verify that "/" works as separator since this fits with XML using XPath syntax.
         CommandArgs args;
@@ -224,8 +224,8 @@ public:
 
     BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Specified_Short_Property)
         TEST_WORKITEM(104)
-    END_TEST_METHOD_ATTRIBUTE()
-    TEST_METHOD(Writes_Specified_Short_Property)
+        END_TEST_METHOD_ATTRIBUTE()
+        TEST_METHOD(Writes_Specified_Short_Property)
     {
         CommandArgs args;
         args.Parse(L"vswhere.exe -property nickname");
@@ -319,6 +319,52 @@ public:
             L"      <campaignId>abcd1234</campaignId>\n"
             L"      <nickname>test2</nickname>\n"
             L"    </properties>\n"
+            L"  </instance>\n"
+            L"</instances>\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Missing_Property_Writes_Empty_Object)
+        TEST_WORKITEM(108)
+        END_TEST_METHOD_ATTRIBUTE()
+        TEST_METHOD(Missing_Property_Writes_Empty_Object)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -property missing");
+
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+            { L"InstallDate", L"2017-02-23T01:22:35Z" }
+        };
+
+        TestPropertyStore catalogInfo =
+        {
+            { L"productName", make_tuple(VT_BSTR, L"Test") },
+            { L"productSemanticVersion", make_tuple(VT_BSTR, L"1.0") },
+            { L"productLineVersion", make_tuple(VT_I4, L"2017") },
+        };
+
+        instance.AssignCatalogProperties(catalogInfo);
+
+        TestPropertyStore properties =
+        {
+            { L"campaignId", make_tuple(VT_BSTR, L"abcd1234") },
+            { L"nickname", make_tuple(VT_BSTR, L"test") },
+        };
+
+        instance.AssignAdditionalProperties(properties);
+
+        XmlFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"<?xml version=\"1.0\"?>\n"
+            L"<instances>\n"
+            L"  <instance>\n"
             L"  </instance>\n"
             L"</instances>\n";
 

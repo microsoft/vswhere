@@ -57,5 +57,5 @@ private:
     }
 
     std::wstring m_padding;
-    std::stack<std::wstring> m_objects;
+    std::stack<XmlScope> m_objects;
 };

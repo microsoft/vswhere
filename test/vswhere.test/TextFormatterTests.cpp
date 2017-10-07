@@ -311,4 +311,46 @@ public:
 
         Assert::AreEqual(expected, console);
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Missing_Property_Writes_Empty_Object)
+        TEST_WORKITEM(108)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Missing_Property_Writes_Empty_Object)
+    {
+        // Verify that "_" works as separator since this is output by the TextFormatter.
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -property missing");
+
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+            { L"InstallDate", L"2017-02-23T01:22:35Z" }
+        };
+
+        TestPropertyStore catalogInfo =
+        {
+            { L"productName", make_tuple(VT_BSTR, L"Test") },
+            { L"productSemanticVersion", make_tuple(VT_BSTR, L"1.0") },
+            { L"productLineVersion", make_tuple(VT_I4, L"2017") },
+        };
+
+        instance.AssignCatalogProperties(catalogInfo);
+
+        TestPropertyStore properties =
+        {
+            { L"campaignId", make_tuple(VT_BSTR, L"abcd1234") },
+            { L"nickname", make_tuple(VT_BSTR, L"test") },
+        };
+
+        instance.AssignAdditionalProperties(properties);
+
+        TextFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected = L"";
+
+        Assert::AreEqual(expected, console);
+    }
 };
