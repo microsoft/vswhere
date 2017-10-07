@@ -8,6 +8,8 @@
 using namespace std;
 using namespace std::placeholders;
 
+const std::wstring Formatter::empty_wstring;
+
 Formatter::Formatter()
 {
     m_properties =
@@ -17,6 +19,8 @@ Formatter::Formatter()
         { L"installationName", bind(&Formatter::GetInstallationName, this, _1, _2) },
         { L"installationPath", bind(&Formatter::GetInstallationPath, this, _1, _2) },
         { L"installationVersion", bind(&Formatter::GetInstallationVersion, this, _1, _2) },
+        { L"productId", bind(&Formatter::GetProductId, this, _1, _2) },
+        { L"productPath", bind(&Formatter::GetProductPath, this, _1, _2) },
         { L"isPrerelease", bind(&Formatter::GetIsPrerelease, this, _1, _2) },
         { L"displayName", bind(&Formatter::GetDisplayName, this, _1, _2) },
         { L"description", bind(&Formatter::GetDescription, this, _1, _2) },
@@ -31,6 +35,7 @@ Formatter::FormatterMap Formatter::Formatters =
     { L"xml", make_tuple(IDS_FORMAT_XML, XmlFormatter::Create) },
 };
 
+const wstring Formatter::s_delims(L"./_");
 ci_equal Formatter::s_comparer;
 
 std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
@@ -111,6 +116,7 @@ wstring Formatter::FormatDate(_In_ const FILETIME& value)
         throw win32_error();
     }
 
+    date.reserve(cch);
     date.resize(cch - 1);
     cch = ::GetDateFormatW(LOCALE_USER_DEFAULT, DATE_SHORTDATE, &st, NULL, const_cast<LPWSTR>(date.c_str()), cch);
     if (!cch)
@@ -125,7 +131,8 @@ wstring Formatter::FormatDate(_In_ const FILETIME& value)
         throw win32_error();
     }
 
-    time.reserve(cch - 1);
+    time.reserve(cch);
+    time.resize(cch - 1);
     cch = ::GetTimeFormatW(LOCALE_USER_DEFAULT, 0, &st, NULL, const_cast<LPWSTR>(time.c_str()), cch);
     if (!cch)
     {
@@ -161,7 +168,28 @@ void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& consol
 
     if (specified.empty() || !found)
     {
-        WriteProperties(args, console, pInstance);
+        found = WriteProperties(args, console, pInstance);
+        if (specified.empty() || !found)
+        {
+            ISetupInstance2Ptr instance2;
+
+            auto hr = pInstance->QueryInterface(&instance2);
+            if (SUCCEEDED(hr))
+            {
+                ISetupPropertyStorePtr store;
+
+                hr = instance2->GetProperties(&store);
+                if (SUCCEEDED(hr) && !!store)
+                {
+                    wstring name(L"properties");
+                    StartObject(console, name);
+
+                    WriteProperties(args, console, store, name);
+
+                    EndObject(console);
+                }
+            }
+        }
     }
 
     EndObject(console);
@@ -191,12 +219,11 @@ void Formatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _
     }
 }
 
-void Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance)
+bool Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance)
 {
     _ASSERTE(pInstance);
 
     ISetupPropertyStorePtr store;
-    LPSAFEARRAY psaNames = NULL;
 
     auto hr = pInstance->QueryInterface(&store);
     if (FAILED(hr))
@@ -206,36 +233,67 @@ void Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ Console& cons
             throw win32_error(hr);
         }
 
-        return;
+        return false;
     }
 
-    hr = store->GetNames(&psaNames);
+    return WriteProperties(args, console, store);
+}
+
+bool Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupPropertyStore* pProperties, _In_opt_ const wstring& prefix)
+{
+    _ASSERTE(pProperties);
+
+    LPSAFEARRAY psaNames = NULL;
+    auto found = false;
+
+    auto hr = pProperties->GetNames(&psaNames);
     if (FAILED(hr))
     {
-        return;
+        return false;
     }
 
-    const auto& specified = args.get_Property();
-    SafeArray<BSTR> saNames(psaNames);
+    // Trim optional nested object name from specified property if matching current scope.
+    wstring specified = args.get_Property();
+    if (prefix.size() > 0)
+    {
+        auto pos = specified.find_first_of(s_delims);
+        if (pos != wstring::npos && (pos + 1) < specified.size() && s_comparer(prefix, specified.substr(0, pos)))
+        {
+            specified = specified.substr(pos + 1);
+        }
+        else if (s_comparer(prefix, specified))
+        {
+            // If the current nested object name is specified, clear the prefix to show the whole nested object.
+            specified.clear();
+        }
+    }
 
+    SafeArray<BSTR> saNames(psaNames);
     for (const auto& bstrName : saNames.Elements())
     {
         wstring name(bstrName);
-        if (specified.empty() || s_comparer(name, specified))
+        if (specified.empty() || (found = s_comparer(name, specified)))
         {
             variant_t vtValue;
 
             auto it = find_if(m_properties.begin(), m_properties.end(), bind(Formatter::PropertyEqual, name, _1));
             if (it == m_properties.end())
             {
-                hr = store->GetValue(bstrName, vtValue.GetAddress());
+                hr = pProperties->GetValue(bstrName, vtValue.GetAddress());
                 if (SUCCEEDED(hr))
                 {
                     WriteProperty(console, name, vtValue);
                 }
             }
+
+            if (found)
+            {
+                return true;
+            }
         }
     }
+
+    return false;
 }
 
 bool Formatter::PropertyEqual(_In_ const std::wstring& name, _In_ PropertyArray::const_reference property)
@@ -303,6 +361,58 @@ HRESULT Formatter::GetInstallationPath(_In_ ISetupInstance* pInstance, _Out_ VAR
 HRESULT Formatter::GetInstallationVersion(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallationVersion)
 {
     return GetStringProperty(bind(&ISetupInstance::GetInstallationVersion, pInstance, _1), pvtInstallationVersion);
+}
+
+HRESULT Formatter::GetProductId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtProductId)
+{
+    ISetupInstance2Ptr instance;
+
+    auto hr = pInstance->QueryInterface(&instance);
+    if (SUCCEEDED(hr))
+    {
+        ISetupPackageReferencePtr reference;
+
+        hr = instance->GetProduct(&reference);
+        if (SUCCEEDED(hr))
+        {
+            variant_t vt;
+
+            hr = reference->GetId(&vt.bstrVal);
+            if (SUCCEEDED(hr))
+            {
+                vt.vt = VT_BSTR;
+                *pvtProductId = vt.Detach();
+            }
+        }
+    }
+
+    return hr;
+}
+
+HRESULT Formatter::GetProductPath(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtProductPath)
+{
+    ISetupInstance2Ptr instance;
+
+    auto hr = pInstance->QueryInterface(&instance);
+    if (SUCCEEDED(hr))
+    {
+        bstr_t bstrProductPath;
+
+        hr = instance->GetProductPath(bstrProductPath.GetAddress());
+        if (SUCCEEDED(hr))
+        {
+            variant_t vt;
+
+            hr = instance->ResolvePath(bstrProductPath, &vt.bstrVal);
+            if (SUCCEEDED(hr))
+            {
+                vt.vt = VT_BSTR;
+                *pvtProductPath = vt.Detach();
+            }
+        }
+    }
+
+    return hr;
 }
 
 HRESULT Formatter::GetIsPrerelease(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsPrerelease)

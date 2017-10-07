@@ -14,6 +14,7 @@
 #include <windows.h>
 
 // STL headers
+#include <filesystem>
 #include <unordered_map>
 
 // Project headers
@@ -22,6 +23,7 @@
 #include "TestConsole.h"
 #include "TestEnumInstances.h"
 #include "TestHelper.h"
+#include "TestPropertyStore.h"
 #include "TestInstance.h"
 #include "TestLegacyProvider.h"
 #include "TestPackageReference.h"

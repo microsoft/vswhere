@@ -21,7 +21,8 @@ public:
 
     XmlFormatter(_In_ const XmlFormatter& obj) :
         Formatter(obj),
-        m_padding(obj.m_padding)
+        m_padding(obj.m_padding),
+        m_objects(obj.m_objects)
     {
     }
 
@@ -33,7 +34,7 @@ public:
 protected:
     void StartDocument(_In_ Console& console) override;
     void StartArray(_In_ Console& console) override;
-    void StartObject(_In_ Console& console) override;
+    void StartObject(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;
     void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
     void EndObject(_In_ Console& console) override;
     void EndArray(_In_ Console& console) override;
@@ -56,4 +57,5 @@ private:
     }
 
     std::wstring m_padding;
+    std::stack<std::wstring> m_objects;
 };

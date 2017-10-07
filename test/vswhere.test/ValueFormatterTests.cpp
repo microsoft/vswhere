@@ -98,4 +98,191 @@ public:
 
         Assert::AreEqual(expected, console);
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_With_Properties)
+        TEST_WORKITEM(104)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_With_Properties)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+            { L"InstallDate", L"2017-02-23T01:22:35Z" }
+        };
+
+        TestPropertyStore properties =
+        {
+            { L"campaignId", make_tuple(VT_BSTR, L"abcd1234") },
+            { L"nickname", make_tuple(VT_BSTR, L"test") },
+        };
+
+        instance.AssignAdditionalProperties(properties);
+
+        ValueFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"a1b2c3\n"
+            L"2/22/2017 6:22:35 PM\n"
+            L"test\n"
+            L"abcd1234\n"
+            L"test\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_All_Properties)
+        TEST_WORKITEM(104)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_All_Properties)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -property properties");
+
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+            { L"InstallDate", L"2017-02-23T01:22:35Z" }
+        };
+
+        TestPropertyStore properties =
+        {
+            { L"campaignId", make_tuple(VT_BSTR, L"abcd1234") },
+            { L"nickname", make_tuple(VT_BSTR, L"test") },
+        };
+
+        instance.AssignAdditionalProperties(properties);
+
+        ValueFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"abcd1234\n"
+            L"test\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Specified_Property)
+        TEST_WORKITEM(104)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Specified_Property)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -property properties.nickname");
+
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+            { L"InstallDate", L"2017-02-23T01:22:35Z" }
+        };
+
+        TestPropertyStore properties =
+        {
+            { L"campaignId", make_tuple(VT_BSTR, L"abcd1234") },
+            { L"nickname", make_tuple(VT_BSTR, L"test") },
+        };
+
+        instance.AssignAdditionalProperties(properties);
+
+        ValueFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"test\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Specified_Short_Property)
+        TEST_WORKITEM(104)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Specified_Short_Property)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -property nickname");
+
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+            { L"InstallDate", L"2017-02-23T01:22:35Z" }
+        };
+
+        TestPropertyStore properties =
+        {
+            { L"campaignId", make_tuple(VT_BSTR, L"abcd1234") },
+            { L"nickname", make_tuple(VT_BSTR, L"test") },
+        };
+
+        instance.AssignAdditionalProperties(properties);
+
+        ValueFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"test\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Multiple_With_Properties)
+        TEST_WORKITEM(104)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Multiple_With_Properties)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+
+        TestInstance instance1 =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+        };
+        instance1.AssignAdditionalProperties(TestPropertyStore
+        {
+            { L"campaignId", make_tuple(VT_BSTR, L"abcd1234") },
+            { L"nickname", make_tuple(VT_BSTR, L"test1") },
+        });
+
+        TestInstance instance2 =
+        {
+            { L"InstanceId", L"b1c2d3" },
+            { L"InstallationName", L"test" },
+        };
+        instance2.AssignAdditionalProperties(TestPropertyStore
+        {
+            { L"campaignId", make_tuple(VT_BSTR, L"abcd1234") },
+            { L"nickname", make_tuple(VT_BSTR, L"test2") },
+        });
+
+        vector<ISetupInstancePtr> instances =
+        {
+            &instance1,
+            &instance2,
+        };
+
+        ValueFormatter sut;
+        sut.Write(args, console, instances);
+
+        auto expected =
+            L"a1b2c3\n"
+            L"test\n"
+            L"abcd1234\n"
+            L"test1\n"
+            L"b1c2d3\n"
+            L"test\n"
+            L"abcd1234\n"
+            L"test2\n";
+
+        Assert::AreEqual(expected, console);
+    }
 };
