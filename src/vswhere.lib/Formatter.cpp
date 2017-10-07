@@ -169,6 +169,31 @@ void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& consol
     if (specified.empty() || !found)
     {
         found = WriteProperties(args, console, pInstance);
+
+        // Output catalog information.
+        if (specified.empty() || !found)
+        {
+            ISetupInstanceCatalogPtr instanceCatalog;
+
+            auto hr = pInstance->QueryInterface(&instanceCatalog);
+            if (SUCCEEDED(hr))
+            {
+                ISetupPropertyStorePtr store;
+
+                hr = instanceCatalog->GetCatalogInfo(&store);
+                if (SUCCEEDED(hr) && !!store)
+                {
+                    wstring name(L"catalog");
+                    StartObject(console, name);
+
+                    found = WriteProperties(args, console, store, name);
+
+                    EndObject(console);
+                }
+            }
+        }
+
+        // Output custom properties.
         if (specified.empty() || !found)
         {
             ISetupInstance2Ptr instance2;

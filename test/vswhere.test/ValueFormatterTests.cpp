@@ -326,4 +326,54 @@ public:
 
         Assert::AreEqual(expected, console);
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_All)
+        TEST_WORKITEM(109)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_All)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+            { L"InstallDate", L"2017-02-23T01:22:35Z" }
+        };
+
+        TestPropertyStore catalogInfo =
+        {
+            { L"productName", make_tuple(VT_BSTR, L"Test") },
+            { L"productSemanticVersion", make_tuple(VT_BSTR, L"1.0") },
+            { L"productLineVersion", make_tuple(VT_I4, L"2017") },
+        };
+
+        instance.AssignCatalogProperties(catalogInfo);
+
+        TestPropertyStore properties =
+        {
+            { L"campaignId", make_tuple(VT_BSTR, L"abcd1234") },
+            { L"nickname", make_tuple(VT_BSTR, L"test") },
+        };
+
+        instance.AssignAdditionalProperties(properties);
+
+        ValueFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"a1b2c3\n"
+            L"2/22/2017 6:22:35 PM\n"
+            L"test\n"
+            L"0\n"
+            L"2017\n"
+            L"Test\n"
+            L"1.0\n"
+            L"abcd1234\n"
+            L"test\n";
+
+        Assert::AreEqual(expected, console);
+    }
 };
