@@ -31,8 +31,10 @@
 #include <codecvt>
 #include <functional>
 #include <iterator>
+#include <iostream>
 #include <map>
 #include <memory>
+#include <sstream>
 #include <stack>
 #include <string>
 #include <vector>
@@ -58,6 +60,8 @@ _COM_SMARTPTR_TYPEDEF(ISetupInstanceCatalog, __uuidof(ISetupInstanceCatalog));
 #include "LegacyProvider.h"
 #include "LegacyInstance.h"
 #include "InstanceSelector.h"
+#include "Scope.h"
+#include "JsonScope.h"
 #include "JsonFormatter.h"
 #include "Module.h"
 #include "resource.h"
@@ -65,4 +69,5 @@ _COM_SMARTPTR_TYPEDEF(ISetupInstanceCatalog, __uuidof(ISetupInstanceCatalog));
 #include "SafeArray.h"
 #include "TextFormatter.h"
 #include "ValueFormatter.h"
+#include "XmlScope.h"
 #include "XmlFormatter.h"

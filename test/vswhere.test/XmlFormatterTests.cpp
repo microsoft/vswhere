@@ -264,8 +264,8 @@ public:
 
     BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Multiple_With_Properties)
         TEST_WORKITEM(104)
-        END_TEST_METHOD_ATTRIBUTE()
-        TEST_METHOD(Writes_Multiple_With_Properties)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Multiple_With_Properties)
     {
         CommandArgs args;
         TestConsole console(args);
@@ -318,6 +318,111 @@ public:
             L"    <properties>\n"
             L"      <campaignId>abcd1234</campaignId>\n"
             L"      <nickname>test2</nickname>\n"
+            L"    </properties>\n"
+            L"  </instance>\n"
+            L"</instances>\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Missing_Property_Writes_Empty_Object)
+        TEST_WORKITEM(108)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Missing_Property_Writes_Empty_Object)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -property missing");
+
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+            { L"InstallDate", L"2017-02-23T01:22:35Z" }
+        };
+
+        TestPropertyStore catalogInfo =
+        {
+            { L"productName", make_tuple(VT_BSTR, L"Test") },
+            { L"productSemanticVersion", make_tuple(VT_BSTR, L"1.0") },
+            { L"productLineVersion", make_tuple(VT_I4, L"2017") },
+        };
+
+        instance.AssignCatalogProperties(catalogInfo);
+
+        TestPropertyStore properties =
+        {
+            { L"campaignId", make_tuple(VT_BSTR, L"abcd1234") },
+            { L"nickname", make_tuple(VT_BSTR, L"test") },
+        };
+
+        instance.AssignAdditionalProperties(properties);
+
+        XmlFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"<?xml version=\"1.0\"?>\n"
+            L"<instances>\n"
+            L"  <instance>\n"
+            L"  </instance>\n"
+            L"</instances>\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_All)
+        TEST_WORKITEM(109)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_All)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe");
+
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+            { L"InstallDate", L"2017-02-23T01:22:35Z" }
+        };
+
+        TestPropertyStore catalogInfo =
+        {
+            { L"productName", make_tuple(VT_BSTR, L"Test") },
+            { L"productSemanticVersion", make_tuple(VT_BSTR, L"1.0") },
+            { L"productLineVersion", make_tuple(VT_I4, L"2017") },
+        };
+
+        instance.AssignCatalogProperties(catalogInfo);
+
+        TestPropertyStore properties =
+        {
+            { L"campaignId", make_tuple(VT_BSTR, L"abcd1234") },
+            { L"nickname", make_tuple(VT_BSTR, L"test") },
+        };
+
+        instance.AssignAdditionalProperties(properties);
+
+        XmlFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"<?xml version=\"1.0\"?>\n"
+            L"<instances>\n"
+            L"  <instance>\n"
+            L"    <instanceId>a1b2c3</instanceId>\n"
+            L"    <installDate>2017-02-23T01:22:35Z</installDate>\n"
+            L"    <installationName>test</installationName>\n"
+            L"    <isPrerelease>0</isPrerelease>\n"
+            L"    <catalog>\n"
+            L"      <productLineVersion>2017</productLineVersion>\n"
+            L"      <productName>Test</productName>\n"
+            L"      <productSemanticVersion>1.0</productSemanticVersion>\n"
+            L"    </catalog>\n"
+            L"    <properties>\n"
+            L"      <campaignId>abcd1234</campaignId>\n"
+            L"      <nickname>test</nickname>\n"
             L"    </properties>\n"
             L"  </instance>\n"
             L"</instances>\n";

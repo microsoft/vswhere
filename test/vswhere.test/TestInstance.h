@@ -6,7 +6,8 @@
 #pragma once
 
 class TestInstance :
-    public ISetupInstance2
+    public ISetupInstance2,
+    public ISetupInstanceCatalog
 {
 public:
     typedef ISetupPackageReference* ElementType;
@@ -57,10 +58,15 @@ public:
             AddRef();
             *ppvObject = static_cast<ISetupInstance2*>(this);
         }
+        else if (riid == __uuidof(ISetupInstanceCatalog) && !m_catalogProperties.empty())
+        {
+            AddRef();
+            *ppvObject = static_cast<ISetupInstanceCatalog*>(this);
+        }
         else if (riid == __uuidof(IUnknown))
         {
             AddRef();
-            *ppvObject = static_cast<IUnknown*>(this);
+            *ppvObject = static_cast<IUnknown*>(static_cast<ISetupInstance2*>(this));
         }
         else
         {
@@ -294,7 +300,60 @@ public:
         return TryGetBSTR(L"EnginePath", pbstrEnginePath);
     }
 
+    // ISetupInstanceCatalog
+    STDMETHODIMP GetCatalogInfo(
+        _Out_ ISetupPropertyStore** ppCatalogInfo
+    )
+    {
+        if (!ppCatalogInfo)
+        {
+            return E_POINTER;
+        }
+
+        *ppCatalogInfo = nullptr;
+
+        if (m_catalogProperties.empty())
+        {
+            return E_NOTFOUND;
+        }
+        else
+        {
+            *ppCatalogInfo = new (std::nothrow) TestPropertyStore(m_catalogProperties);
+            if (!*ppCatalogInfo)
+            {
+                return E_OUTOFMEMORY;
+            }
+
+            return S_OK;
+        }
+    }
+
+    STDMETHODIMP IsPrerelease(
+        _Out_ VARIANT_BOOL* pfIsPrerelease
+    )
+    {
+        if (!pfIsPrerelease)
+        {
+            return E_POINTER;
+        }
+
+        *pfIsPrerelease = VARIANT_FALSE;
+
+        variant_t vtProductSemanticVersion;
+        if (SUCCEEDED(m_catalogProperties.GetValue(L"productSemanticVersion", &vtProductSemanticVersion)))
+        {
+            *pfIsPrerelease = ::wcschr(vtProductSemanticVersion.bstrVal, L'-') ? VARIANT_TRUE : VARIANT_FALSE;
+        }
+
+        return S_OK;
+    }
+
     // Other
+    void AssignCatalogProperties(_In_ const TestPropertyStore& catalogProperties)
+    {
+        m_catalogProperties = catalogProperties;
+    }
+
     void AssignAdditionalProperties(_In_ const TestPropertyStore& additionalProperties)
     {
         m_additionalProperties = additionalProperties;
@@ -358,6 +417,7 @@ private:
     ISetupPackageReferencePtr m_product;
     std::vector<ISetupPackageReferencePtr> m_packages;
     MapType m_properties;
+    TestPropertyStore m_catalogProperties;
     TestPropertyStore m_additionalProperties;
     ULONG m_ulRef;
 };

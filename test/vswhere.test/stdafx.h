@@ -12,6 +12,7 @@
 
 // Windows headers
 #include <windows.h>
+#include <locale.h>
 
 // STL headers
 #include <filesystem>
