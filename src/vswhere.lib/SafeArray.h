@@ -30,7 +30,7 @@ public:
 
     const std::vector<_Element>& Elements() const
     {
-        return m_interfaces;
+        return m_elements;
     }
 
 private:
@@ -47,7 +47,7 @@ private:
             auto pvData = (_Element*)m_psa->pvData;
             auto celt = m_psa->rgsabound[0].cElements;
 
-            m_interfaces.assign(pvData, pvData + celt);
+            m_elements.assign(pvData, pvData + celt);
         }
     }
 
@@ -68,5 +68,5 @@ private:
     }
 
     LPSAFEARRAY m_psa;
-    std::vector<_Element> m_interfaces;
+    std::vector<_Element> m_elements;
 };

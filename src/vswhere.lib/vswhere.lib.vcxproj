@@ -107,18 +107,21 @@
     <ClInclude Include="ILegacyProvider.h" />
     <ClInclude Include="InstanceSelector.h" />
     <ClInclude Include="JsonFormatter.h" />
+    <ClInclude Include="JsonScope.h" />
     <ClInclude Include="LegacyInstance.h" />
     <ClInclude Include="LegacyProvider.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SafeArray.h" />
+    <ClInclude Include="Scope.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TextFormatter.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="ValueFormatter.h" />
     <ClInclude Include="XmlFormatter.h" />
+    <ClInclude Include="XmlScope.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Console.cpp" />
@@ -128,6 +131,7 @@
     <ClCompile Include="Formatter.cpp" />
     <ClCompile Include="InstanceSelector.cpp" />
     <ClCompile Include="JsonFormatter.cpp" />
+    <ClCompile Include="JsonScope.cpp" />
     <ClCompile Include="LegacyInstance.cpp" />
     <ClCompile Include="LegacyProvider.cpp" />
     <ClCompile Include="Module.cpp" />

@@ -22,19 +22,20 @@ void XmlFormatter::StartObject(_In_ Console& console, _In_opt_ const wstring& na
 {
     if (name.empty())
     {
-        m_objects.push(L"instance");
+        m_objects.push(XmlScope(m_padding, L"instance", true));
+        m_objects.top().WriteStart(console);
     }
     else
     {
-        m_objects.push(name);
+        m_objects.push(XmlScope(m_padding, name));
     }
 
-    console.WriteLine(L"%ls<%ls>", m_padding.c_str(), m_objects.top().c_str());
     Push();
 }
 
 void XmlFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ const wstring& value)
 {
+    m_objects.top().WriteStart(console);
     console.WriteLine(L"%1$ls<%2$ls>%3$ls</%2$ls>", m_padding.c_str(), name.c_str(), value.c_str());
 }
 
@@ -42,9 +43,7 @@ void XmlFormatter::EndObject(_In_ Console& console)
 {
     Pop();
 
-    const auto& name = m_objects.top();
-    console.WriteLine(L"%ls</%ls>", m_padding.c_str(), name.c_str());
-
+    m_objects.top().WriteEnd(console);
     m_objects.pop();
 }
 

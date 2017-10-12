@@ -178,6 +178,18 @@ private:
                 return S_OK;
             }
 
+            case VT_I1:
+            case VT_I2:
+            case VT_I4:
+            {
+                auto loc = _wcreate_locale(LC_CTYPE, L"C");
+                pvtValue->intVal = ::_wtoi_l(value.c_str(), loc);
+                pvtValue->vt = vt;
+                _free_locale(loc);
+
+                return S_OK;
+            }
+
             default:
                 return E_NOTSUPPORTED;
             }

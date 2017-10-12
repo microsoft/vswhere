@@ -59,7 +59,9 @@ private:
         }
     }
 
+    void StartProperty(_In_ Console& console);
+
     std::wstring m_padding;
     std::stack<bool> m_requiresSep;
-    std::stack<std::wstring> m_objects;
+    std::stack<JsonScope> m_objects;
 };
