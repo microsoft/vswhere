@@ -65,6 +65,8 @@ if ($Commit) {
 
 if ($Name) {
     $values.name = $Name
+} else {
+    $values.name = $Tag
 }
 
 if ($Description) {

@@ -35,7 +35,21 @@ test_script:
   - tools\test.cmd -v
 
 artifacts:
+  - path: bin\$(configuration)\vswhere.exe
+    name: vswhere
+
   - path: bin\$(configuration)
     type: zip
+
+deploy:
+  - provider: GitHub
+    auth_token:
+      secure: 5K94QY8dHKlbjvlBpQaXwAkmDf+LQE3g5WlU9snnNMjDjf0UT4xDoOBCLWcmwZOm
+    artifact: vswhere
+    prerelease: true
+    on:
+      # Signed releases will come from VSTS on master
+      branch: develop
+      configuration: Release
 
 # vim: set ai et st=2 sts=2 sw=2:
