@@ -210,7 +210,7 @@ bool InstanceSelector::IsProductMatch(_In_ ISetupInstance2* pInstance) const
     ISetupPackageReferencePtr product;
 
     auto hr = pInstance->GetProduct(&product);
-    if (FAILED(hr))
+    if (FAILED(hr) || !product)
     {
         // Should always have a product so no match.
         return false;
