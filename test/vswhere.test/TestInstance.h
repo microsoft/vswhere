@@ -232,20 +232,15 @@ public:
         _Outptr_result_maybenull_ ISetupPackageReference** ppPackage
     )
     {
-        if (m_product)
-        {
-            *ppPackage = m_product;
-            return S_OK;
-        }
-
-        return E_NOTFOUND;
+        *ppPackage = m_product;
+        return S_OK;
     }
 
     STDMETHODIMP GetProductPath(
         _Outptr_result_maybenull_ BSTR* pbstrProductPath
     )
     {
-        return TryGetBSTR(L"ProductPath", pbstrProductPath);
+        return TryGetBSTR(L"ProductPath", pbstrProductPath, TRUE);
     }
 
     STDMETHODIMP GetErrors(
@@ -297,7 +292,7 @@ public:
         _Outptr_result_maybenull_ BSTR* pbstrEnginePath
     )
     {
-        return TryGetBSTR(L"EnginePath", pbstrEnginePath);
+        return TryGetBSTR(L"EnginePath", pbstrEnginePath, TRUE);
     }
 
     // ISetupInstanceCatalog
@@ -372,7 +367,7 @@ private:
         return E_NOTFOUND;
     }
 
-    STDMETHODIMP TryGetBSTR(_In_ LPCWSTR wszName, _Out_ BSTR* pbstrValue)
+    STDMETHODIMP TryGetBSTR(_In_ LPCWSTR wszName, _Out_ BSTR* pbstrValue, _In_opt_ BOOL fAllowNull = FALSE)
     {
         if (!pbstrValue)
         {
@@ -389,6 +384,11 @@ private:
             {
                 return E_OUTOFMEMORY;
             }
+        }
+        else if (fAllowNull && E_NOTFOUND == hr)
+        {
+            *pbstrValue = NULL;
+            return S_OK;
         }
 
         return hr;
