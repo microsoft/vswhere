@@ -411,7 +411,7 @@ HRESULT Formatter::GetProductId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* p
         ISetupPackageReferencePtr reference;
 
         hr = instance->GetProduct(&reference);
-        if (SUCCEEDED(hr))
+        if (SUCCEEDED(hr) && !!reference)
         {
             variant_t vt;
 
@@ -437,7 +437,7 @@ HRESULT Formatter::GetProductPath(_In_ ISetupInstance* pInstance, _Out_ VARIANT*
         bstr_t bstrProductPath;
 
         hr = instance->GetProductPath(bstrProductPath.GetAddress());
-        if (SUCCEEDED(hr))
+        if (SUCCEEDED(hr) && !!bstrProductPath)
         {
             variant_t vt;
 
