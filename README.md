@@ -1,6 +1,13 @@
 Visual Studio Locator
 =====================
 
+[![build status: master](https://ci.appveyor.com/api/projects/status/yy3g7rggm2sx4nam/branch/master?svg=true)](https://ci.appveyor.com/project/heaths/vswhere/branch/master)
+![build status: master](https://devdiv.visualstudio.com/_apis/public/build/definitions/0bdbc590-a062-4c3f-b0f6-9383f67865ee/5581/badge)
+[![github release](https://img.shields.io/github/release/Microsoft/vswhere.svg?logo=github)](https://github.com/Microsoft/vswhere/releases/latest)
+[![github releases: all](https://img.shields.io/github/downloads/Microsoft/vswhere/total.svg?logo=github&label=github)](https://github.com/Microsoft/vswhere/releases)
+[![chocolatey: all](https://img.shields.io/chocolatey/dt/vswhere.svg)](https://chocolatey.org/packages/vswhere)
+[![nuget: all](https://img.shields.io/nuget/dt/vswhere.svg?label=nuget)](https://nuget.org/packages/vswhere)
+
 Over the years Visual Studio could be discovered using registry keys, but with recent changes to the deployment and extensibility models a new method is needed to discover possibly more than once installed instance. These changes facilitate a smaller, faster default install complimented by on-demand install of other workloads and components.
 
 _vswhere_ is designed to be a redistributable, single-file executable that can be used in build or deployment scripts to find where Visual Studio - or other products in the Visual Studio family - is located. For example, if you know the relative path to MSBuild, you can find the root of the Visual Studio install and combine the paths to find what you need.
@@ -34,12 +41,3 @@ To file issues or suggestions, please use the [Issues](https://github.com/Micros
 ## License
 
 This project is licensed under the [MIT license](LICENSE.txt).
-
-## Status
-
-This project uses a Git flow model releasing from the `master` branch with development based on and stabilized in the `develop` branch.
-
-Branch  | AppVeyor | VSTS
-------  | ------ | -------
-master  | [![build status: master](https://ci.appveyor.com/api/projects/status/yy3g7rggm2sx4nam/branch/master?svg=true)](https://ci.appveyor.com/project/heaths/vswhere/branch/master) | ![build status: master](https://devdiv.visualstudio.com/_apis/public/build/definitions/0bdbc590-a062-4c3f-b0f6-9383f67865ee/5581/badge)
-develop | [![build status: develop](https://ci.appveyor.com/api/projects/status/yy3g7rggm2sx4nam/branch/develop?svg=true)](https://ci.appveyor.com/project/heaths/vswhere/branch/develop)
