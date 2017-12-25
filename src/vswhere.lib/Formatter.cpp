@@ -94,23 +94,23 @@ wstring Formatter::FormatDateISO8601(_In_ const FILETIME& value)
 
 wstring Formatter::FormatDate(_In_ const FILETIME& value)
 {
-    FILETIME local = {};
-    SYSTEMTIME st = {};
+    SYSTEMTIME stUniversal = {};
+    SYSTEMTIME stLocal = {};
     wstring date;
     wstring time;
 
-    if (!::FileTimeToLocalFileTime(&value, &local))
+    if (!::FileTimeToSystemTime(&value, &stUniversal))
     {
         throw win32_error();
     }
 
-    if (!::FileTimeToSystemTime(&local, &st))
+    if (!::SystemTimeToTzSpecificLocalTime(NULL, &stUniversal, &stLocal))
     {
         throw win32_error();
     }
 
     // Format date
-    auto cch = ::GetDateFormatW(LOCALE_USER_DEFAULT, DATE_SHORTDATE, &st, NULL, NULL, 0);
+    auto cch = ::GetDateFormatW(LOCALE_USER_DEFAULT, DATE_SHORTDATE, &stLocal, NULL, NULL, 0);
     if (!cch)
     {
         throw win32_error();
@@ -118,14 +118,14 @@ wstring Formatter::FormatDate(_In_ const FILETIME& value)
 
     date.reserve(cch);
     date.resize(cch - 1);
-    cch = ::GetDateFormatW(LOCALE_USER_DEFAULT, DATE_SHORTDATE, &st, NULL, const_cast<LPWSTR>(date.c_str()), cch);
+    cch = ::GetDateFormatW(LOCALE_USER_DEFAULT, DATE_SHORTDATE, &stLocal, NULL, const_cast<LPWSTR>(date.c_str()), cch);
     if (!cch)
     {
         throw win32_error();
     }
 
     // Format time
-    cch = ::GetTimeFormatW(LOCALE_USER_DEFAULT, 0, &st, NULL, NULL, 0);
+    cch = ::GetTimeFormatW(LOCALE_USER_DEFAULT, 0, &stLocal, NULL, NULL, 0);
     if (!cch)
     {
         throw win32_error();
@@ -133,7 +133,7 @@ wstring Formatter::FormatDate(_In_ const FILETIME& value)
 
     time.reserve(cch);
     time.resize(cch - 1);
-    cch = ::GetTimeFormatW(LOCALE_USER_DEFAULT, 0, &st, NULL, const_cast<LPWSTR>(time.c_str()), cch);
+    cch = ::GetTimeFormatW(LOCALE_USER_DEFAULT, 0, &stLocal, NULL, const_cast<LPWSTR>(time.c_str()), cch);
     if (!cch)
     {
         throw win32_error();

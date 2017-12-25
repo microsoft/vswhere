@@ -126,7 +126,7 @@ public:
 
         auto expected =
             L"a1b2c3\n"
-            L"2/22/2017 6:22:35 PM\n"
+            L"2/22/2017 5:22:35 PM\n"
             L"test\n"
             L"abcd1234\n"
             L"test\n";
@@ -365,7 +365,7 @@ public:
 
         auto expected =
             L"a1b2c3\n"
-            L"2/22/2017 6:22:35 PM\n"
+            L"2/22/2017 5:22:35 PM\n"
             L"test\n"
             L"0\n"
             L"2017\n"
