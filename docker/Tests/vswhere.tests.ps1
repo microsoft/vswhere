@@ -153,7 +153,20 @@ Describe 'vswhere' {
             @($instances.instances.instance).Count | Should Be 1
             @($instances.instances.instance)[0].instanceId | Should Be 2
         }
+
+        It 'returns 0 instances with multiple requirements' {
+            $instances = C:\bin\vswhere.exe -requires microsoft.visualstudio.workload.azure microsoft.visualstudio.workload.nativedesktop -format json | ConvertFrom-Json
+            $instances.Count | Should Be 0
+        }
    }
+
+   Context '-requiresAny' {
+        It 'returns 1 instance with multiple requirements' {
+            $instances = C:\bin\vswhere.exe -requires microsoft.visualstudio.workload.azure microsoft.visualstudio.workload.nativedesktop -requiresAny -format json | ConvertFrom-Json
+            $instances.Count | Should Be 1
+            $instances[0].instanceId | Should Be 2
+        }
+    }
 
     Context '-version' {
         It 'returns 1 instance using "text"' {
