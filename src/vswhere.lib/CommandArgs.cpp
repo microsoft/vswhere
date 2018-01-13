@@ -69,6 +69,10 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         {
             ParseArgumentArray(it, args.end(), arg, m_requires);
         }
+        else if (ArgumentEquals(arg.Value, L"requiresAny"))
+        {
+            m_requiresAny = true;
+        }
         else if (ArgumentEquals(arg.Value, L"version"))
         {
             m_version = ParseArgument(it, args.end(), arg);

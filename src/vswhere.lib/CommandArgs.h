@@ -63,6 +63,11 @@ public:
         return m_requires;
     }
 
+    const bool get_RequiresAny() const noexcept
+    {
+        return m_requiresAny;
+    }
+
     const std::wstring& get_Version() const noexcept
     {
         return m_version;
@@ -124,6 +129,7 @@ private:
     bool m_productsAll;
     std::vector<std::wstring> m_products;
     std::vector<std::wstring> m_requires;
+    bool m_requiresAny;
     std::wstring m_version;
     bool m_latest;
     bool m_legacy;
