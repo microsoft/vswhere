@@ -196,6 +196,45 @@ public:
         Assert::AreEqual<size_t>(1, selected.size());
     }
 
+    BEGIN_TEST_METHOD_ATTRIBUTE(Select_RequiresAny_Workload)
+        TEST_WORKITEM(126)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Select_RequiresAny_Workload)
+    {
+        TestPackageReference product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestPackageReference managedDesktop = { { L"Id", L"Microsoft.VisualStudio.Workload.ManagedDesktop" } };
+        TestPackageReference nativeDesktop = { { L"Id", L"Microsoft.VisualStudio.Workload.NativeDesktop" } };
+        vector<TestInstance::ElementType> packages =
+        {
+            &managedDesktop,
+            &nativeDesktop,
+        };
+
+        TestInstance::MapType properties =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+        };
+
+        TestInstance instance(&product, packages, properties);
+        TestEnumInstances instances =
+        {
+            &instance,
+        };
+
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -requires microsoft.visualstudio.workload.azure microsoft.visualstudio.workload.nativedesktop -requiresAny");
+
+        InstanceSelector sut(args);
+        auto selected = sut.Select(&instances);
+
+        Assert::AreEqual<size_t>(1, selected.size());
+    }
+
     TEST_METHOD(Select_Invalid_Version_Range)
     {
         CommandArgs args;

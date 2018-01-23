@@ -277,6 +277,14 @@ bool InstanceSelector::IsWorkloadMatch(_In_ ISetupInstance2* pInstance) const
         }
     }
 
+    if (m_args.get_RequiresAny())
+    {
+        return any_of(found.begin(), found.end(), [](MapType::const_reference pair) -> bool
+        {
+            return pair.second;
+        });
+    }
+
     return all_of(found.begin(), found.end(), [](MapType::const_reference pair) -> bool
     {
         return pair.second;
