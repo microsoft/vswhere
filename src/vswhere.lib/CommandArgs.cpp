@@ -118,6 +118,10 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         {
             m_help = true;
         }
+        else if (ArgumentEquals(arg.Value, L"utf8"))
+        {
+            m_isutf8output = true;
+        }
         else
         {
             auto message = ResourceManager::FormatString(IDS_E_UNKNOWNPARAM, arg.Value.c_str());

@@ -118,6 +118,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TextFormatter.h" />
+    <ClInclude Include="Utf8Console.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="ValueFormatter.h" />
     <ClInclude Include="XmlFormatter.h" />
@@ -141,6 +142,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TextFormatter.cpp" />
+    <ClCompile Include="Utf8Console.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="ValueFormatter.cpp" />
     <ClCompile Include="XmlFormatter.cpp" />
