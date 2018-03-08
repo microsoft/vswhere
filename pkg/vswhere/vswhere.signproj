@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Sign" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props" Condition="Exists('..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props')" />
+  <PropertyGroup>
+    <BuildConfiguration Condition="'$(BuildConfiguration)'==''">Debug</BuildConfiguration>
+    <SolutionDir Condition="'$(SolutionDir)'==''">..\..\</SolutionDir>
+    <SolutionDir Condition="!HasTrailingSlash('$(SolutionDir)')">$(SolutionDir)\</SolutionDir>
+    <OutDir Condition="'$(OutDir)'==''">$(SolutionDir)bin\$(BuildConfiguration)\</OutDir>
+    <OutDir Condition="!HasTrailingSlash('$(OutDir)')">$(OutDir)\</OutDir>
+    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)'==''">$(SolutionDir)obj\$(BuildConfiguration)\</IntermediateOutputPath>
+    <IntermediateOutputPath Condition="!HasTrailingSlash('$(IntermediateOutputPath)')">$(IntermediateOutputPath)\</IntermediateOutputPath>
+    <SignDependsOn>
+        PrepareForBuild;
+        $(SignDependsOn);
+    </SignDependsOn>
+  </PropertyGroup>
+  <Target Name="PrepareForBuild" />
+  <Target Name="Sign" DependsOnTargets="$(SignDependsOn)">
+    <ItemGroup>
+      <FilesToSign Include="$(OutDir)**\*.nupkg">
+        <Authenticode>NuGet</Authenticode>
+      </FilesToSign>
+    </ItemGroup>
+  </Target>
+  <Target Name="AfterBuild" AfterTargets="Sign" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets" Condition="Exists('..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets')" />
+  </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.props'))" />
+    <Error Condition="!Exists('..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MicroBuild.Core.0.2.0\build\MicroBuild.Core.targets'))" />
+  </Target>
+</Project>
