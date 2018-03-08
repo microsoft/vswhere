@@ -2,7 +2,6 @@ Visual Studio Locator
 =====================
 
 [![build status: master](https://ci.appveyor.com/api/projects/status/yy3g7rggm2sx4nam/branch/master?svg=true)](https://ci.appveyor.com/project/VisualStudioSetup/vswhere)
-![build status: master](https://devdiv.visualstudio.com/_apis/public/build/definitions/0bdbc590-a062-4c3f-b0f6-9383f67865ee/5581/badge)
 [![github release](https://img.shields.io/github/release/Microsoft/vswhere.svg?logo=github)](https://github.com/Microsoft/vswhere/releases/latest)
 [![github releases: all](https://img.shields.io/github/downloads/Microsoft/vswhere/total.svg?logo=github&label=github)](https://github.com/Microsoft/vswhere/releases)
 [![chocolatey: all](https://img.shields.io/chocolatey/dt/vswhere.svg)](https://chocolatey.org/packages/vswhere)
