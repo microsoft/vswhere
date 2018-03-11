@@ -71,3 +71,4 @@ _COM_SMARTPTR_TYPEDEF(ISetupInstanceCatalog, __uuidof(ISetupInstanceCatalog));
 #include "ValueFormatter.h"
 #include "XmlScope.h"
 #include "XmlFormatter.h"
+#include "Utf8Console.h"

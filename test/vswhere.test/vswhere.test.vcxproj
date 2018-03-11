@@ -122,6 +122,7 @@
     <ClCompile Include="TestHelper.cpp" />
     <ClCompile Include="TestLegacyProvider.cpp" />
     <ClCompile Include="TextFormatterTests.cpp" />
+    <ClCompile Include="Utf8ConsoleTests.cpp" />
     <ClCompile Include="UtilitiesTests.cpp" />
     <ClCompile Include="ValueFormatterTests.cpp" />
     <ClCompile Include="XmlFormatterTests.cpp" />

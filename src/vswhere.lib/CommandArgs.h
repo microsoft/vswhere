@@ -17,7 +17,8 @@ public:
         m_legacy(false),
         m_prerelease(false),
         m_nologo(false),
-        m_help(false)
+        m_help(false),
+        m_isutf8output(false)
     {
     }
 
@@ -34,7 +35,8 @@ public:
         m_format(obj.m_format),
         m_property(obj.m_property),
         m_nologo(obj.m_nologo),
-        m_help(obj.m_help)
+        m_help(obj.m_help),
+        m_isutf8output(obj.m_isutf8output)
     {
     }
 
@@ -113,6 +115,11 @@ public:
         return m_help;
     }
 
+    const bool get_IsUtf8Output() const noexcept
+    {
+        return m_isutf8output;
+    }
+
 
     void Parse(_In_ LPCWSTR wszCommandLine);
     void Parse(_In_ int argc, _In_ LPCWSTR argv[]);
@@ -138,4 +145,5 @@ private:
     std::wstring m_property;
     bool m_nologo;
     bool m_help;
+    bool m_isutf8output;
 };

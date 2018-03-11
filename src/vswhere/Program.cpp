@@ -9,6 +9,7 @@ using namespace std;
 
 void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& query, _In_ IEnumSetupInstancesPtr& e);
 void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console, _In_ Module& module);
+void Execute(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupConfigurationPtr& query, _In_ Module& queryModule);
 
 int wmain(_In_ int argc, _In_ LPCWSTR argv[])
 {
@@ -43,34 +44,17 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
 
             return ERROR_SUCCESS;
         }
-
-        // Attempt to get the ISetupHelper.
-        ISetupHelperPtr helper;
-        if (query)
+        // for re-initialize console mode for utf8
+        if (args.get_IsUtf8Output())
         {
-            query->QueryInterface(&helper);
+            Utf8Console u8console(args, stdout);
+            u8console.Initialize();
+            Execute(args, u8console, query, queryModule);
         }
-
-        if (!args.get_Version().empty() && !query)
+        else
         {
-            auto message = ResourceManager::GetString(IDS_E_VERSION);
-            throw win32_error(ERROR_INVALID_PARAMETER, message);
+            Execute(args, console, query, queryModule);
         }
-
-        IEnumSetupInstancesPtr e;
-        GetEnumerator(args, query, e);
-
-        InstanceSelector selector(args, helper);
-        auto instances = selector.Select(e);
-
-        // Create the formatter and optionally show the logo.
-        auto formatter = Formatter::Create(args.get_Format());
-        if (formatter->ShowLogo())
-        {
-            WriteLogo(args, console, queryModule);
-        }
-
-        formatter->Write(args, console, instances);
         return ERROR_SUCCESS;
     }
     catch (const system_error& ex)
@@ -151,4 +135,35 @@ void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console, _In_ Module&
         console.WriteLine(ResourceManager::GetString(IDS_COPYRIGHT));
         console.WriteLine();
     }
+}
+
+void Execute(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupConfigurationPtr& query, _In_ Module& queryModule)
+{
+    // Attempt to get the ISetupHelper.
+    ISetupHelperPtr helper;
+    if (query)
+    {
+        query->QueryInterface(&helper);
+    }
+
+    if (!args.get_Version().empty() && !query)
+    {
+        auto message = ResourceManager::GetString(IDS_E_VERSION);
+        throw win32_error(ERROR_INVALID_PARAMETER, message);
+    }
+
+    IEnumSetupInstancesPtr e;
+    GetEnumerator(args, query, e);
+
+    InstanceSelector selector(args, helper);
+    auto instances = selector.Select(e);
+
+    // Create the formatter and optionally show the logo.
+    auto formatter = Formatter::Create(args.get_Format());
+    if (formatter->ShowLogo())
+    {
+        WriteLogo(args, console, queryModule);
+    }
+
+    formatter->Write(args, console, instances);
 }
