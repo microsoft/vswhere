@@ -79,6 +79,9 @@ $headers = @{
     Accept = 'application/vnd.github.v3+json'
 }
 
+# Make sure TLS 1.2 is supported now that GitHub requires it.
+[System.Net.ServicePointManager]::SecurityProtocol += 'Tls12'
+
 $release = Invoke-RestMethod -Uri $uri -Method Post -Body $request -Headers $headers
 $upload_url = $release.upload_url -replace '\{\?.*$', ''
 
