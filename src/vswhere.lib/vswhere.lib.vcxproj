@@ -120,6 +120,7 @@
     <ClInclude Include="TextFormatter.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="ValueFormatter.h" />
+    <ClInclude Include="VersionRange.h" />
     <ClInclude Include="XmlFormatter.h" />
     <ClInclude Include="XmlScope.h" />
   </ItemGroup>
@@ -143,6 +144,7 @@
     <ClCompile Include="TextFormatter.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="ValueFormatter.cpp" />
+    <ClCompile Include="VersionRange.cpp" />
     <ClCompile Include="XmlFormatter.cpp" />
   </ItemGroup>
   <ItemGroup>
