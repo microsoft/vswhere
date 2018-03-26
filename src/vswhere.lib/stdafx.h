@@ -28,6 +28,7 @@
 
 // STL headers
 #include <algorithm>
+#include <climits>
 #include <codecvt>
 #include <functional>
 #include <iterator>
@@ -69,5 +70,6 @@ _COM_SMARTPTR_TYPEDEF(ISetupInstanceCatalog, __uuidof(ISetupInstanceCatalog));
 #include "SafeArray.h"
 #include "TextFormatter.h"
 #include "ValueFormatter.h"
+#include "VersionRange.h"
 #include "XmlScope.h"
 #include "XmlFormatter.h"

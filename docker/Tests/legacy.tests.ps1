@@ -85,9 +85,11 @@ Describe 'vswhere -legacy' {
             $instances[0].installationPath | Should Be 'C:\VisualStudio\14.0'
         }
 
-        It '-version is not supported' {
-            C:\bin\vswhere.exe -legacy -version 14.0
-            $LASTEXITCODE | Should Be 87
+        It '-version is supported' {
+            $instances = C:\bin\vswhere.exe -legacy -latest -format json | ConvertFrom-Json
+            $instances.Count | Should Be 1
+            $instances[0].instanceId | Should Be 'VisualStudio.14.0'
+            $instances[0].installationPath | Should Be 'C:\VisualStudio\14.0'
         }
     }
 

@@ -50,11 +50,10 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         {
             query->QueryInterface(&helper);
         }
-
-        if (!args.get_Version().empty() && !query)
+        // Fall back to a copy of the current implementation.
+        else
         {
-            auto message = ResourceManager::GetString(IDS_E_VERSION);
-            throw win32_error(ERROR_INVALID_PARAMETER, message);
+            helper.Attach(new VersionRange);
         }
 
         IEnumSetupInstancesPtr e;

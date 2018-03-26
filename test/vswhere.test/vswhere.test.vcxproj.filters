@@ -92,6 +92,9 @@
     <ClCompile Include="TestModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VersionRangeTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
