@@ -19,6 +19,11 @@
             "language": "de-de",
             "title": "Visual Studio Community 2017",
             "description": "Kostenlose, voll funktionsfähige IDE für Studenten, Open Source- und einzelne Entwickler."
+        },
+        {
+            "language": "ja-jp",
+            "title": "Visual Studio Community 2017",
+            "description": "学生、オープン ソース、および個々の開発者のための無料で完全な機能を備えた IDE"
         }
     ],
     "launchParams": {

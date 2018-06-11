@@ -9,16 +9,16 @@ class Console
 {
 public:
     Console(_In_ const CommandArgs& args) :
-        m_args(args)
+        m_args(args),
+        m_fInitialized(false)
     {
     }
 
     Console(_In_ const Console& obj) :
-        m_args(obj.m_args)
+        m_args(obj.m_args),
+        m_fInitialized(obj.m_fInitialized)
     {
     }
-
-    virtual void Initialize() noexcept;
 
     void __cdecl Write(_In_ LPCWSTR wzFormat, ...);
     void __cdecl Write(_In_ const std::wstring& value);
@@ -26,10 +26,12 @@ public:
     void __cdecl WriteLine(_In_ const std::wstring& value);
 
 protected:
+    virtual void Initialize() noexcept;
     virtual void Write(_In_ LPCWSTR wzFormat, va_list args);
 
 private:
     bool IsConsole(_In_ FILE* f) const noexcept;
 
     const CommandArgs& m_args;
+    bool m_fInitialized;
 };
