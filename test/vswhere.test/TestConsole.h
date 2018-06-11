@@ -20,16 +20,16 @@ public:
     {
     }
 
-    void Initialize() noexcept override
-    {
-    }
-
     operator const wchar_t*() const
     {
         return m_output.c_str();
     }
 
 protected:
+    void Initialize() noexcept override
+    {
+    }
+
     void Write(_In_ LPCWSTR wzFormat, va_list args) override;
 
 private:

@@ -19,8 +19,13 @@
             "language": "de-de",
             "title": "Visual Studio Professional 2017",
             "description": "Professionelle Entwicklertools und -dienste für kleine Teams"
+        },
+        {
+            "language": "ja-jp",
+            "title": "Visual Studio Professional 2017",
+            "description": "小規模なチーム向けのプロフェッショナルな開発者向けツールおよびサービス"
         }
-    ],
+      ],
     "launchParams": {
         "fileName": "Common7\\IDE\\devenv.exe"
     },
