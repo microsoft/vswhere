@@ -337,4 +337,31 @@ Describe 'vswhere' {
             $instances[0].IsPrerelease | Should Be $true
         }
     }
+
+    # NOTE: microsoft/windowsservercore does not support setting the code page to anything other than 65001.
+    # Context 'encodes ja-JP' {
+    #     BeforeAll {
+    #         [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
+    #         Set-Culture ja-JP
+    #     }
+
+    #     AfterAll {
+    #         Set-Culture en-US
+    #     }
+
+    #     It 'incorrectly without: -utf8' {
+    #         $instances = C:\bin\vswhere.exe -latest -format json | ConvertFrom-Json
+    #         $instances.Count | Should Be 1
+    #         $instances[0].InstanceId | Should Be 2
+    #         $instances[0].Description | Should Not Be '生産性向上と、さまざまな規模のチーム間の調整のための Microsoft DevOps ソリューション'
+    #     }
+
+    #     It 'correctly with: -utf8' {
+    #         $instances = C:\bin\vswhere.exe -latest -format json -utf8 | ConvertFrom-Json
+    #         $instances.Count | Should Be 1
+    #         $instances[0].InstanceId | Should Be 2
+    #         $instances[0].Description | Should Be '生産性向上と、さまざまな規模のチーム間の調整のための Microsoft DevOps ソリューション'
+    #     }
+    # }
 }

@@ -16,7 +16,6 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
     Console console(args);
     Module queryModule;
 
-    console.Initialize();
     try
     {
         CoInitializer init;

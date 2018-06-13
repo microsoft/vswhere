@@ -25,6 +25,7 @@ public:
         Assert::AreEqual(L"text", args.get_Format().c_str());
         Assert::AreEqual<size_t>(0, args.get_Property().length());
         Assert::IsFalse(args.get_Help());
+        Assert::IsFalse(args.get_UTF8());
         Assert::IsTrue(args.get_Logo());
 
         auto& products = args.get_Products();
@@ -284,5 +285,17 @@ public:
         Assert::IsFalse(args.get_Legacy());
 
         Assert::ExpectException<win32_error>([&] { args.Parse(L"vswhere.exe -legacy -requires A"); });
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Parse_UTF8)
+        TEST_WORKITEM(146)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Parse_UTF8)
+    {
+        CommandArgs args;
+        Assert::IsFalse(args.get_UTF8());
+
+        args.Parse(L"vswhere.exe -utf8");
+        Assert::IsTrue(args.get_UTF8());
     }
 };

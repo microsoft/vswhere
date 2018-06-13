@@ -9,16 +9,25 @@ using namespace std;
 
 void Console::Initialize() noexcept
 {
-    if (IsConsole(stdout))
+    if (!m_fInitialized)
     {
-        ::_setmode(_fileno(stdout), _O_WTEXT);
-    }
-    else
-    {
-        char sz[10];
-        ::sprintf_s(sz, ".%d", ::GetConsoleCP());
+        if (m_args.get_UTF8())
+        {
+            ::_setmode(_fileno(stdout), _O_U8TEXT);
+        }
+        else if (IsConsole(stdout))
+        {
+            ::_setmode(_fileno(stdout), _O_WTEXT);
+        }
+        else
+        {
+            char sz[10];
+            ::sprintf_s(sz, ".%d", ::GetConsoleCP());
 
-        ::setlocale(LC_CTYPE, sz);
+            ::setlocale(LC_CTYPE, sz);
+        }
+
+        m_fInitialized = true;
     }
 }
 
@@ -57,6 +66,8 @@ void __cdecl Console::WriteLine(_In_ const std::wstring& value)
 
 void Console::Write(_In_ LPCWSTR wzFormat, va_list args)
 {
+    Initialize();
+
     ::_vwprintf_p(wzFormat, args);
 }
 

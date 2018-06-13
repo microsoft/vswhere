@@ -17,6 +17,7 @@ public:
         m_legacy(false),
         m_prerelease(false),
         m_nologo(false),
+        m_utf8(false),
         m_help(false)
     {
     }
@@ -34,6 +35,7 @@ public:
         m_format(obj.m_format),
         m_property(obj.m_property),
         m_nologo(obj.m_nologo),
+        m_utf8(obj.m_utf8),
         m_help(obj.m_help)
     {
     }
@@ -108,6 +110,11 @@ public:
         return !m_nologo;
     }
 
+    const bool get_UTF8() const noexcept
+    {
+        return m_utf8;
+    }
+
     const bool get_Help() const noexcept
     {
         return m_help;
@@ -137,5 +144,6 @@ private:
     std::wstring m_format;
     std::wstring m_property;
     bool m_nologo;
+    bool m_utf8;
     bool m_help;
 };

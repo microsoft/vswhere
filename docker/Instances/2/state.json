@@ -19,8 +19,13 @@
             "language": "de-de",
             "title": "Visual Studio Enterprise 2017",
             "description": "Microsoft DevOps-Lösung für Produktivität und Koordination von Teams beliebiger Größe"
+        },
+        {
+            "language": "ja-jp",
+            "title": "Visual Studio Enterprise 2017",
+            "description": "生産性向上と、さまざまな規模のチーム間の調整のための Microsoft DevOps ソリューション"
         }
-    ],
+      ],
     "launchParams": {
         "fileName": "Common7\\IDE\\devenv.exe"
     },
