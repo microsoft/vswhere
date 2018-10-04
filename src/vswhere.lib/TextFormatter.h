@@ -28,7 +28,7 @@ public:
     }
 
 protected:
-    void StartArray(_In_ Console& console);
+    void StartArray(_In_ Console& console) override;
     void StartObject(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;
     void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
     void EndObject(_In_ Console& console) override;
