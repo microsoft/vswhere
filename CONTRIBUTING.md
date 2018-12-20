@@ -39,34 +39,43 @@ nuget install xunit.runner.console -outputdirectory packages
 packages\xunit.runner.console.<version>\tools\xunit.runner.console test\VSSetup.PowerShell.Test\bin\Debug\Microsoft.VisualStudio.Setup.PowerShell.Test.dll
 ```
 
-If your machine supports it, you can install [Docker for Windows][docker], switch to Windows containers, and test in isolated containers for runtime behavior. You can run unit tests and integration tests together.
+If your machine supports it, you can install [Docker for Windows][docker], switch to Windows containers, and test in isolated containers for runtime behavior. You can run functional tests and runtime tests together.
 
 ```batch
 tools\test.cmd
 ```
 
-For a faster development process, you can run `docker-compose run test` from the _docker_ directory to start an interactive PowerShell session in a container running the Visual Studio Remote Debugger. The build output and test scripts are mounted into the container. If you rebuild or modify the tests the container is automatically updated. You can also start the container detached and run tests faster without having to restart the container.
+You can also run tests directly with `docker-compose`:
 
 ```batch
-cd docker
-docker-compose up -d
-
-REM Repeat following command as often as desired.
-docker-compose exec test powershell.exe -c invoke-pester c:\tests -enableexit
-
-docker-compose stop
+docker-compose -f docker\docker-compose.yml run test
 ```
 
 ### Debugging
 
-You can run `docker-compose up -d` from the _docker_ directory to start an interactive shell for exploratory testing. If no other commands are passed when starting the container, the Visual Studio Remote Debugger will launch by default. Remote debugging services are discoverable on your private network.
+You can use the following steps to start an environment for exploratory testing or to run and debug tests. The Visual Studio Remote Debugger will launch by default and should be discoverable on your private network.
 
-1. Click *Debug -> Attach to Process*
-2. Change *Transport* to "Remote (no authentication)"
-3. Click *Find*
-4. Click *Select* on the container (host name will be the container name)
-5. Select "powershell" under *Available Processes*
-6. Click *Attach*
+1. Run:
+   ```batch
+   docker-compose -f docker\docker-compose.yml -f docker\docker-compose.debug.yml up -d
+
+   REM Start an interactive shell
+   docker-compose -f docker\docker-compose.yml -f docker\docker-compose.debug.yml exec test powershell.exe
+   ```
+2. Click *Debug -> Attach to Process*
+3. Change *Transport* to "Remote (no authentication)"
+4. Click *Find*
+5. Click *Select* on the container (host name will be the container name)
+6. Select "powershell" under *Available Processes*
+7. Click *Attach*
+8. Run any commands you like in the interactive shell, or run all tests:
+   ```powershell
+   Invoke-Pester C:\Tests -EnableExit
+   ```
+9. When finished, run:
+   ```batch
+   docker-compose  -f docker\docker-compose.yml -f docker\docker-compose.debug.yml down
+   ```
 
 If you know the host name (by default, the container name) or IP address (depending on your network configuration for the container), you can type it into the *Qualifier* directory along with port 4022, e.g. "172.22.0.1:4022".
 

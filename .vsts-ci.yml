@@ -1,3 +1,6 @@
+# Copyright (C) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT license. See LICENSE.txt in the project root for license information.
+
 queue:
   name: VSEng-MicroBuildVS2017
   timeoutInMinutes: 120
@@ -5,71 +8,20 @@ queue:
   - msbuild
   - visualstudio
   - vstest
-  - Cmd
-
-variables:
-  solution: '**\*.sln'
-  vsVersion: 15.0
 
 steps:
-- task: NuGetInstaller@0
-  inputs:
-    solution: $(solution)
-    versionSpec: 4.1.0
-
-- task: MicroBuildSigningPlugin@1
+- task: ms-vseng.MicroBuildTasks.30666190-6959-11e5-9f96-f56098202fef.MicroBuildSigningPlugin@1
+  displayName: Install signing plugin
   inputs:
     signType: $(SignType)
     esrpSigning: true
 
-- task: VSBuild@1
-  inputs:
-    solution: $(solution)
-    vsVersion: $(vsVersion)
-    configuration: $(BuildConfiguration)
-    platform: $(BuildPlatform)
-    maximumCpuCount: true
+- template: inc/build.yml
+  parameters:
+      BuildConfiguration: $(BuildConfiguration)
+      BuildPlatform: $(BuildPlatform)
+      Sign: true
 
-- task: VSTest@2
-  inputs:
-    testAssemblyVer2: |
-     **\*test*.dll
-     !**\obj\**
-    searchFolder: $(Build.SourcesDirectory)\bin\$(BuildConfiguration)
-    vsTestVersion: $(vsVersion)
-    runInParallel: true
-    codeCoverageEnabled: true
-    configuration: $(BuildConfiguration)
-    platform: $(BuildPlatform)
-
-- task: BatchScript@1
-  inputs:
-    filename: tools/choco.cmd
-    arguments: pack pkg\vswhere\vswhere.nuspec --out "bin\$(BuildConfiguration)" --version "%GitBuildVersionSimple%" "Configuration=$(BuildConfiguration)" "CommitId=$(Build.SourceVersion)"
-    workingFolder: $(Build.SourcesDirectory)
-
-- task: VSBuild@1
-  inputs:
-    solution: pkg\vswhere\vswhere.signproj
-    vsVersion: $(vsVersion)
-    configuration: $(BuildConfiguration)
-    platform: $(BuildPlatform)
-
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: $(Build.SourcesDirectory)
-    Contents: |
-     bin\$(BuildConfiguration)\**
-     tools\**
-    TargetFolder: $(Build.ArtifactStagingDirectory)\out
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: $(Build.ArtifactStagingDirectory)\out
-    ArtifactName: drop
-    publishLocation: Container
-
-- task: MicroBuildCleanup@1
+- task: ms-vseng.MicroBuildTasks.521a94ea-9e68-468a-8167-6dcf361ea776.MicroBuildCleanup@1
+  displayName: Clean up
   condition: succeededOrFailed()
-
-# vim: set ai et st=2 sts=2 sw=2:

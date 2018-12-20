@@ -1,0 +1,16 @@
+# Copyright (C) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT license. See LICENSE.txt in the project root for license information.
+
+version: "2.1"
+services:
+  test:
+    image: microsoft/vssetup:debug
+    build:
+      context: .
+      dockerfile: Debug.dockerfile
+    network_mode: nat
+    expose:
+      - "3702/udp"
+      - "4022-4023"
+    command: >
+      -Command "&'C:\Program Files\Microsoft Visual Studio 15.0\Common7\IDE\Remote Debugger\x64\msvsmon.exe' /silent /noauth /anyuser"
