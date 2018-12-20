@@ -134,7 +134,6 @@ public:
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
-            { L"InstallDate", L"2017-02-23T01:22:35Z" }
         };
 
         TestPropertyStore properties =
@@ -150,7 +149,6 @@ public:
 
         auto expected =
             L"instanceId: a1b2c3\n"
-            L"installDate: 2/22/2017 5:22:35 PM\n"
             L"installationName: test\n"
             L"properties_campaignId: abcd1234\n"
             L"properties_nickname: test\n";
@@ -367,7 +365,6 @@ public:
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
-            { L"InstallDate", L"2017-02-23T01:22:35Z" }
         };
 
         TestPropertyStore catalogInfo =
@@ -392,7 +389,6 @@ public:
 
         auto expected =
             L"instanceId: a1b2c3\n"
-            L"installDate: 2/22/2017 5:22:35 PM\n"
             L"installationName: test\n"
             L"isPrerelease: 0\n"
             L"catalog_productLineVersion: 2017\n"
