@@ -62,7 +62,7 @@ void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& nam
 void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ long long value)
 {
     StartProperty(console);
-    console.Write(L"\n%ls\"%ls\": %d", m_padding.c_str(), name.c_str(), value);
+    console.Write(L"\n%ls\"%ls\": %I64d", m_padding.c_str(), name.c_str(), value);
 }
 
 void JsonFormatter::EndObject(_In_ Console& console)

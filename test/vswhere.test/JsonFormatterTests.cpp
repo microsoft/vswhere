@@ -418,4 +418,66 @@ public:
 
         Assert::AreEqual(expected, console);
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_State)
+        TEST_WORKITEM(133)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_State)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"State", L"11" },
+            { L"IsComplete", L"true"},
+            { L"IsLaunchable", L"false" },
+        };
+
+        JsonFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"[\n"
+            L"  {\n"
+            L"    \"instanceId\": \"a1b2c3\",\n"
+            L"    \"state\": 11,\n"
+            L"    \"isComplete\": true,\n"
+            L"    \"isLaunchable\": false\n"
+            L"  }\n"
+            L"]\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Complete_State)
+        TEST_WORKITEM(133)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Complete_State)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"State", L"4294967295" },
+            { L"IsComplete", L"true"},
+            { L"IsLaunchable", L"true" },
+        };
+
+        JsonFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"[\n"
+            L"  {\n"
+            L"    \"instanceId\": \"a1b2c3\",\n"
+            L"    \"state\": 4294967295,\n"
+            L"    \"isComplete\": true,\n"
+            L"    \"isLaunchable\": true\n"
+            L"  }\n"
+            L"]\n";
+
+        Assert::AreEqual(expected, console);
+    }
 };

@@ -191,7 +191,7 @@ public:
         _Out_ InstanceState* pState
     )
     {
-        return E_NOTIMPL;
+        return TryGetLONGLONG(L"State", reinterpret_cast<PLONGLONG>(pState));
     }
 
     STDMETHODIMP GetPackages(
@@ -409,6 +409,31 @@ private:
         {
             auto f = L"1" == value || equals(L"true", value);
             *pvf = f ? VARIANT_TRUE : VARIANT_FALSE;
+        }
+
+        return hr;
+    }
+
+    STDMETHODIMP TryGetLONGLONG(_In_ LPCWSTR wszName, _Out_ PLONGLONG pll)
+    {
+        if (!pll)
+        {
+            return E_POINTER;
+        }
+
+        std::wstring value;
+
+        auto hr = TryGet(wszName, value);
+        if (SUCCEEDED(hr))
+        {
+            *pll = _wtoi64(value.c_str());
+            if (*pll == 0)
+            {
+                if (errno == ERANGE || errno == EINVAL)
+                {
+                    hr = E_INVALIDARG;
+                }
+            }
         }
 
         return hr;

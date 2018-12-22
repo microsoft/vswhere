@@ -429,4 +429,68 @@ public:
 
         Assert::AreEqual(expected, console);
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_State)
+        TEST_WORKITEM(133)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_State)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"State", L"11" },
+            { L"IsComplete", L"true"},
+            { L"IsLaunchable", L"false" },
+        };
+
+        XmlFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"<?xml version=\"1.0\"?>\n"
+            L"<instances>\n"
+            L"  <instance>\n"
+            L"    <instanceId>a1b2c3</instanceId>\n"
+            L"    <state>11</state>\n"
+            L"    <isComplete>1</isComplete>\n"
+            L"    <isLaunchable>0</isLaunchable>\n"
+            L"  </instance>\n"
+            L"</instances>\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Complete_State)
+        TEST_WORKITEM(133)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Complete_State)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"State", L"4294967295" },
+            { L"IsComplete", L"true"},
+            { L"IsLaunchable", L"true" },
+        };
+
+        XmlFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"<?xml version=\"1.0\"?>\n"
+            L"<instances>\n"
+            L"  <instance>\n"
+            L"    <instanceId>a1b2c3</instanceId>\n"
+            L"    <state>4294967295</state>\n"
+            L"    <isComplete>1</isComplete>\n"
+            L"    <isLaunchable>1</isLaunchable>\n"
+            L"  </instance>\n"
+            L"</instances>\n";
+
+        Assert::AreEqual(expected, console);
+    }
 };
