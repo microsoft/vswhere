@@ -71,6 +71,9 @@ private:
     HRESULT GetInstallationVersion(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallationVersion);
     HRESULT GetProductId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtProductId);
     HRESULT GetProductPath(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtProductPath);
+    HRESULT GetState(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtState);
+    HRESULT GetIsComplete(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsComplete);
+    HRESULT GetIsLaunchable(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsLaunchable);
     HRESULT GetIsPrerelease(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsPrerelease);
     HRESULT GetDisplayName(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtDisplayName);
     HRESULT GetDescription(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtDescription);
