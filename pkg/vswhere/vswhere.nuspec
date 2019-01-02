@@ -12,7 +12,7 @@
     <projectUrl>https://github.com/Microsoft/vswhere</projectUrl>
     <description>Locate Visual Studio 2017 and newer installations</description>
     <summary>Locate Visual Studio 2017 and newer installations</summary>
-    <copyright>Copyright (C) Microsoft Corporation. All rights reserved.</copyright>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
     <tags>vs vs2017 visualstudio</tags>
     <developmentDependency>true</developmentDependency>
     <projectSourceUrl>https://github.com/Microsoft/vswhere/tree/$CommitId$</projectSourceUrl>
