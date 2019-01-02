@@ -21,3 +21,20 @@ RUN $ErrorActionPreference = 'Stop' ; `
 
 ENTRYPOINT ["powershell.exe", "-ExecutionPolicy", "Bypass"]
 CMD ["-NoExit"]
+
+# Download and install Remote Debugger
+RUN $ErrorActionPreference = 'Stop' ; `
+    $ProgressPreference = 'SilentlyContinue' ; `
+    $VerbosePreference = 'Continue' ; `
+    New-Item -Path C:\Downloads -Type Directory | Out-Null ; `
+    Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?LinkId=746570&clcid=0x409' -OutFile C:\Downloads\vs_remotetools.exe ; `
+    Start-Process -Wait -FilePath C:\Downloads\vs_remotetools.exe -ArgumentList '-q' ; `
+    Remove-Item -Path C:\Downloads\vs_remotetools.exe
+
+# Configure Remote Debugger
+EXPOSE 3702 4022 4023
+RUN $ErrorActionPreference = 'Stop' ; `
+    $VerbosePreference = 'Continue' ; `
+    Start-Process -Wait -FilePath 'C:\Program Files\Microsoft Visual Studio 15.0\Common7\IDE\Remote Debugger\x64\msvsmon.exe' -ArgumentList '/prepcomputer', '/private', '/quiet'
+
+HEALTHCHECK --interval=10s CMD ["powershell.exe", "-ExecutionPolicy", "Bypass", "-Command", "&{ if (Get-Process msvsmon) { exit 0 } else { exit 1 } }"]

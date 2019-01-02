@@ -1,0 +1,98 @@
+# Copyright (C) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT license. See LICENSE.txt in the project root for license information.
+
+parameters:
+  BuildConfiguration: Release
+  BuildPlatform: x86
+  Docker: false
+  Sign: false
+
+steps:
+- task: NuGetToolInstaller@0
+  displayName: Install nuget
+  inputs:
+    versionSpec: '4.1.0'
+
+- task: NuGetCommand@2
+  displayName: Restore packages
+
+- task: VSBuild@1
+  displayName: Build
+  inputs:
+    configuration: ${{ parameters.BuildConfiguration }}
+    platform: ${{ parameters.BuildPlatform }}
+    maximumCpuCount: true
+  env:
+    TreatWarningsAsErrors: true
+
+- task: VSTest@2
+  displayName: Functional tests
+  inputs:
+    configuration: ${{ parameters.BuildConfiguration }}
+    platform: ${{ parameters.BuildPlatform }}
+    testAssemblyVer2: |
+      bin\${{ parameters.BuildConfiguration }}\*.test.dll
+    runInParallel: true
+    codeCoverageEnabled: true
+    testRunTitle: Functional tests (${{ parameters.BuildConfiguration }}|${{ parameters.BuildPlatform }})
+
+- ${{ if eq(parameters.Docker, 'true') }}:
+  # Make sure service images are rebuilt if Dockerfiles changed.
+  - task: DockerCompose@0
+    displayName: Build images
+    inputs:
+      dockerComposeFile: docker/docker-compose.yml
+      action: Build services
+    env:
+      CONFIGURATION: ${{ parameters.BuildConfiguration }}
+
+  - task: DockerCompose@0
+    displayName: Runtime tests
+    inputs:
+      dockerComposeFile: docker/docker-compose.yml
+      action: Run a specific service
+      serviceName: test
+      containerCommand: -Command Invoke-Pester C:\Tests -EnableExit -OutputFile C:\Tests\Results.xml -OutputFormat NUnitXml
+      detached: false
+    env:
+      CONFIGURATION: ${{ parameters.BuildConfiguration }}
+
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    inputs:
+      buildConfiguration: ${{ parameters.BuildConfiguration }}
+      buildPlatform: ${{ parameters.BuildPlatform }}
+      testRunTitle: Runtime tests (${{ parameters.BuildConfiguration }}|${{ parameters.BuildPlatform }})
+      testResultsFormat: NUnit
+      testResultsFiles: '**\*Results.xml'
+      searchFolder: $(Build.SourcesDirectory)\docker\Tests
+      mergeTestResults: true
+    condition: succeededOrFailed()
+
+- script: |
+    choco pack pkg\vswhere\vswhere.nuspec --out "bin\${{ parameters.BuildConfiguration }}" --version "%GitBuildVersionSimple%" "Configuration=${{ parameters.BuildConfiguration }}" "CommitId=$(Build.SourceVersion)"
+  displayName: Package
+  workingDirectory: $(Build.SourcesDirectory)
+
+- ${{ if eq(parameters.Sign, 'true') }}:
+  - task: VSBuild@1
+    displayName: Sign package
+    inputs:
+      solution: pkg\vswhere\vswhere.signproj
+      configuration: ${{ parameters.BuildConfiguration }}
+      platform: ${{ parameters.BuildPlatform }}
+
+- task: CopyFiles@2
+  displayName: Copy build artifacts
+  inputs:
+    SourceFolder: $(Build.SourcesDirectory)
+    Contents: |
+     bin\${{ parameters.BuildConfiguration }}\**
+    TargetFolder: $(Build.ArtifactStagingDirectory)\out
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish build artifacts
+  inputs:
+    PathtoPublish: $(Build.ArtifactStagingDirectory)\out
+    ArtifactName: drop
+    publishLocation: Container

@@ -21,6 +21,9 @@ Formatter::Formatter()
         { L"installationVersion", bind(&Formatter::GetInstallationVersion, this, _1, _2) },
         { L"productId", bind(&Formatter::GetProductId, this, _1, _2) },
         { L"productPath", bind(&Formatter::GetProductPath, this, _1, _2) },
+        { L"state", bind(&Formatter::GetState, this, _1, _2) },
+        { L"isComplete", bind(&Formatter::GetIsComplete, this, _1, _2) },
+        { L"isLaunchable", bind(&Formatter::GetIsLaunchable, this, _1, _2) },
         { L"isPrerelease", bind(&Formatter::GetIsPrerelease, this, _1, _2) },
         { L"displayName", bind(&Formatter::GetDisplayName, this, _1, _2) },
         { L"description", bind(&Formatter::GetDescription, this, _1, _2) },
@@ -447,6 +450,63 @@ HRESULT Formatter::GetProductPath(_In_ ISetupInstance* pInstance, _Out_ VARIANT*
                 vt.vt = VT_BSTR;
                 *pvtProductPath = vt.Detach();
             }
+        }
+    }
+
+    return hr;
+}
+
+HRESULT Formatter::GetState(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtState)
+{
+    ISetupInstance2Ptr instance;
+    variant_t vt;
+
+    auto hr = pInstance->QueryInterface(&instance);
+    if (SUCCEEDED(hr))
+    {
+        hr = instance->GetState(reinterpret_cast<InstanceState*>(&vt.uintVal));
+        if (SUCCEEDED(hr))
+        {
+            vt.vt = VT_UI4;
+            *pvtState = vt.Detach();
+        }
+    }
+
+    return hr;
+}
+
+HRESULT Formatter::GetIsComplete(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsComplete)
+{
+    ISetupInstance2Ptr instance;
+    variant_t vt;
+
+    auto hr = pInstance->QueryInterface(&instance);
+    if (SUCCEEDED(hr))
+    {
+        hr = instance->IsComplete(&vt.boolVal);
+        if (SUCCEEDED(hr))
+        {
+            vt.vt = VT_BOOL;
+            *pvtIsComplete = vt.Detach();
+        }
+    }
+
+    return hr;
+}
+
+HRESULT Formatter::GetIsLaunchable(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsLaunchable)
+{
+    ISetupInstance2Ptr instance;
+    variant_t vt;
+
+    auto hr = pInstance->QueryInterface(&instance);
+    if (SUCCEEDED(hr))
+    {
+        hr = instance->IsLaunchable(&vt.boolVal);
+        if (SUCCEEDED(hr))
+        {
+            vt.vt = VT_BOOL;
+            *pvtIsLaunchable = vt.Detach();
         }
     }
 

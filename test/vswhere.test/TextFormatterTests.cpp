@@ -134,7 +134,6 @@ public:
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
-            { L"InstallDate", L"2017-02-23T01:22:35Z" }
         };
 
         TestPropertyStore properties =
@@ -150,7 +149,6 @@ public:
 
         auto expected =
             L"instanceId: a1b2c3\n"
-            L"installDate: 2/22/2017 5:22:35 PM\n"
             L"installationName: test\n"
             L"properties_campaignId: abcd1234\n"
             L"properties_nickname: test\n";
@@ -367,7 +365,6 @@ public:
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
-            { L"InstallDate", L"2017-02-23T01:22:35Z" }
         };
 
         TestPropertyStore catalogInfo =
@@ -392,7 +389,6 @@ public:
 
         auto expected =
             L"instanceId: a1b2c3\n"
-            L"installDate: 2/22/2017 5:22:35 PM\n"
             L"installationName: test\n"
             L"isPrerelease: 0\n"
             L"catalog_productLineVersion: 2017\n"
@@ -400,6 +396,60 @@ public:
             L"catalog_productSemanticVersion: 1.0\n"
             L"properties_campaignId: abcd1234\n"
             L"properties_nickname: test\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_State)
+        TEST_WORKITEM(133)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_State)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"State", L"11" },
+            { L"IsComplete", L"true"},
+            { L"IsLaunchable", L"false" },
+        };
+
+        TextFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"instanceId: a1b2c3\n"
+            L"state: 11\n"
+            L"isComplete: 1\n"
+            L"isLaunchable: 0\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Complete_State)
+        TEST_WORKITEM(133)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Complete_State)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"State", L"4294967295" },
+            { L"IsComplete", L"true"},
+            { L"IsLaunchable", L"true" },
+        };
+
+        TextFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"instanceId: a1b2c3\n"
+            L"state: 4294967295\n"
+            L"isComplete: 1\n"
+            L"isLaunchable: 1\n";
 
         Assert::AreEqual(expected, console);
     }

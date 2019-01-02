@@ -110,7 +110,6 @@ public:
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
-            { L"InstallDate", L"2017-02-23T01:22:35Z" }
         };
 
         TestPropertyStore properties =
@@ -126,7 +125,6 @@ public:
 
         auto expected =
             L"a1b2c3\n"
-            L"2/22/2017 5:22:35 PM\n"
             L"test\n"
             L"abcd1234\n"
             L"test\n";
@@ -340,7 +338,6 @@ public:
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
-            { L"InstallDate", L"2017-02-23T01:22:35Z" }
         };
 
         TestPropertyStore catalogInfo =
@@ -365,7 +362,6 @@ public:
 
         auto expected =
             L"a1b2c3\n"
-            L"2/22/2017 5:22:35 PM\n"
             L"test\n"
             L"0\n"
             L"2017\n"
@@ -373,6 +369,60 @@ public:
             L"1.0\n"
             L"abcd1234\n"
             L"test\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_State)
+        TEST_WORKITEM(133)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_State)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"State", L"11" },
+            { L"IsComplete", L"true"},
+            { L"IsLaunchable", L"false" },
+        };
+
+        ValueFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"a1b2c3\n"
+            L"11\n"
+            L"1\n"
+            L"0\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Complete_State)
+        TEST_WORKITEM(133)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Complete_State)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"State", L"4294967295" },
+            { L"IsComplete", L"true"},
+            { L"IsLaunchable", L"true" },
+        };
+
+        ValueFormatter sut;
+        sut.Write(args, console, &instance);
+
+        auto expected =
+            L"a1b2c3\n"
+            L"4294967295\n"
+            L"1\n"
+            L"1\n";
 
         Assert::AreEqual(expected, console);
     }

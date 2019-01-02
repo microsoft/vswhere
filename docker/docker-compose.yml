@@ -4,6 +4,7 @@
 version: "2.1"
 services:
   test:
+    image: microsoft/vssetup:test
     build: .
     volumes:
       - ../bin/${CONFIGURATION:-Debug}:C:/bin:ro
@@ -14,7 +15,5 @@ services:
       - C:/VS/Enterprise
       - C:/BuildTools
       - C:/VS/Preview
-    network_mode: nat
-    expose:
-      - "3702/udp"
-      - "4022-4023"
+    network_mode: none
+    command: -Command Invoke-Pester C:\Tests -EnableExit
