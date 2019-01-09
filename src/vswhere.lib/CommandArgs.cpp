@@ -81,6 +81,10 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         {
             m_latest = true;
         }
+        else if (ArgumentEquals(arg.Value, L"sort"))
+        {
+            m_sort = true;
+        }
         else if (ArgumentEquals(arg.Value, L"legacy"))
         {
             m_legacy = true;

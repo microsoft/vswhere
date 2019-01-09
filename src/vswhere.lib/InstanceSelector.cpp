@@ -142,17 +142,24 @@ vector<ISetupInstancePtr> InstanceSelector::Select(_In_opt_ IEnumSetupInstances*
         }
     }
 
-    if (m_args.get_Latest() && 1 < instances.size())
+    if (1 < instances.size())
     {
-        sort(instances.begin(), instances.end(), [&](const ISetupInstancePtr& a, const ISetupInstancePtr& b) -> bool
+        if (m_args.get_Latest() || m_args.get_Sort())
         {
-            return Less(a, b);
-        });
+            sort(instances.begin(), instances.end(), [&](const ISetupInstancePtr& a, const ISetupInstancePtr& b) -> bool
+            {
+                // Reverse the sort with addition of -sort using existing algorithm.
+                return !Less(a, b);
+            });
 
-        return vector<ISetupInstancePtr>
-        {
-            instances.back(),
-        };
+            if (m_args.get_Latest())
+            {
+                return vector<ISetupInstancePtr>
+                {
+                    instances.front(),
+                };
+            }
+        }
     }
 
     return instances;
