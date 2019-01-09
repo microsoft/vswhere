@@ -73,7 +73,7 @@ public:
         if (equal(pwszVersion, L"1.0"))
         {
             *pullVersion = MAKEVERSION(1, 0, 0, 0);
-            S_OK;
+            return S_OK;
         }
 
         if (equal(pwszVersion, L"2.0"))
