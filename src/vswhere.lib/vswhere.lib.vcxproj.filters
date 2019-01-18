@@ -90,6 +90,9 @@
     <ClInclude Include="VersionRange.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Glob.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -144,6 +147,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VersionRange.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Glob.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

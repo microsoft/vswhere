@@ -23,17 +23,17 @@ public:
     TextFormatter(_In_ const TextFormatter& obj) :
         Formatter(obj),
         m_first(obj.m_first),
-        m_objects(obj.m_objects)
+        m_scopes(obj.m_scopes)
     {
     }
 
 protected:
-    void StartArray(_In_ Console& console) override;
+    void StartArray(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;
     void StartObject(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;
     void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
     void EndObject(_In_ Console& console) override;
 
 private:
     bool m_first;
-    std::stack<std::wstring> m_objects;
+    std::stack<std::wstring> m_scopes;
 };

@@ -130,7 +130,7 @@ vector<ISetupInstancePtr> InstanceSelector::Select(_In_opt_ IEnumSetupInstances*
             L"10.0",
         };
 
-        for (auto version : versions)
+        for (const auto version : versions)
         {
             ISetupInstancePtr instance;
 
@@ -260,7 +260,7 @@ bool InstanceSelector::IsWorkloadMatch(_In_ ISetupInstance2* pInstance) const
     // Keep track of which requirements we matched.
     typedef map<wstring, bool, ci_less> MapType;
     MapType found;
-    for (const auto require : requires)
+    for (const auto& require : requires)
     {
         found.emplace(make_pair(require, false));
     }

@@ -21,7 +21,6 @@ struct ci_less : public std::binary_function<std::wstring, std::wstring, bool>
 {
     bool operator()(const std::wstring& lhs, const std::wstring& rhs) const
     {
-
         return CSTR_EQUAL > ::CompareStringW(LOCALE_INVARIANT, NORM_IGNORECASE, lhs.c_str(), lhs.size(), rhs.c_str(), rhs.size());
     }
 };

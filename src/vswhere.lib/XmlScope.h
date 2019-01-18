@@ -6,16 +6,16 @@
 #pragma once
 
 class XmlScope :
-    public Scope
+    public Scope<XmlScope>
 {
 public:
-    XmlScope(_In_ const std::wstring& padding, _In_ const std::wstring& name, _In_ bool writeEnd = false) :
-        Scope(padding, name, writeEnd)
+    XmlScope(_In_opt_ XmlScope* pParent, _In_ const std::wstring& padding, _In_ const std::wstring& name) :
+        Scope(pParent, padding, name)
     {
     }
 
-    XmlScope(_In_ std::wstring& padding, _In_ std::wstring::const_pointer name, _In_ bool writeEnd = false) :
-        Scope(padding, name, writeEnd)
+    XmlScope(_In_opt_ XmlScope* pParent, _In_ std::wstring& padding, _In_ std::wstring::const_pointer name) :
+        Scope(pParent, padding, name)
     {
     }
 

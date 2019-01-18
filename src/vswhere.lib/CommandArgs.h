@@ -35,6 +35,7 @@ public:
         m_prerelease(obj.m_prerelease),
         m_format(obj.m_format),
         m_property(obj.m_property),
+        m_find(obj.m_find),
         m_nologo(obj.m_nologo),
         m_utf8(obj.m_utf8),
         m_help(obj.m_help)
@@ -111,6 +112,11 @@ public:
         return m_property;
     }
 
+    const std::wstring& get_Find() const noexcept
+    {
+        return m_find;
+    }
+
     const bool get_Logo() const noexcept
     {
         return !m_nologo;
@@ -150,6 +156,7 @@ private:
     bool m_prerelease;
     std::wstring m_format;
     std::wstring m_property;
+    std::wstring m_find;
     bool m_nologo;
     bool m_utf8;
     bool m_help;
