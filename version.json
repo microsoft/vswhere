@@ -3,10 +3,10 @@
   "version": "2.5",
   "publicReleaseRefSpec": [
     "^refs/heads/master$",
-    "^refs/heads/release/",
     "^refs/tags/v\\d+\\.\\d+"
   ],
   "cloudBuild": {
+    "setAllVariables": true,
     "buildNumber": {
       "enabled": true
     }
