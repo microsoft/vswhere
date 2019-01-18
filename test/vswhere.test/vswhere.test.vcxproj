@@ -110,6 +110,7 @@
   <ItemGroup>
     <ClCompile Include="CommandArgsTests.cpp" />
     <ClCompile Include="ExceptionsTests.cpp" />
+    <ClCompile Include="GlobTests.cpp" />
     <ClCompile Include="InstanceSelectorTests.cpp" />
     <ClCompile Include="JsonFormatterTests.cpp" />
     <ClCompile Include="TestModule.cpp" />

@@ -88,9 +88,9 @@ public:
             }
 
             auto rgData = (BSTR*)psa->pvData;
-            for (const auto& prop : m_properties)
+            for (const auto& property : m_properties)
             {
-                *rgData = ::SysAllocString(prop.first.c_str());
+                *rgData = ::SysAllocString(property.first.c_str());
                 if (!*rgData)
                 {
                     throw win32_error(E_OUTOFMEMORY, "failed to allocate memory");

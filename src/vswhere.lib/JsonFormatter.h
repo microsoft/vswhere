@@ -22,8 +22,7 @@ public:
     JsonFormatter(_In_ const JsonFormatter& obj) :
         Formatter(obj),
         m_padding(obj.m_padding),
-        m_requiresSep(obj.m_requiresSep),
-        m_objects(obj.m_objects)
+        m_scopes(obj.m_scopes)
     {
     }
 
@@ -33,7 +32,7 @@ public:
     }
 
 protected:
-    void StartArray(_In_ Console& console) override;
+    void StartArray(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;
     void StartObject(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;
     void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
     void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ bool value) override;
@@ -46,22 +45,13 @@ protected:
 private:
     static const size_t padding_size = 2;
 
-    void Push()
-    {
-        m_padding += std::wstring(padding_size, L' ');
-    }
+    void Push();
+    void Pop();
 
-    void Pop()
-    {
-        if (m_padding.size() > 0)
-        {
-            m_padding.resize(m_padding.size() - padding_size);
-        }
-    }
-
-    void StartProperty(_In_ Console& console);
+    void StartScope(_In_ Console& console, _In_ JsonScope::Type type, _In_ const std::wstring& name);
+    void StartProperty(_In_ Console& console, _In_ const std::wstring& name);
+    void EndScope(_In_ Console& console);
 
     std::wstring m_padding;
-    std::stack<bool> m_requiresSep;
-    std::stack<JsonScope> m_objects;
+    std::stack<JsonScope> m_scopes;
 };

@@ -353,10 +353,7 @@ public:
         sut.Write(args, console, &instance);
 
         auto expected =
-            L"[\n"
-            L"  {\n"
-            L"  }\n"
-            L"]\n";
+            L"[]\n";
 
         Assert::AreEqual(expected, console);
     }
@@ -476,6 +473,33 @@ public:
             L"    \"isComplete\": true,\n"
             L"    \"isLaunchable\": true\n"
             L"  }\n"
+            L"]\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Array)
+        TEST_WORKITEM(162)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Array)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        vector<wstring> values =
+        {
+            L"a",
+            L"b",
+            L"c",
+        };
+
+        JsonFormatter sut;
+        sut.Write(console, L"values", L"value", values);
+
+        auto expected =
+            L"[\n"
+            L"  \"a\",\n"
+            L"  \"b\",\n"
+            L"  \"c\"\n"
             L"]\n";
 
         Assert::AreEqual(expected, console);

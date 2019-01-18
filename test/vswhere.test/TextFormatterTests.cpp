@@ -453,4 +453,29 @@ public:
 
         Assert::AreEqual(expected, console);
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Array)
+        TEST_WORKITEM(162)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Array)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        vector<wstring> values =
+        {
+            L"a",
+            L"b",
+            L"c",
+        };
+
+        TextFormatter sut;
+        sut.Write(console, L"values", L"value", values);
+
+        auto expected =
+            L"value: a\n"
+            L"value: b\n"
+            L"value: c\n";
+
+        Assert::AreEqual(expected, console);
+    }
 };

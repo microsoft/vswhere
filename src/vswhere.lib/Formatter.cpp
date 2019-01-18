@@ -41,7 +41,7 @@ Formatter::FormatterMap Formatter::Formatters =
 const wstring Formatter::s_delims(L"./_");
 ci_equal Formatter::s_comparer;
 
-std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
+std::unique_ptr<Formatter> Formatter::Create(const wstring& type)
 {
     auto it = Formatters.find(type);
     if (it != Formatters.end())
@@ -55,6 +55,20 @@ std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
     throw win32_error(ERROR_NOT_SUPPORTED);
 }
 
+void Formatter::Write(_In_ Console& console, _In_ const std::wstring& root, _In_ const std::wstring& name, _In_ const std::vector<std::wstring> values)
+{
+    StartDocument(console);
+    StartArray(console, root);
+
+    for (const auto& value : values)
+    {
+        WriteProperty(console, name, value);
+    }
+
+    EndArray(console);
+    EndDocument(console);
+}
+
 void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance)
 {
     StartDocument(console);
@@ -66,7 +80,7 @@ void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ 
     EndDocument(console);
 }
 
-void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ std::vector<ISetupInstancePtr> instances)
+void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ vector<ISetupInstancePtr> instances)
 {
     StartDocument(console);
     StartArray(console);
@@ -74,6 +88,31 @@ void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ 
     for (const auto& instance : instances)
     {
         WriteInternal(args, console, instance);
+    }
+
+    EndArray(console);
+    EndDocument(console);
+}
+
+void Formatter::WriteFiles(_In_ const CommandArgs& args, _In_ Console& console, vector<ISetupInstancePtr> instances)
+{
+    StartDocument(console);
+    StartArray(console, L"files");
+
+    bstr_t bstrInstallationPath;
+    for (const auto& instance : instances)
+    {
+        auto hr = instance->GetInstallationPath(bstrInstallationPath.GetAddress());
+        if (SUCCEEDED(hr))
+        {
+            Glob glob(static_cast<LPCWSTR>(bstrInstallationPath), args.get_Find());
+
+            auto entries = glob.Entries(args.get_Sort());
+            for (const auto& entry : entries)
+            {
+                WriteProperty(console, L"file", entry);
+            }
+        }
     }
 
     EndArray(console);
@@ -155,7 +194,7 @@ void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& consol
     variant_t vtValue;
     bool found = false;
 
-    for (const auto property : m_properties)
+    for (const auto& property : m_properties)
     {
         if (specified.empty() || PropertyEqual(specified, property))
         {

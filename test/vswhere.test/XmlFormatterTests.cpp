@@ -364,8 +364,6 @@ public:
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
             L"<instances>\n"
-            L"  <instance>\n"
-            L"  </instance>\n"
             L"</instances>\n";
 
         Assert::AreEqual(expected, console);
@@ -490,6 +488,34 @@ public:
             L"    <isLaunchable>1</isLaunchable>\n"
             L"  </instance>\n"
             L"</instances>\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Array)
+        TEST_WORKITEM(162)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Array)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        vector<wstring> values =
+        {
+            L"a",
+            L"b",
+            L"c",
+        };
+
+        XmlFormatter sut;
+        sut.Write(console, L"values", L"value", values);
+
+        auto expected =
+            L"<?xml version=\"1.0\"?>\n"
+            L"<values>\n"
+            L"  <value>a</value>\n"
+            L"  <value>b</value>\n"
+            L"  <value>c</value>\n"
+            L"</values>\n";
 
         Assert::AreEqual(expected, console);
     }

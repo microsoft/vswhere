@@ -104,6 +104,7 @@
     <ClInclude Include="CommandParser.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="Formatter.h" />
+    <ClInclude Include="Glob.h" />
     <ClInclude Include="ILegacyProvider.h" />
     <ClInclude Include="InstanceSelector.h" />
     <ClInclude Include="JsonFormatter.h" />
@@ -130,6 +131,7 @@
     <ClCompile Include="CommandParser.cpp" />
     <ClCompile Include="Exceptions.cpp" />
     <ClCompile Include="Formatter.cpp" />
+    <ClCompile Include="Glob.cpp" />
     <ClCompile Include="InstanceSelector.cpp" />
     <ClCompile Include="JsonFormatter.cpp" />
     <ClCompile Include="JsonScope.cpp" />
