@@ -70,7 +70,7 @@ steps:
     condition: succeededOrFailed()
 
 - script: |
-    choco pack pkg\vswhere\vswhere.nuspec --out "bin\${{ parameters.BuildConfiguration }}" --version "%GitBuildVersionSimple%" "Configuration=${{ parameters.BuildConfiguration }}" "CommitId=$(Build.SourceVersion)"
+    choco pack pkg\vswhere\vswhere.nuspec --out "bin\${{ parameters.BuildConfiguration }}" --version "%NBGV_NuGetPackageVersion%" "Configuration=${{ parameters.BuildConfiguration }}" "CommitId=$(Build.SourceVersion)"
   displayName: Package
   workingDirectory: $(Build.SourcesDirectory)
 
