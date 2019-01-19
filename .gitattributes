@@ -2,6 +2,7 @@
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
 * text=auto
+*.rc text working-tree-encoding=UTF-16 eol=CRLF
 
 ###############################################################################
 # Set default behavior for command prompt diff.

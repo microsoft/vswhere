@@ -7,6 +7,12 @@ trigger:
     include:
     - master
     - develop
+  paths:
+    exclude:
+    - .gitattributes
+    - .gitignore
+    - CONTRIBUTING.md
+    - README.md
 
 pr: none
 
