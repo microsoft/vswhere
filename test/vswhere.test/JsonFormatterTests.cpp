@@ -19,7 +19,8 @@ public:
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
-            { L"InstallDate", L"2017-02-23T01:22:35Z"}
+            { L"InstallDate", L"2017-02-23T01:22:35Z"},
+            { L"Description", L"This description contains \"quotes\"." },
         };
 
         JsonFormatter sut;
@@ -30,7 +31,8 @@ public:
             L"  {\n"
             L"    \"instanceId\": \"a1b2c3\",\n"
             L"    \"installDate\": \"2017-02-23T01:22:35Z\",\n"
-            L"    \"installationName\": \"test\"\n"
+            L"    \"installationName\": \"test\",\n"
+            L"    \"description\": \"This description contains \\\"quotes\\\".\"\n"
             L"  }\n"
             L"]\n";
 
@@ -505,5 +507,28 @@ public:
             L"]\n";
 
         Assert::AreEqual(expected, console);
+    }
+
+    TEST_METHOD(Escape)
+    {
+        vector<tuple<wstring, wstring>> data =
+        {
+            { L"value", L"value" },
+            { L"C:\\ShouldNotExist", L"C:\\\\ShouldNotExist" },
+            { L"C:\\ShouldNotExist\\Sub", L"C:\\\\ShouldNotExist\\\\Sub" },
+            { L"\\\\ShouldNotExist", L"\\\\\\\\ShouldNotExist" },
+            { L"\"value\"", L"\\\"value\\\"" },
+            { L"\"C:\\ShouldNotExist\"", L"\\\"C:\\\\ShouldNotExist\\\"" },
+        };
+
+        for (const auto& item : data)
+        {
+            wstring source, expected;
+
+            tie(source, expected) = item;
+            auto actual = JsonFormatter::Escape(source);
+
+            Assert::AreEqual(expected.c_str(), actual.c_str());
+        }
     }
 };

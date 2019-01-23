@@ -19,7 +19,8 @@ public:
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
-            { L"InstallDate", L"2017-02-23T01:22:35Z" }
+            { L"InstallDate", L"2017-02-23T01:22:35Z" },
+            { L"Description", L"This description contains \"quotes\"." },
         };
 
         XmlFormatter sut;
@@ -32,6 +33,7 @@ public:
             L"    <instanceId>a1b2c3</instanceId>\n"
             L"    <installDate>2017-02-23T01:22:35Z</installDate>\n"
             L"    <installationName>test</installationName>\n"
+            L"    <description>This description contains \"quotes\".</description>\n"
             L"  </instance>\n"
             L"</instances>\n";
 

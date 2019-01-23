@@ -26,6 +26,8 @@ public:
     {
     }
 
+    static std::wstring Escape(_In_ const std::wstring& value);
+
     bool ShowLogo() const override
     {
         return false;
