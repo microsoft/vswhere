@@ -14,19 +14,22 @@ public:
     TEST_METHOD(Write_Instance)
     {
         CommandArgs args;
-        args.Parse(L"vswhere.exe -property instanceId");
+        args.Parse(L"vswhere.exe");
 
         TestConsole console(args);
         TestInstance instance =
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
+            { L"Description", L"This description contains \"quotes\"." },
         };
 
         ValueFormatter sut;
         sut.Write(args, console, &instance);
 
-        auto expected = L"a1b2c3\n";
+        auto expected = L"a1b2c3\n"
+            L"test\n"
+            L"This description contains \"quotes\".\n";
 
         Assert::AreEqual(expected, console);
     }

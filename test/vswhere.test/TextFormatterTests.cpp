@@ -19,6 +19,7 @@ public:
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
+            { L"Description", L"This description contains \"quotes\"." },
         };
 
         TextFormatter sut;
@@ -26,7 +27,8 @@ public:
 
         auto expected =
             L"instanceId: a1b2c3\n"
-            L"installationName: test\n";
+            L"installationName: test\n"
+            L"description: This description contains \"quotes\".\n";
 
         Assert::AreEqual(expected, console);
     }

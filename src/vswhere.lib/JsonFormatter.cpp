@@ -7,6 +7,25 @@
 
 using namespace std;
 
+wstring JsonFormatter::Escape(_In_ const wstring& value)
+{
+    wstring buffer;
+    wstring::size_type pos = 0;
+    wstring::size_type last = 0;
+
+    while ((pos = value.find_first_of(L"\"\\", last)) != wstring::npos)
+    {
+        buffer.append(value, last, pos - last);
+        buffer.push_back(L'\\');
+        buffer.push_back(value[pos]);
+
+        last = ++pos;
+    }
+
+    buffer += value.substr(last);
+    return buffer;
+}
+
 void JsonFormatter::StartArray(_In_ Console& console, _In_opt_ const std::wstring& name)
 {
     StartScope(console, JsonScope::Type::array, name);
@@ -21,7 +40,7 @@ void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& nam
 {
     StartProperty(console, name);
 
-    auto escaped = replace_all(value, L"\\", L"\\\\");
+    auto escaped = Escape(value);
     console.Write(L"\"%ls\"",escaped.c_str());
 }
 
