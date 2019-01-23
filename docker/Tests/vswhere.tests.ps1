@@ -103,6 +103,15 @@ Describe 'vswhere' {
             $instances = [xml](C:\bin\vswhere.exe -all -format xml)
             $instances.instances.instance.Count | Should Be 3
         }
+
+        It 'returns 1 instance where IsRebootRequired' {
+            # Make sure PowerShell converts to a collection of PSCustomObjects before filtering.
+            $instances = C:\bin\vswhere.exe -all -format json | ConvertFrom-Json
+
+            $instances = @($instances | Where-Object { $_.IsRebootRequired })
+            $instances.Count | Should Be 1
+            $instances[0].instanceId | Should Be 3
+        }
     }
 
     Context '-products' {
