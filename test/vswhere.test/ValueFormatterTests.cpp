@@ -395,7 +395,8 @@ public:
             L"a1b2c3\n"
             L"11\n"
             L"1\n"
-            L"0\n";
+            L"0\n"
+            L"1\n";
 
         Assert::AreEqual(expected, console);
     }
@@ -422,7 +423,8 @@ public:
             L"a1b2c3\n"
             L"4294967295\n"
             L"1\n"
-            L"1\n";
+            L"1\n"
+            L"0\n";
 
         Assert::AreEqual(expected, console);
     }

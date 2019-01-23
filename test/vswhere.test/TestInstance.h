@@ -17,6 +17,7 @@ public:
         m_properties(list.begin(), list.end()),
         m_ulRef(1)
     {
+        m_locale = ::_wcreate_locale(LC_ALL, L"en-US");
     }
 
     TestInstance(
@@ -27,6 +28,8 @@ public:
         m_properties(properties),
         m_ulRef(1)
     {
+        m_locale = ::_wcreate_locale(LC_ALL, L"en-US");
+
         for (const auto package : packages)
         {
             m_packages.push_back(package);
@@ -35,6 +38,10 @@ public:
 
     ~TestInstance()
     {
+        if (m_locale)
+        {
+            ::_free_locale(m_locale);
+        }
     }
 
     // IUnknown
@@ -191,7 +198,7 @@ public:
         _Out_ InstanceState* pState
     )
     {
-        return TryGetLONGLONG(L"State", reinterpret_cast<PLONGLONG>(pState));
+        return TryGetULONG(L"State", reinterpret_cast<PULONG>(pState));
     }
 
     STDMETHODIMP GetPackages(
@@ -414,9 +421,9 @@ private:
         return hr;
     }
 
-    STDMETHODIMP TryGetLONGLONG(_In_ LPCWSTR wszName, _Out_ PLONGLONG pll)
+    STDMETHODIMP TryGetULONG(_In_ LPCWSTR wszName, _Out_ PULONG pul)
     {
-        if (!pll)
+        if (!pul)
         {
             return E_POINTER;
         }
@@ -426,10 +433,10 @@ private:
         auto hr = TryGet(wszName, value);
         if (SUCCEEDED(hr))
         {
-            *pll = _wtoi64(value.c_str());
-            if (*pll == 0)
+            *pul = _wcstoul_l(value.c_str(), NULL, 10, m_locale);
+            if (*pul == 0 || *pul == ULONG_MAX)
             {
-                if (errno == ERANGE || errno == EINVAL)
+                if (errno == ERANGE)
                 {
                     hr = E_INVALIDARG;
                 }
@@ -444,5 +451,6 @@ private:
     MapType m_properties;
     TestPropertyStore m_catalogProperties;
     TestPropertyStore m_additionalProperties;
+    _locale_t m_locale;
     ULONG m_ulRef;
 };

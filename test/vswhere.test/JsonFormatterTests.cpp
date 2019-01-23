@@ -443,7 +443,8 @@ public:
             L"    \"instanceId\": \"a1b2c3\",\n"
             L"    \"state\": 11,\n"
             L"    \"isComplete\": true,\n"
-            L"    \"isLaunchable\": false\n"
+            L"    \"isLaunchable\": false,\n"
+            L"    \"isRebootRequired\": true\n"
             L"  }\n"
             L"]\n";
 
@@ -474,7 +475,8 @@ public:
             L"    \"instanceId\": \"a1b2c3\",\n"
             L"    \"state\": 4294967295,\n"
             L"    \"isComplete\": true,\n"
-            L"    \"isLaunchable\": true\n"
+            L"    \"isLaunchable\": true,\n"
+            L"    \"isRebootRequired\": false\n"
             L"  }\n"
             L"]\n";
 

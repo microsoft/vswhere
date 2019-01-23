@@ -456,6 +456,7 @@ public:
             L"    <state>11</state>\n"
             L"    <isComplete>1</isComplete>\n"
             L"    <isLaunchable>0</isLaunchable>\n"
+            L"    <isRebootRequired>1</isRebootRequired>\n"
             L"  </instance>\n"
             L"</instances>\n";
 
@@ -488,6 +489,7 @@ public:
             L"    <state>4294967295</state>\n"
             L"    <isComplete>1</isComplete>\n"
             L"    <isLaunchable>1</isLaunchable>\n"
+            L"    <isRebootRequired>0</isRebootRequired>\n"
             L"  </instance>\n"
             L"</instances>\n";
 

@@ -25,6 +25,7 @@ Formatter::Formatter()
         { L"isComplete", bind(&Formatter::GetIsComplete, this, _1, _2) },
         { L"isLaunchable", bind(&Formatter::GetIsLaunchable, this, _1, _2) },
         { L"isPrerelease", bind(&Formatter::GetIsPrerelease, this, _1, _2) },
+        { L"isRebootRequired", bind(&Formatter::GetIsRebootRequired, this, _1, _2) },
         { L"displayName", bind(&Formatter::GetDisplayName, this, _1, _2) },
         { L"description", bind(&Formatter::GetDescription, this, _1, _2) },
     };
@@ -526,6 +527,29 @@ HRESULT Formatter::GetIsPrerelease(_In_ ISetupInstance* pInstance, _Out_ VARIANT
         {
             vt.vt = VT_BOOL;
             *pvtIsPrerelease = vt.Detach();
+        }
+    }
+
+    return hr;
+}
+
+HRESULT Formatter::GetIsRebootRequired(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsRebootRequired)
+{
+    ISetupInstance2Ptr instance;
+    variant_t vt;
+
+    auto hr = pInstance->QueryInterface(&instance);
+    if (SUCCEEDED(hr))
+    {
+        auto state = InstanceState::eNone;
+
+        hr = instance->GetState(&state);
+        if (SUCCEEDED(hr))
+        {
+            vt.vt = VT_BOOL;
+            vt.boolVal = (state & InstanceState::eNoRebootRequired) == 0 ? VARIANT_TRUE : VARIANT_FALSE;
+
+            *pvtIsRebootRequired = vt.Detach();
         }
     }
 

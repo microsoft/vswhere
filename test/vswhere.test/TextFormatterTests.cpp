@@ -422,7 +422,8 @@ public:
             L"instanceId: a1b2c3\n"
             L"state: 11\n"
             L"isComplete: 1\n"
-            L"isLaunchable: 0\n";
+            L"isLaunchable: 0\n"
+            L"isRebootRequired: 1\n";
 
         Assert::AreEqual(expected, console);
     }
@@ -449,7 +450,8 @@ public:
             L"instanceId: a1b2c3\n"
             L"state: 4294967295\n"
             L"isComplete: 1\n"
-            L"isLaunchable: 1\n";
+            L"isLaunchable: 1\n"
+            L"isRebootRequired: 0\n";
 
         Assert::AreEqual(expected, console);
     }
