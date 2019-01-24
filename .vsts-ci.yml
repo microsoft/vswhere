@@ -17,9 +17,10 @@ queue:
   name: VSEng-MicroBuildVS2017
   timeoutInMinutes: 120
   demands: 
-  - msbuild
-  - visualstudio
-  - vstest
+  - ChocolateyInstall
+  - MSBuild
+  - VisualStudio
+  - VSTest
 
 steps:
 - task: ms-vseng.MicroBuildTasks.30666190-6959-11e5-9f96-f56098202fef.MicroBuildSigningPlugin@1
