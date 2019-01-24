@@ -19,7 +19,7 @@
     <packageSourceUrl>https://github.com/Microsoft/vswhere/tree/$CommitId$/pkg/vswhere</packageSourceUrl>
     <docsUrl>https://github.com/Microsoft/vswhere/wiki</docsUrl>
     <bugTrackerUrl>https://github.com/Microsoft/vswhere/issues</bugTrackerUrl>
-    <releaseNotes>https://github.com/Microsoft/vswhere/releases/tag/$Version$</releaseNotes>
+    <releaseNotes>https://github.com/Microsoft/vswhere/releases/tag/$Tag$</releaseNotes>
   </metadata>
   <files>
     <file src="build\vswhere.props" target="build\"/>
