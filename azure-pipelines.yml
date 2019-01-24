@@ -6,8 +6,11 @@ trigger: none
 pr:
   branches:
     include:
-      - master
-      - develop
+    - master
+    - develop
+  paths:
+    exclude:
+    - README.md
 
 pool:
   vmImage: vs2017-win2016

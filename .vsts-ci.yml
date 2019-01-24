@@ -7,6 +7,9 @@ trigger:
     include:
     - master
     - develop
+  paths:
+    exclude:
+    - README.md
 
 pr: none
 
