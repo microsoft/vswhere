@@ -190,4 +190,135 @@ public:
         Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe"));
         Assert::IsFalse(sut.Match(L"C:\\ShouldNotExist\\MSBuild.exe"));
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Leading_Backslash)
+        TEST_WORKITEM(171)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Leading_Backslash)
+    {
+        Glob sut(L"C:\\ShouldNotExist", L"\\MSBuild\\**\\MSBuild.exe");
+        Assert::AreEqual(L"C:\\ShouldNotExist\\MSBuild", sut.Root().c_str());
+
+#ifdef _DEBUG
+        Assert::AreEqual(L"^\\\\.*\\\\?MSBuild\\.exe$", sut.Pattern().c_str());
+#endif
+
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe"));
+        Assert::IsFalse(sut.Match(L"C:\\ShouldNotExist\\MSBuild.exe"));
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Leading_Double_Backslashes)
+        TEST_WORKITEM(171)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Leading_Double_Backslashes)
+    {
+        Glob sut(L"C:\\ShouldNotExist", L"\\\\MSBuild\\**\\MSBuild.exe");
+        Assert::AreEqual(L"C:\\ShouldNotExist\\MSBuild", sut.Root().c_str());
+
+#ifdef _DEBUG
+        Assert::AreEqual(L"^\\\\.*\\\\?MSBuild\\.exe$", sut.Pattern().c_str());
+#endif
+
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe"));
+        Assert::IsFalse(sut.Match(L"C:\\ShouldNotExist\\MSBuild.exe"));
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Double_Backslashes_Later)
+        TEST_WORKITEM(171)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Double_Backslashes_Later)
+    {
+        Glob sut(L"C:\\ShouldNotExist", L"MSBuild\\**\\Bin\\\\MSBuild.exe");
+        Assert::AreEqual(L"C:\\ShouldNotExist\\MSBuild", sut.Root().c_str());
+
+#ifdef _DEBUG
+        Assert::AreEqual(L"^\\\\.*\\\\?Bin\\\\MSBuild\\.exe$", sut.Pattern().c_str());
+#endif
+
+        Assert::IsFalse(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\MSBuild.exe"));
+        Assert::IsFalse(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\MSBuild.exe"));
+        Assert::IsFalse(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe"));
+        Assert::IsFalse(sut.Match(L"C:\\ShouldNotExist\\MSBuild.exe"));
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Parent_Directory)
+        TEST_WORKITEM(171)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Parent_Directory)
+    {
+        try
+        {
+            Glob(L"C:\\ShouldNotExist", L"..\\**\\msbuild.exe");
+        }
+        catch (const win32_error& ex)
+        {
+            Assert::AreEqual<int>(ERROR_INVALID_PARAMETER, ex.code().value());
+            return;
+        }
+
+        Assert::Fail(L"No exception thrown");
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Parent_Directory_Later)
+        TEST_WORKITEM(171)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Parent_Directory_Later)
+    {
+        try
+        {
+            Glob(L"C:\\ShouldNotExist", L"**\\..\\msbuild.exe");
+        }
+        catch (const win32_error& ex)
+        {
+            Assert::AreEqual<int>(ERROR_INVALID_PARAMETER, ex.code().value());
+            return;
+        }
+
+        Assert::Fail(L"No exception thrown");
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Current_Directory)
+        TEST_WORKITEM(171)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Current_Directory)
+    {
+        Glob sut(L"C:\\ShouldNotExist", L".\\**\\msbuild.exe");
+        Assert::AreEqual(L"C:\\ShouldNotExist", sut.Root().c_str());
+
+#ifdef _DEBUG
+        Assert::AreEqual(L"^\\\\.*\\\\?msbuild\\.exe$", sut.Pattern().c_str());
+#endif
+
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe"));
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Current_Directory_Later)
+        TEST_WORKITEM(171)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Current_Directory_Later)
+    {
+        Glob sut(L"C:\\ShouldNotExist", L"**\\.\\msbuild.exe");
+        Assert::AreEqual(L"C:\\ShouldNotExist", sut.Root().c_str());
+
+#ifdef _DEBUG
+        Assert::AreEqual(L"^\\\\.*\\\\?msbuild\\.exe$", sut.Pattern().c_str());
+#endif
+
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\MSBuild.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe"));
+    }
 };
