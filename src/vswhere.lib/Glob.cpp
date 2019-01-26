@@ -26,12 +26,31 @@ Glob::Glob(_In_ const wstring& root, _In_ const wstring& pattern) :
         // Append directories to root until wildcard found, then accumulate to optimize match.
         case L'/':
         case L'\\':
+            if (lastch == L'/' || lastch == L'\\')
+            {
+                // Ignore subsequent directory separators.
+                continue;
+            }
+
             if (value.length())
             {
-                // Replase globstar with any characer match plus optional directory separator.
                 if (found_globstar)
                 {
+                    // Replase globstar with any characer match plus optional directory separator.
                     accumulator += L".*\\\\?";
+                }
+                else if (value_raw.length() == 1 && value_raw == L".")
+                {
+                    // Ignore current directory references.
+                    value.clear();
+                    value_raw.clear();
+
+                    continue;
+                }
+                else if (value_raw.length() == 2 && value_raw == L"..")
+                {
+                    // Block parent directory references.
+                    ThrowError(pattern);
                 }
                 else if (found_wildcard)
                 {
@@ -45,13 +64,9 @@ Glob::Glob(_In_ const wstring& root, _In_ const wstring& pattern) :
                         accumulator += value;
                     }
                 }
-                else if (value_raw.length())
-                {
-                    m_root /= value_raw;
-                }
                 else
                 {
-                    m_root /= value;
+                    m_root /= value_raw;
                 }
 
                 value.clear();
@@ -126,11 +141,7 @@ Glob::Glob(_In_ const wstring& root, _In_ const wstring& pattern) :
             }
 
             value += ch;
-            if (!found_wildcard)
-            {
-                // Keep track of possible subdirectories until we find a wildcard.
-                value_raw += ch;
-            }
+            value_raw += ch;
 
             break;
         }
