@@ -18,17 +18,15 @@ _vswhere_ is included with the installer as of Visual Studio 2017 version 15.2 a
 
 ## Example
 
-If you wanted to find MSBuild - now installed under the Visual Studio 2017 and newer installation root - you could script a command like the following to find the latest version installed.
+If you wanted to find MSBuild - now installed under the Visual Studio 2017 and newer installation root - you could script a command like the following to run the latest version of MSBuild installed. This example uses the new `-find` parameter in our [latest release](https://github.com/Microsoft/vswhere/releases/latest) that searches selected instances for matching file name patterns. You can tailor what instances you select with parameters like `-version` or `-prerelease` to find specific versions you support, optionally including prereleases.
 
 ```batch
 @echo off
+setlocal enabledelayedexpansion
 
-for /f "usebackq tokens=1* delims=: " %%i in (`vswhere -latest -requires Microsoft.Component.MSBuild`) do (
-  if /i "%%i"=="installationPath" set InstallDir=%%j
-)
-
-if exist "%InstallDir%\MSBuild\15.0\Bin\MSBuild.exe" (
-  "%InstallDir%\MSBuild\15.0\Bin\MSBuild.exe" %*
+for /f "usebackq tokens=*" %%i in (`vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`) do (
+  "%%i" %*
+  exit /b !errorlevel!
 )
 ```
 
