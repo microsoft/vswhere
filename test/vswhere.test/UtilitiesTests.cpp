@@ -60,46 +60,4 @@ public:
             Assert::AreEqual(expected, actual, format(L"ci_less(%ls, %ls)", lhs.c_str(), rhs.c_str()).c_str());
         }
     }
-
-    TEST_METHOD(replace_all_theory_string)
-    {
-        vector<tuple<string, string>> data =
-        {
-            { "value", "value" },
-            { "C:\\ShouldNotExist", "C:\\\\ShouldNotExist" },
-            { "C:\\ShouldNotExist\\Sub", "C:\\\\ShouldNotExist\\\\Sub" },
-            { "\\\\ShouldNotExist", "\\\\\\\\ShouldNotExist" },
-        };
-
-        for (const auto& item : data)
-        {
-            string source, expected;
-
-            tie(source, expected) = item;
-            auto actual = replace_all(source, "\\", "\\\\");
-
-            Assert::AreEqual(expected.c_str(), actual.c_str());
-        }
-    }
-
-    TEST_METHOD(replace_all_theory_wstring)
-    {
-        vector<tuple<wstring, wstring>> data =
-        {
-            { L"value", L"value" },
-            { L"C:\\ShouldNotExist", L"C:\\\\ShouldNotExist" },
-            { L"C:\\ShouldNotExist\\Sub", L"C:\\\\ShouldNotExist\\\\Sub" },
-            { L"\\\\ShouldNotExist", L"\\\\\\\\ShouldNotExist" },
-        };
-
-        for (const auto& item : data)
-        {
-            wstring source, expected;
-
-            tie(source, expected) = item;
-            auto actual = replace_all(source, L"\\", L"\\\\");
-
-            Assert::AreEqual(expected.c_str(), actual.c_str());
-        }
-    }
 };

@@ -1,17 +1,16 @@
 # Copyright (C) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT license. See LICENSE.txt in the project root for license information.
 
-trigger:
-  batch: true
-  branches:
-    include:
-      - develop
+trigger: none
 
 pr:
   branches:
     include:
-      - master
-      - develop
+    - master
+    - develop
+  paths:
+    exclude:
+    - README.md
 
 pool:
   vmImage: vs2017-win2016

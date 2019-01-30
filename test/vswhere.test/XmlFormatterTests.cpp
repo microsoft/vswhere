@@ -19,7 +19,8 @@ public:
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
-            { L"InstallDate", L"2017-02-23T01:22:35Z" }
+            { L"InstallDate", L"2017-02-23T01:22:35Z" },
+            { L"Description", L"This description contains \"quotes\"." },
         };
 
         XmlFormatter sut;
@@ -32,6 +33,7 @@ public:
             L"    <instanceId>a1b2c3</instanceId>\n"
             L"    <installDate>2017-02-23T01:22:35Z</installDate>\n"
             L"    <installationName>test</installationName>\n"
+            L"    <description>This description contains \"quotes\".</description>\n"
             L"  </instance>\n"
             L"</instances>\n";
 
@@ -364,8 +366,6 @@ public:
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
             L"<instances>\n"
-            L"  <instance>\n"
-            L"  </instance>\n"
             L"</instances>\n";
 
         Assert::AreEqual(expected, console);
@@ -456,6 +456,7 @@ public:
             L"    <state>11</state>\n"
             L"    <isComplete>1</isComplete>\n"
             L"    <isLaunchable>0</isLaunchable>\n"
+            L"    <isRebootRequired>1</isRebootRequired>\n"
             L"  </instance>\n"
             L"</instances>\n";
 
@@ -488,8 +489,37 @@ public:
             L"    <state>4294967295</state>\n"
             L"    <isComplete>1</isComplete>\n"
             L"    <isLaunchable>1</isLaunchable>\n"
+            L"    <isRebootRequired>0</isRebootRequired>\n"
             L"  </instance>\n"
             L"</instances>\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Array)
+        TEST_WORKITEM(162)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Array)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        vector<wstring> values =
+        {
+            L"a",
+            L"b",
+            L"c",
+        };
+
+        XmlFormatter sut;
+        sut.Write(console, L"values", L"value", values);
+
+        auto expected =
+            L"<?xml version=\"1.0\"?>\n"
+            L"<values>\n"
+            L"  <value>a</value>\n"
+            L"  <value>b</value>\n"
+            L"  <value>c</value>\n"
+            L"</values>\n";
 
         Assert::AreEqual(expected, console);
     }

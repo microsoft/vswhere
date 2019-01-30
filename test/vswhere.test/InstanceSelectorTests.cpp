@@ -102,11 +102,18 @@ public:
 
     TEST_METHOD(Select_No_Version)
     {
-        TestInstance instance =
+        TestPackageReference product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestInstance::MapType properties =
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
         };
+
+        TestInstance instance(&product, {}, properties);
 
         TestEnumInstances instances =
         {
@@ -639,5 +646,55 @@ public:
         bstr_t bstrInstanceId;
         Assert::AreEqual(S_OK, selected[0]->GetInstanceId(bstrInstanceId.GetAddress()));
         Assert::AreEqual(L"VisualStudio.14.0", bstrInstanceId);
+    }
+
+    TEST_METHOD(Sort)
+    {
+        TestPackageReference product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        // Add reference since this will be used in two different instances.
+        product.AddRef();
+
+        TestInstance::MapType propertiesA =
+        {
+            { L"InstanceId", L"a" },
+            { L"InstallationVersion", L"1.0" },
+            { L"InstallDate", L"2017-02-23T22:00:00Z" },
+        };
+        TestInstance a(&product, {}, propertiesA);
+
+        TestInstance::MapType propertiesB =
+        {
+            { L"InstanceId", L"b" },
+            { L"InstallationVersion", L"2.0" },
+            { L"InstallDate", L"2017-02-23T23:00:00Z" },
+        };
+        TestInstance b(&product, {}, propertiesB);
+
+        TestEnumInstances instances =
+        {
+            &a,
+            &b,
+        };
+
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -sort");
+
+        TestHelper helper(0, 0);
+
+        InstanceSelector sut(args, &helper);
+        auto selected = sut.Select(&instances);
+
+        Assert::AreEqual<size_t>(2, selected.size());
+
+        bstr_t bstrInstanceId;
+        Assert::AreEqual(S_OK, selected[0]->GetInstanceId(bstrInstanceId.GetAddress()));
+        Assert::AreEqual(L"b", bstrInstanceId);
+
+        Assert::AreEqual(S_OK, selected[1]->GetInstanceId(bstrInstanceId.GetAddress()));
+        Assert::AreEqual(L"a", bstrInstanceId);
     }
 };

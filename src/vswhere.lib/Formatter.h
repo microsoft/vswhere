@@ -19,8 +19,10 @@ public:
     {
     }
 
+    void Write(_In_ Console& console, _In_ const std::wstring& root, _In_ const std::wstring& name, _In_ const std::vector<std::wstring> values);
     void Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance);
     void Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ std::vector<ISetupInstancePtr> instances);
+    void WriteFiles(_In_ const CommandArgs& args, _In_ Console& console, std::vector<ISetupInstancePtr> instances);
 
     virtual bool ShowLogo() const
     {
@@ -38,7 +40,7 @@ protected:
     static std::wstring FormatDateISO8601(_In_ const FILETIME& value);
 
     virtual void StartDocument(_In_ Console& console) {}
-    virtual void StartArray(_In_ Console& console) {}
+    virtual void StartArray(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) {}
     virtual void StartObject(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) {}
     virtual void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value) {}
     virtual void EndObject(_In_ Console& console) {}
@@ -75,6 +77,7 @@ private:
     HRESULT GetIsComplete(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsComplete);
     HRESULT GetIsLaunchable(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsLaunchable);
     HRESULT GetIsPrerelease(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsPrerelease);
+    HRESULT GetIsRebootRequired(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsRebootRequired);
     HRESULT GetDisplayName(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtDisplayName);
     HRESULT GetDescription(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtDescription);
 

@@ -103,6 +103,15 @@ Describe 'vswhere' {
             $instances = [xml](C:\bin\vswhere.exe -all -format xml)
             $instances.instances.instance.Count | Should Be 3
         }
+
+        It 'returns 1 instance where IsRebootRequired' {
+            # Make sure PowerShell converts to a collection of PSCustomObjects before filtering.
+            $instances = C:\bin\vswhere.exe -all -format json | ConvertFrom-Json
+
+            $instances = @($instances | Where-Object { $_.IsRebootRequired })
+            $instances.Count | Should Be 1
+            $instances[0].instanceId | Should Be 3
+        }
     }
 
     Context '-products' {
@@ -295,8 +304,7 @@ Describe 'vswhere' {
 
         It 'returns 0 instances using "json"' {
             $instances = C:\bin\vswhere.exe -property invalid -format json | ConvertFrom-Json
-            $instances.Count | Should Be 2
-            $instances | ForEach-Object { $_.instanceId | Should BeNullOrEmpty }
+            $instances.Count | Should Be 0
         }
 
         It 'returns 0 instances using "value"' {
@@ -306,8 +314,7 @@ Describe 'vswhere' {
 
         It 'returns 0 instances using "xml"' {
             $instances = [xml](C:\bin\vswhere.exe -property invalid -format xml)
-            @($instances.instances.instance).Count | Should Be 2
-            @($instances.instances.instance) | ForEach-Object { $_.instanceId | Should BeNullOrEmpty }
+            $instances.instances.instance.Count | Should Be 0
         }
     }
 

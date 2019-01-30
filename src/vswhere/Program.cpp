@@ -68,7 +68,15 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
             WriteLogo(args, console, queryModule);
         }
 
-        formatter->Write(args, console, instances);
+        if (args.get_Find().length())
+        {
+            formatter->WriteFiles(args, console, instances);
+        }
+        else
+        {
+            formatter->Write(args, console, instances);
+        }
+
         return ERROR_SUCCESS;
     }
     catch (const system_error& ex)

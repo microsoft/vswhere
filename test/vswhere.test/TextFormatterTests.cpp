@@ -19,6 +19,7 @@ public:
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
+            { L"Description", L"This description contains \"quotes\"." },
         };
 
         TextFormatter sut;
@@ -26,7 +27,8 @@ public:
 
         auto expected =
             L"instanceId: a1b2c3\n"
-            L"installationName: test\n";
+            L"installationName: test\n"
+            L"description: This description contains \"quotes\".\n";
 
         Assert::AreEqual(expected, console);
     }
@@ -422,7 +424,8 @@ public:
             L"instanceId: a1b2c3\n"
             L"state: 11\n"
             L"isComplete: 1\n"
-            L"isLaunchable: 0\n";
+            L"isLaunchable: 0\n"
+            L"isRebootRequired: 1\n";
 
         Assert::AreEqual(expected, console);
     }
@@ -449,7 +452,33 @@ public:
             L"instanceId: a1b2c3\n"
             L"state: 4294967295\n"
             L"isComplete: 1\n"
-            L"isLaunchable: 1\n";
+            L"isLaunchable: 1\n"
+            L"isRebootRequired: 0\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Array)
+        TEST_WORKITEM(162)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Array)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        vector<wstring> values =
+        {
+            L"a",
+            L"b",
+            L"c",
+        };
+
+        TextFormatter sut;
+        sut.Write(console, L"values", L"value", values);
+
+        auto expected =
+            L"value: a\n"
+            L"value: b\n"
+            L"value: c\n";
 
         Assert::AreEqual(expected, console);
     }

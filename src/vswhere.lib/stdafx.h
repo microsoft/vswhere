@@ -30,11 +30,13 @@
 #include <algorithm>
 #include <climits>
 #include <codecvt>
+#include <filesystem>
 #include <functional>
 #include <iterator>
 #include <iostream>
 #include <map>
 #include <memory>
+#include <regex>
 #include <sstream>
 #include <stack>
 #include <string>
@@ -57,6 +59,7 @@ _COM_SMARTPTR_TYPEDEF(ISetupInstanceCatalog, __uuidof(ISetupInstanceCatalog));
 #include "CommandArgs.h"
 #include "Console.h"
 #include "Formatter.h"
+#include "Glob.h"
 #include "ILegacyProvider.h"
 #include "LegacyProvider.h"
 #include "LegacyInstance.h"

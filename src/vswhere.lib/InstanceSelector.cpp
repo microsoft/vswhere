@@ -130,7 +130,7 @@ vector<ISetupInstancePtr> InstanceSelector::Select(_In_opt_ IEnumSetupInstances*
             L"10.0",
         };
 
-        for (auto version : versions)
+        for (const auto version : versions)
         {
             ISetupInstancePtr instance;
 
@@ -142,17 +142,24 @@ vector<ISetupInstancePtr> InstanceSelector::Select(_In_opt_ IEnumSetupInstances*
         }
     }
 
-    if (m_args.get_Latest() && 1 < instances.size())
+    if (1 < instances.size())
     {
-        sort(instances.begin(), instances.end(), [&](const ISetupInstancePtr& a, const ISetupInstancePtr& b) -> bool
+        if (m_args.get_Latest() || m_args.get_Sort())
         {
-            return Less(a, b);
-        });
+            sort(instances.begin(), instances.end(), [&](const ISetupInstancePtr& a, const ISetupInstancePtr& b) -> bool
+            {
+                // Reverse the sort with addition of -sort using existing algorithm.
+                return !Less(a, b);
+            });
 
-        return vector<ISetupInstancePtr>
-        {
-            instances.back(),
-        };
+            if (m_args.get_Latest())
+            {
+                return vector<ISetupInstancePtr>
+                {
+                    instances.front(),
+                };
+            }
+        }
     }
 
     return instances;
@@ -253,7 +260,7 @@ bool InstanceSelector::IsWorkloadMatch(_In_ ISetupInstance2* pInstance) const
     // Keep track of which requirements we matched.
     typedef map<wstring, bool, ci_less> MapType;
     MapType found;
-    for (const auto require : requires)
+    for (const auto& require : requires)
     {
         found.emplace(make_pair(require, false));
     }

@@ -30,10 +30,12 @@ public:
         m_requires(obj.m_requires),
         m_version(obj.m_version),
         m_latest(obj.m_latest),
+        m_sort(obj.m_sort),
         m_legacy(obj.m_legacy),
         m_prerelease(obj.m_prerelease),
         m_format(obj.m_format),
         m_property(obj.m_property),
+        m_find(obj.m_find),
         m_nologo(obj.m_nologo),
         m_utf8(obj.m_utf8),
         m_help(obj.m_help)
@@ -80,6 +82,11 @@ public:
         return m_latest;
     }
 
+    const bool get_Sort() const noexcept
+    {
+        return m_sort;
+    }
+
     const bool get_Legacy() const noexcept
     {
         return m_legacy;
@@ -103,6 +110,11 @@ public:
     const std::wstring& get_Property() const noexcept
     {
         return m_property;
+    }
+
+    const std::wstring& get_Find() const noexcept
+    {
+        return m_find;
     }
 
     const bool get_Logo() const noexcept
@@ -139,10 +151,12 @@ private:
     bool m_requiresAny;
     std::wstring m_version;
     bool m_latest;
+    bool m_sort;
     bool m_legacy;
     bool m_prerelease;
     std::wstring m_format;
     std::wstring m_property;
+    std::wstring m_find;
     bool m_nologo;
     bool m_utf8;
     bool m_help;

@@ -25,6 +25,7 @@ Formatter::Formatter()
         { L"isComplete", bind(&Formatter::GetIsComplete, this, _1, _2) },
         { L"isLaunchable", bind(&Formatter::GetIsLaunchable, this, _1, _2) },
         { L"isPrerelease", bind(&Formatter::GetIsPrerelease, this, _1, _2) },
+        { L"isRebootRequired", bind(&Formatter::GetIsRebootRequired, this, _1, _2) },
         { L"displayName", bind(&Formatter::GetDisplayName, this, _1, _2) },
         { L"description", bind(&Formatter::GetDescription, this, _1, _2) },
     };
@@ -41,7 +42,7 @@ Formatter::FormatterMap Formatter::Formatters =
 const wstring Formatter::s_delims(L"./_");
 ci_equal Formatter::s_comparer;
 
-std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
+std::unique_ptr<Formatter> Formatter::Create(const wstring& type)
 {
     auto it = Formatters.find(type);
     if (it != Formatters.end())
@@ -55,6 +56,20 @@ std::unique_ptr<Formatter> Formatter::Create(const std::wstring& type)
     throw win32_error(ERROR_NOT_SUPPORTED);
 }
 
+void Formatter::Write(_In_ Console& console, _In_ const std::wstring& root, _In_ const std::wstring& name, _In_ const std::vector<std::wstring> values)
+{
+    StartDocument(console);
+    StartArray(console, root);
+
+    for (const auto& value : values)
+    {
+        WriteProperty(console, name, value);
+    }
+
+    EndArray(console);
+    EndDocument(console);
+}
+
 void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance)
 {
     StartDocument(console);
@@ -66,7 +81,7 @@ void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ 
     EndDocument(console);
 }
 
-void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ std::vector<ISetupInstancePtr> instances)
+void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ vector<ISetupInstancePtr> instances)
 {
     StartDocument(console);
     StartArray(console);
@@ -74,6 +89,31 @@ void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ 
     for (const auto& instance : instances)
     {
         WriteInternal(args, console, instance);
+    }
+
+    EndArray(console);
+    EndDocument(console);
+}
+
+void Formatter::WriteFiles(_In_ const CommandArgs& args, _In_ Console& console, vector<ISetupInstancePtr> instances)
+{
+    StartDocument(console);
+    StartArray(console, L"files");
+
+    bstr_t bstrInstallationPath;
+    for (const auto& instance : instances)
+    {
+        auto hr = instance->GetInstallationPath(bstrInstallationPath.GetAddress());
+        if (SUCCEEDED(hr))
+        {
+            Glob glob(static_cast<LPCWSTR>(bstrInstallationPath), args.get_Find());
+
+            auto entries = glob.Entries(args.get_Sort());
+            for (const auto& entry : entries)
+            {
+                WriteProperty(console, L"file", entry);
+            }
+        }
     }
 
     EndArray(console);
@@ -155,7 +195,7 @@ void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& consol
     variant_t vtValue;
     bool found = false;
 
-    for (const auto property : m_properties)
+    for (const auto& property : m_properties)
     {
         if (specified.empty() || PropertyEqual(specified, property))
         {
@@ -526,6 +566,29 @@ HRESULT Formatter::GetIsPrerelease(_In_ ISetupInstance* pInstance, _Out_ VARIANT
         {
             vt.vt = VT_BOOL;
             *pvtIsPrerelease = vt.Detach();
+        }
+    }
+
+    return hr;
+}
+
+HRESULT Formatter::GetIsRebootRequired(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtIsRebootRequired)
+{
+    ISetupInstance2Ptr instance;
+    variant_t vt;
+
+    auto hr = pInstance->QueryInterface(&instance);
+    if (SUCCEEDED(hr))
+    {
+        auto state = InstanceState::eNone;
+
+        hr = instance->GetState(&state);
+        if (SUCCEEDED(hr))
+        {
+            vt.vt = VT_BOOL;
+            vt.boolVal = (state & InstanceState::eNoRebootRequired) == 0 ? VARIANT_TRUE : VARIANT_FALSE;
+
+            *pvtIsRebootRequired = vt.Detach();
         }
     }
 

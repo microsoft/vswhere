@@ -193,7 +193,7 @@ public:
         ULONGLONG ullMaxVersionActual;
         ULONGLONG ullMaxVersionExpected;
 
-        for (auto datum : data)
+        for (const auto& datum : data)
         {
             tie(uiLine, hrExpected, pwszVersionRange, ullMinVersionExpected, ullMaxVersionExpected) = datum;
 

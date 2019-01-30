@@ -81,6 +81,10 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         {
             m_latest = true;
         }
+        else if (ArgumentEquals(arg.Value, L"sort"))
+        {
+            m_sort = true;
+        }
         else if (ArgumentEquals(arg.Value, L"legacy"))
         {
             m_legacy = true;
@@ -106,7 +110,23 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         }
         else if (ArgumentEquals(arg.Value, L"property"))
         {
+            if (m_find.length())
+            {
+                auto message = ResourceManager::FormatString(IDS_E_ARGINCOMPAT, L"property", L"find");
+                throw win32_error(ERROR_INVALID_PARAMETER, message);
+            }
+
             m_property = ParseArgument(it, args.end(), arg);
+        }
+        else if (ArgumentEquals(arg.Value, L"find"))
+        {
+            if (m_property.length())
+            {
+                auto message = ResourceManager::FormatString(IDS_E_ARGINCOMPAT, L"find", L"property");
+                throw win32_error(ERROR_INVALID_PARAMETER, message);
+            }
+
+            m_find = ParseArgument(it, args.end(), arg);
         }
         else if (ArgumentEquals(arg.Value, L"nologo"))
         {
@@ -146,7 +166,7 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         }
     }
 
-    if (!m_property.empty() && m_format.empty())
+    if ((m_property.length() || m_find.length()) && m_format.empty())
     {
         m_format = L"value";
     }

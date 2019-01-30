@@ -298,4 +298,14 @@ public:
         args.Parse(L"vswhere.exe -utf8");
         Assert::IsTrue(args.get_UTF8());
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Find_Exclusive_With_Property)
+        TEST_WORKITEM(162)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Find_Exclusive_With_Property)
+    {
+        CommandArgs args;
+
+        Assert::ExpectException<win32_error>([&] { args.Parse(L"vswhere.exe -property any -find *"); });
+    }
 };

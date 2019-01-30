@@ -14,19 +14,22 @@ public:
     TEST_METHOD(Write_Instance)
     {
         CommandArgs args;
-        args.Parse(L"vswhere.exe -property instanceId");
+        args.Parse(L"vswhere.exe");
 
         TestConsole console(args);
         TestInstance instance =
         {
             { L"InstanceId", L"a1b2c3" },
             { L"InstallationName", L"test" },
+            { L"Description", L"This description contains \"quotes\"." },
         };
 
         ValueFormatter sut;
         sut.Write(args, console, &instance);
 
-        auto expected = L"a1b2c3\n";
+        auto expected = L"a1b2c3\n"
+            L"test\n"
+            L"This description contains \"quotes\".\n";
 
         Assert::AreEqual(expected, console);
     }
@@ -395,7 +398,8 @@ public:
             L"a1b2c3\n"
             L"11\n"
             L"1\n"
-            L"0\n";
+            L"0\n"
+            L"1\n";
 
         Assert::AreEqual(expected, console);
     }
@@ -422,7 +426,33 @@ public:
             L"a1b2c3\n"
             L"4294967295\n"
             L"1\n"
-            L"1\n";
+            L"1\n"
+            L"0\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Writes_Array)
+        TEST_WORKITEM(162)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Writes_Array)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        vector<wstring> values =
+        {
+            L"a",
+            L"b",
+            L"c",
+        };
+
+        ValueFormatter sut;
+        sut.Write(console, L"values", L"value", values);
+
+        auto expected =
+            L"a\n"
+            L"b\n"
+            L"c\n";
 
         Assert::AreEqual(expected, console);
     }
