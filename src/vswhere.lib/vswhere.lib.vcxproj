@@ -15,7 +15,7 @@
     <ProjectGuid>{4CCF39CB-4794-44E2-AA57-D215F13CF606}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>vswherelib</RootNamespace>
-    <TargetUniversalCRTVersion>10.0.14393.0</TargetUniversalCRTVersion>
+    <TargetUniversalCRTVersion>10.0.16299.0</TargetUniversalCRTVersion>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
