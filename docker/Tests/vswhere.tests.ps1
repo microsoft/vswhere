@@ -200,6 +200,11 @@ Describe 'vswhere' {
             @($instances.instances.instance).Count | Should Be 1
             @($instances.instances.instance)[0].instanceId | Should Be 2
         }
+
+        It 'does not crash when passed %0' {
+            $message = C:\bin\vswhere.exe -version '%0'
+            $message[-1] | Should Be 'Error 0x57: The version "%0" is not a valid version range'
+        }
     }
 
     Context '-latest' {

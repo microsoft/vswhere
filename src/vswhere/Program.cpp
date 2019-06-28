@@ -92,7 +92,7 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         const auto* err = dynamic_cast<const win32_error*>(&ex);
         if (err)
         {
-            console.WriteLine(err->wwhat());
+            console.WriteLine(L"%ls", err->wwhat());
         }
         else
         {
