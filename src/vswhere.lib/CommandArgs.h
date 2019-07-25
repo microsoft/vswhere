@@ -23,15 +23,16 @@ public:
     }
 
     CommandArgs(const CommandArgs& obj) :
-        m_path(obj.m_path),
+        m_applicationPath(obj.m_applicationPath),
         m_all(obj.m_all),
         m_productsAll(obj.m_productsAll),
         m_products(obj.m_products),
         m_requires(obj.m_requires),
         m_version(obj.m_version),
         m_latest(obj.m_latest),
-        m_sort(obj.m_sort),
         m_legacy(obj.m_legacy),
+        m_path(obj.m_path),
+        m_sort(obj.m_sort),
         m_prerelease(obj.m_prerelease),
         m_format(obj.m_format),
         m_property(obj.m_property),
@@ -42,9 +43,9 @@ public:
     {
     }
 
-    const std::wstring& get_Path() const noexcept
+    const std::wstring& get_ApplicationPath() const noexcept
     {
-        return m_path;
+        return m_applicationPath;
     }
 
     const bool get_All() const noexcept
@@ -82,14 +83,19 @@ public:
         return m_latest;
     }
 
-    const bool get_Sort() const noexcept
-    {
-        return m_sort;
-    }
-
     const bool get_Legacy() const noexcept
     {
         return m_legacy;
+    }
+
+    const std::wstring& get_Path() const noexcept
+    {
+        return m_path;
+    }
+
+    const bool get_Sort() const noexcept
+    {
+        return m_sort;
     }
 
     const bool get_Prerelease() const noexcept
@@ -143,7 +149,7 @@ private:
 
     void Parse(_In_ std::vector<CommandParser::Token> args);
 
-    std::wstring m_path;
+    std::wstring m_applicationPath;
     bool m_all;
     bool m_productsAll;
     std::vector<std::wstring> m_products;
@@ -151,8 +157,9 @@ private:
     bool m_requiresAny;
     std::wstring m_version;
     bool m_latest;
-    bool m_sort;
     bool m_legacy;
+    std::wstring m_path;
+    bool m_sort;
     bool m_prerelease;
     std::wstring m_format;
     std::wstring m_property;

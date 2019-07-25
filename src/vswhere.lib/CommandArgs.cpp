@@ -29,7 +29,7 @@ void CommandArgs::Parse(_In_ LPCWSTR wszCommandLine)
     CommandParser parser;
     auto args = parser.Parse(wszCommandLine);
 
-    m_path = parser.get_Path();
+    m_applicationPath = parser.get_Path();
 
     Parse(args);
 }
@@ -39,13 +39,15 @@ void CommandArgs::Parse(_In_ int argc, _In_ LPCWSTR argv[])
     CommandParser parser;
     auto args = parser.Parse(argc, argv);
 
-    m_path = parser.get_Path();
+    m_applicationPath = parser.get_Path();
 
     Parse(args);
 }
 
 void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
 {
+    bool hasSelection = false;
+
     for (auto it = args.begin(); it != args.end(); ++it)
     {
         auto& arg = *it;
@@ -60,26 +62,32 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         if (ArgumentEquals(arg.Value, L"all"))
         {
             m_all = true;
+            hasSelection = true;
         }
         else if (ArgumentEquals(arg.Value, L"products"))
         {
             ParseArgumentArray(it, args.end(), arg, m_products);
+            hasSelection = true;
         }
         else if (ArgumentEquals(arg.Value, L"requires"))
         {
             ParseArgumentArray(it, args.end(), arg, m_requires);
+            hasSelection = true;
         }
         else if (ArgumentEquals(arg.Value, L"requiresAny"))
         {
             m_requiresAny = true;
+            hasSelection = true;
         }
         else if (ArgumentEquals(arg.Value, L"version"))
         {
             m_version = ParseArgument(it, args.end(), arg);
+            hasSelection = true;
         }
         else if (ArgumentEquals(arg.Value, L"latest"))
         {
             m_latest = true;
+            hasSelection = true;
         }
         else if (ArgumentEquals(arg.Value, L"sort"))
         {
@@ -88,10 +96,16 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         else if (ArgumentEquals(arg.Value, L"legacy"))
         {
             m_legacy = true;
+            hasSelection = true;
+        }
+        else if (ArgumentEquals(arg.Value, L"path"))
+        {
+            m_path = ParseArgument(it, args.end(), arg);
         }
         else if (ArgumentEquals(arg.Value, L"prerelease"))
         {
             m_prerelease = true;
+            hasSelection = true;
         }
         else if (ArgumentEquals(arg.Value, L"format"))
         {
@@ -169,6 +183,12 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
     if ((m_property.length() || m_find.length()) && m_format.empty())
     {
         m_format = L"value";
+    }
+
+    if (hasSelection && !m_path.empty())
+    {
+        auto message = ResourceManager::GetString(IDS_E_PATHINCOMPATIBLE);
+        throw win32_error(ERROR_INVALID_PARAMETER, message);
     }
 }
 

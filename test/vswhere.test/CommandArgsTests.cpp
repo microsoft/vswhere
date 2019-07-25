@@ -16,11 +16,12 @@ public:
         CommandArgs args;
         args.Parse(L"vswhere.exe");
 
-        Assert::AreEqual(L"vswhere.exe", args.get_Path().c_str());
+        Assert::AreEqual(L"vswhere.exe", args.get_ApplicationPath().c_str());
         Assert::IsFalse(args.get_All());
         Assert::AreEqual<size_t>(0, args.get_Version().length());
         Assert::IsFalse(args.get_Latest());
         Assert::IsFalse(args.get_Legacy());
+        Assert::AreEqual<size_t>(0, args.get_Path().length());
         Assert::IsFalse(args.get_Prerelease());
         Assert::AreEqual(L"text", args.get_Format().c_str());
         Assert::AreEqual<size_t>(0, args.get_Property().length());
@@ -307,5 +308,87 @@ public:
         CommandArgs args;
 
         Assert::ExpectException<win32_error>([&] { args.Parse(L"vswhere.exe -property any -find *"); });
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Parse_Path)
+        TEST_WORKITEM(191)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Parse_Path)
+    {
+        CommandArgs args;
+        Assert::IsTrue(args.get_Path().empty());
+
+        args.Parse(L"vswhere.exe -path .");
+        Assert::AreEqual(L".", args.get_Path().c_str());
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Parse_Path_Requires_Argument)
+        TEST_WORKITEM(191)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Parse_Path_Requires_Argument)
+    {
+        CommandArgs args;
+        Assert::IsTrue(args.get_Path().empty());
+
+        Assert::ExpectException<win32_error>([&] { args.Parse(L"vswhere.exe -path"); });
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Parse_Path_Incompatible_Other_Selection_Options)
+        TEST_WORKITEM(191)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Parse_Path_Incompatible_Other_Selection_Options)
+    {
+        vector<wstring> data =
+        {
+            { L"-all" },
+            { L"-prerelease" },
+            { L"-products *" },
+            { L"-requires Microsoft.VisualStudio.Component.MSBuild" },
+            { L"-requiresAny" },
+            { L"-version [15.0,16.0)" },
+            { L"-latest" },
+            { L"-legacy" },
+        };
+
+        for (const auto& item : data)
+        {
+            wstring commandLine = L"vswhere.exe -path . ";
+            commandLine += item;
+
+            CommandArgs args;
+            Assert::ExpectException<win32_error>([&] { args.Parse(commandLine.c_str()); });
+        }
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Parse_Path_Compatible_Output_Options_Find)
+        TEST_WORKITEM(191)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Parse_Path_Compatible_Output_Options_Find)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -path . -sort -format json -find **\\msbuild.exe -nologo -utf8");
+
+        Assert::AreEqual(L".", args.get_Path().c_str());
+        Assert::IsTrue(args.get_Sort());
+        Assert::AreEqual(L"json", args.get_Format().c_str());
+        Assert::AreEqual(L"**\\msbuild.exe", args.get_Find().c_str());
+        Assert::IsFalse(args.get_Logo());
+        Assert::IsTrue(args.get_UTF8());
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Parse_Path_Compatible_Output_Options_Property)
+        TEST_WORKITEM(191)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Parse_Path_Compatible_Output_Options_Property)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -path . -sort -format json -property catalog_productDisplayName -nologo -utf8");
+
+        Assert::AreEqual(L".", args.get_Path().c_str());
+        Assert::IsTrue(args.get_Sort());
+        Assert::AreEqual(L"json", args.get_Format().c_str());
+        Assert::AreEqual(L"catalog_productDisplayName", args.get_Property().c_str());
+        Assert::IsFalse(args.get_Logo());
+        Assert::IsTrue(args.get_UTF8());
     }
 };
