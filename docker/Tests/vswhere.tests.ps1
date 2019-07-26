@@ -350,6 +350,43 @@ Describe 'vswhere' {
         }
     }
 
+    Context '-path' {
+        It 'returns nothing for non-installation path' {
+            $instances = C:\bin\vswhere.exe -path C:\ShouldNotExist -format json | ConvertFrom-Json
+            $instances | Should BeNullOrEmpty
+        }
+
+        It 'returns normal instance' {
+            $instances = C:\bin\vswhere.exe -path C:\VS\Enterprise -format json | ConvertFrom-Json
+            $instances.Count | Should Be 1
+            $instances[0].InstanceId | Should Be 2
+        }
+
+        It 'returns normal instance for normalized directory' {
+            $instances = C:\bin\vswhere.exe -path C:\VS\Enterprise\ -format json | ConvertFrom-Json
+            $instances.Count | Should Be 1
+            $instances[0].InstanceId | Should Be 2
+        }
+
+        It 'returns normal instance for file path' {
+            $instances = C:\bin\vswhere.exe -path C:\VS\Enterprise\Common7\Tools\VSDevCmd.bat -format json | ConvertFrom-Json
+            $instances.Count | Should Be 1
+            $instances[0].InstanceId | Should Be 2
+        }
+
+        It 'returns incomplete instance' {
+            $instances = C:\bin\vswhere.exe -path C:\VS\Professional -format json | ConvertFrom-Json
+            $instances.Count | Should Be 1
+            $instances[0].InstanceId | Should Be 3
+        }
+
+        It 'returns other instance' {
+            $instances = C:\bin\vswhere.exe -path C:\BuildTools -format json | ConvertFrom-Json
+            $instances.Count | Should Be 1
+            $instances[0].InstanceId | Should Be 4
+        }
+    }
+
     # NOTE: microsoft/windowsservercore does not support setting the code page to anything other than 65001.
     # Context 'encodes ja-JP' {
     #     BeforeAll {

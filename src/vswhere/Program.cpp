@@ -8,6 +8,7 @@
 using namespace std;
 
 void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& query, _In_ IEnumSetupInstancesPtr& e);
+wstring GetFullPath(_In_ const wstring& path);
 void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console, _In_ Module& module);
 
 int wmain(_In_ int argc, _In_ LPCWSTR argv[])
@@ -55,11 +56,26 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
             helper.Attach(new VersionRange);
         }
 
-        IEnumSetupInstancesPtr e;
-        GetEnumerator(args, query, e);
+        vector<ISetupInstancePtr> instances;
+        if (args.get_Path().empty())
+        {
+            IEnumSetupInstancesPtr e;
+            GetEnumerator(args, query, e);
 
-        InstanceSelector selector(args, helper);
-        auto instances = selector.Select(e);
+            InstanceSelector selector(args, helper);
+            instances = std::move(selector.Select(e));
+        }
+        else
+        {
+            auto path = GetFullPath(args.get_Path());
+
+            ISetupInstancePtr instance;
+            hr = query->GetInstanceForPath(path.c_str(), &instance);
+            if (SUCCEEDED(hr))
+            {
+                instances.push_back(instance);
+            }
+        }
 
         // Create the formatter and optionally show the logo.
         auto formatter = Formatter::Create(args.get_Format());
@@ -144,6 +160,33 @@ void GetEnumerator(_In_ const CommandArgs& args, _In_ ISetupConfigurationPtr& qu
             throw win32_error(hr);
         }
     }
+}
+
+wstring GetFullPath(_In_ const wstring& path)
+{
+    DWORD ret = 0;
+    wstring fullPath;
+
+    for (;;)
+    {
+        ret = ::GetFullPathNameW(path.c_str(), fullPath.capacity(), const_cast<LPWSTR>(fullPath.c_str()), NULL);
+
+        if (ret == 0)
+        {
+            throw win32_error();
+        }
+        // If buffer too small, return value contains required character count including terminating null.
+        else if (ret >= fullPath.capacity())
+        {
+            fullPath.resize(ret, L'\0');
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return fullPath;
 }
 
 void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console, _In_ Module& module)
