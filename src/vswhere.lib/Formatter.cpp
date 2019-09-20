@@ -258,9 +258,94 @@ void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& consol
                 }
             }
         }
+
+        if (args.get_IncludePackages() && SupportsPackages())
+        {
+            if (specified.empty() || s_comparer(specified, L"packages"))
+            {
+                WritePackages(args, console, pInstance);
+            }
+        }
     }
 
     EndObject(console);
+}
+
+void Formatter::WritePackage(_In_ Console& console, _In_ ISetupPackageReference* pPackage)
+{
+    StartObject(console, L"package");
+
+    bstr_t bstr;
+    auto hr = pPackage->GetId(bstr.GetAddress());
+    if (SUCCEEDED(hr))
+    {
+        WriteProperty(console, L"id", bstr);
+    }
+
+    hr = pPackage->GetVersion(bstr.GetAddress());
+    if (SUCCEEDED(hr) && bstr.length())
+    {
+        WriteProperty(console, L"version", bstr);
+    }
+
+    hr = pPackage->GetChip(bstr.GetAddress());
+    if (SUCCEEDED(hr) && bstr.length())
+    {
+        WriteProperty(console, L"chip", bstr);
+    }
+
+    hr = pPackage->GetLanguage(bstr.GetAddress());
+    if (SUCCEEDED(hr) && bstr.length())
+    {
+        WriteProperty(console, L"language", bstr);
+    }
+
+    hr = pPackage->GetBranch(bstr.GetAddress());
+    if (SUCCEEDED(hr) && bstr.length())
+    {
+        WriteProperty(console, L"branch", bstr);
+    }
+
+    hr = pPackage->GetType(bstr.GetAddress());
+    if (SUCCEEDED(hr))
+    {
+        WriteProperty(console, L"type", bstr);
+    }
+
+    VARIANT_BOOL vtBool;
+    hr = pPackage->GetIsExtension(&vtBool);
+    if (SUCCEEDED(hr) && VARIANT_TRUE == vtBool)
+    {
+        WriteProperty(console, L"extension", true);
+    }
+
+    EndObject(console);
+}
+
+void Formatter::WritePackages(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance)
+{
+    ISetupInstance2Ptr instance2;
+    LPSAFEARRAY psaPackages;
+
+    auto hr = pInstance->QueryInterface(&instance2);
+    if (SUCCEEDED(hr))
+    {
+        hr = instance2->GetPackages(&psaPackages);
+        if (SUCCEEDED(hr) && psaPackages->rgsabound[0].cElements)
+        {
+            StartArray(console, L"packages");
+
+            SafeArray<ISetupPackageReference*> saPackages(psaPackages);
+            const auto packages = saPackages.Elements();
+
+            for (const auto& package : packages)
+            {
+                WritePackage(console, package);
+            }
+
+            EndArray(console);
+        }
+    }
 }
 
 void Formatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ const variant_t& value)

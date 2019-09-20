@@ -33,6 +33,11 @@ public:
         return false;
     }
 
+    bool SupportsPackages() const override
+    {
+        return true;
+    }
+
 protected:
     void StartArray(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;
     void StartObject(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;

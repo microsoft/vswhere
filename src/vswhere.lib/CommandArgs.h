@@ -16,6 +16,7 @@ public:
         m_latest(false),
         m_legacy(false),
         m_prerelease(false),
+        m_includePackages(false),
         m_nologo(false),
         m_utf8(false),
         m_help(false)
@@ -36,6 +37,7 @@ public:
         m_prerelease(obj.m_prerelease),
         m_format(obj.m_format),
         m_property(obj.m_property),
+        m_includePackages(obj.m_includePackages),
         m_find(obj.m_find),
         m_nologo(obj.m_nologo),
         m_utf8(obj.m_utf8),
@@ -118,6 +120,11 @@ public:
         return m_property;
     }
 
+    const bool get_IncludePackages() const noexcept
+    {
+        return m_includePackages;
+    }
+
     const std::wstring& get_Find() const noexcept
     {
         return m_find;
@@ -163,6 +170,7 @@ private:
     bool m_prerelease;
     std::wstring m_format;
     std::wstring m_property;
+    bool m_includePackages;
     std::wstring m_find;
     bool m_nologo;
     bool m_utf8;

@@ -3,6 +3,7 @@
     "editor.tabSize": 4,
     "files.associations": {
         "functional": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "unordered_map": "cpp"
     }
 }

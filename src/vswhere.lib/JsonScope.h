@@ -25,6 +25,11 @@ public:
     {
     }
 
+    bool IsArray() const noexcept
+    {
+        return m_type == Type::array;
+    }
+
     bool IsObject() const noexcept
     {
         return m_type == Type::object;

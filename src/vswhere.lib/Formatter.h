@@ -29,6 +29,11 @@ public:
         return true;
     }
 
+    virtual bool SupportsPackages() const
+    {
+        return false;
+    }
+
 protected:
     typedef std::function<HRESULT(_In_ ISetupInstance*, _Out_ VARIANT*)> PropertyFunction;
     typedef std::vector<std::pair<std::wstring, PropertyFunction>> PropertyArray;
@@ -82,6 +87,8 @@ private:
     HRESULT GetDescription(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtDescription);
 
     void WriteInternal(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance);
+    void WritePackage(_In_ Console& console, _In_ ISetupPackageReference* pPackage);
+    void WritePackages(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance);
     void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const variant_t& value);
     bool WriteProperties(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance);
     bool WriteProperties(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupPropertyStore* pProperties, _In_opt_ const std::wstring& prefix = empty_wstring);

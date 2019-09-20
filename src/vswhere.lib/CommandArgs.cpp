@@ -132,6 +132,25 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
 
             m_property = ParseArgument(it, args.end(), arg);
         }
+        else if (ArgumentEquals(arg.Value, L"include"))
+        {
+            vector<wstring> include;
+            ParseArgumentArray(it, args.end(), arg, include);
+
+            for (const auto& value : include)
+            {
+                if (ArgumentEquals(value, L"packages"))
+                {
+                    m_includePackages = true;
+                }
+                else
+                {
+                    auto message = ResourceManager::FormatString(IDS_E_UNSUPPORTEDARG, value.c_str(), L"include");
+                    throw win32_error(ERROR_INVALID_PARAMETER, message);
+                }
+                
+            }
+        }
         else if (ArgumentEquals(arg.Value, L"find"))
         {
             if (m_property.length())
