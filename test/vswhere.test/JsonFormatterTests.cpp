@@ -531,4 +531,122 @@ public:
             Assert::AreEqual(expected.c_str(), actual.c_str());
         }
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Include_Packages)
+        TEST_WORKITEM(199)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Include_Packages)
+    {
+        TestPackageReference product1 =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Community" },
+        };
+
+        TestPackageReference a1 =
+        {
+            { L"Id", L"A" },
+            { L"Version", L"1.0" },
+            { L"Type", L"Workload"},
+        };
+
+        TestPackageReference b1 =
+        {
+            { L"Id", L"B" },
+            { L"Version", L"1.0" },
+            { L"Type", L"Component"},
+        };
+
+        vector<TestInstance::ElementType> packages1 = { &a1, &b1 };
+
+        TestInstance::MapType properties1 =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+        };
+
+        TestInstance instance1(&product1, packages1, properties1);
+
+        TestPackageReference product2 =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestPackageReference a2 =
+        {
+            { L"Id", L"A" },
+            { L"Version", L"1.0" },
+            { L"Type", L"Workload"},
+        };
+
+        TestPackageReference b2 =
+        {
+            { L"Id", L"B" },
+            { L"Version", L"1.0" },
+            { L"Type", L"Component"},
+        };
+
+        vector<TestInstance::ElementType> packages2 = { &a2, &b2 };
+
+        TestInstance::MapType properties2 =
+        {
+            { L"InstanceId", L"b1c2d3" },
+            { L"InstallationName", L"test" },
+        };
+
+        TestInstance instance2(&product2, packages2, properties2);
+
+        vector<ISetupInstancePtr> instances =
+        {
+            &instance1,
+            &instance2,
+        };
+
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -include packages");
+
+        TestConsole console(args);
+
+        JsonFormatter sut;
+        sut.Write(args, console, instances);
+
+        auto expected =
+            L"[\n"
+            L"  {\n"
+            L"    \"instanceId\": \"a1b2c3\",\n"
+            L"    \"installationName\": \"test\",\n"
+            L"    \"productId\": \"Microsoft.VisualStudio.Product.Community\",\n"
+            L"    \"packages\": [\n"
+            L"      {\n"
+            L"        \"id\": \"A\",\n"
+            L"        \"version\": \"1.0\",\n"
+            L"        \"type\": \"Workload\"\n"
+            L"      },\n"
+            L"      {\n"
+            L"        \"id\": \"B\",\n"
+            L"        \"version\": \"1.0\",\n"
+            L"        \"type\": \"Component\"\n"
+            L"      }\n"
+            L"    ]\n"
+            L"  },\n"
+            L"  {\n"
+            L"    \"instanceId\": \"b1c2d3\",\n"
+            L"    \"installationName\": \"test\",\n"
+            L"    \"productId\": \"Microsoft.VisualStudio.Product.Enterprise\",\n"
+            L"    \"packages\": [\n"
+            L"      {\n"
+            L"        \"id\": \"A\",\n"
+            L"        \"version\": \"1.0\",\n"
+            L"        \"type\": \"Workload\"\n"
+            L"      },\n"
+            L"      {\n"
+            L"        \"id\": \"B\",\n"
+            L"        \"version\": \"1.0\",\n"
+            L"        \"type\": \"Component\"\n"
+            L"      }\n"
+            L"    ]\n"
+            L"  }\n"
+            L"]\n";
+
+        Assert::AreEqual(expected, console);
+    }
 };

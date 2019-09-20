@@ -23,21 +23,28 @@ void JsonScope::StartProperty(_In_ Console& console)
 
 void JsonScope::WriteStartImpl(_In_ Console& console)
 {
+    bool writeKey = false;
+
     WriteSeparator(console);
 
-    // Write new line if not the root scope.
     if (Parent())
     {
+        if (Parent()->IsObject())
+        {
+            writeKey = true;
+        }
+
+        // Write new line if not the root scope.
         console.WriteLine();
     }
 
-    if (m_type == Type::array || Name().empty())
+    if (writeKey && Name().length())
     {
-        console.Write(L"%ls%lc", Padding().c_str(), StartChar());
+        console.Write(L"%ls\"%ls\": %lc", Padding().c_str(), Name().c_str(), StartChar());
     }
     else
     {
-        console.Write(L"%ls\"%ls\": %lc", Padding().c_str(), Name().c_str(), StartChar());
+        console.Write(L"%ls%lc", Padding().c_str(), StartChar());
     }
 }
 
