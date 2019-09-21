@@ -120,7 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <FilesToSign Include="$(TargetPath)">
-      <Authenticode>Microsoft</Authenticode>
+      <Authenticode>Microsoft400</Authenticode>
       <Visible>false</Visible>
     </FilesToSign>
   </ItemGroup>
