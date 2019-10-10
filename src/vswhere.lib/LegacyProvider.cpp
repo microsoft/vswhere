@@ -9,12 +9,28 @@ using namespace std;
 
 ILegacyProvider& LegacyProvider::Instance = LegacyProvider();
 
-bool LegacyProvider::HasLegacyInstances() const
+LegacyProvider::LegacyProvider() :
+    m_hKey32(NULL), m_hKey64(NULL)
 {
-    return NULL != m_hKey;
+    auto err = ::RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\VisualStudio\\SxS\\VS7", 0, KEY_QUERY_VALUE | KEY_WOW64_32KEY, &m_hKey32);
+    if (ERROR_SUCCESS != err && ERROR_FILE_NOT_FOUND != err)
+    {
+        throw win32_error(err);
+    }
+
+    err = ::RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\VisualStudio\\SxS\\VS7", 0, KEY_QUERY_VALUE | KEY_WOW64_64KEY, &m_hKey64);
+    if (ERROR_SUCCESS != err && ERROR_FILE_NOT_FOUND != err)
+    {
+        throw win32_error(err);
+    }
 }
 
-bool LegacyProvider::TryGetLegacyInstance(_In_ LPCWSTR wzVersion, _Out_ ISetupInstance** ppInstance) const
+bool LegacyProvider::HasLegacyInstances() const
+{
+    return !(NULL == m_hKey32 && NULL == m_hKey64);
+}
+
+static bool TryGetLegacyInstanceImpl(_In_ HKEY m_hKey, _In_ LPCWSTR wzVersion, _Out_ ISetupInstance** ppInstance)
 {
     _ASSERT(ppInstance);
 
@@ -54,4 +70,17 @@ bool LegacyProvider::TryGetLegacyInstance(_In_ LPCWSTR wzVersion, _Out_ ISetupIn
     }
 
     return true;
+}
+
+bool LegacyProvider::TryGetLegacyInstance(_In_ LPCWSTR wzVersion, _Out_ ISetupInstance** ppInstance) const
+{
+    if (TryGetLegacyInstanceImpl(m_hKey32, wzVersion, ppInstance))
+    {
+        return true;
+    }
+    if (TryGetLegacyInstanceImpl(m_hKey64, wzVersion, ppInstance))
+    {
+        return true;
+    }
+    return false;
 }

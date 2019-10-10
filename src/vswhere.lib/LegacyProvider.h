@@ -11,24 +11,21 @@ class LegacyProvider :
 public:
     static ILegacyProvider& Instance;
 
-    LegacyProvider() :
-        m_hKey(NULL)
-    {
-        auto err = ::RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\VisualStudio\\SxS\\VS7", 0, KEY_QUERY_VALUE | KEY_WOW64_32KEY, &m_hKey);
-        if (ERROR_SUCCESS != err && ERROR_FILE_NOT_FOUND != err)
-        {
-            throw win32_error(err);
-        }
-    }
+    LegacyProvider();
 
     LegacyProvider(const LegacyProvider& obj) = delete;
 
     ~LegacyProvider()
     {
-        if (m_hKey)
+        if (m_hKey32)
         {
-            ::CloseHandle(m_hKey);
-            m_hKey = NULL;
+            ::CloseHandle(m_hKey32);
+            m_hKey32 = NULL;
+        }
+        if (m_hKey64)
+        {
+            ::CloseHandle(m_hKey64);
+            m_hKey64 = NULL;
         }
     }
 
@@ -36,5 +33,6 @@ public:
     bool TryGetLegacyInstance(_In_ LPCWSTR wzVersion, _Out_ ISetupInstance** ppInstance) const override;
 
 private:
-    HKEY m_hKey;
+    HKEY m_hKey32;
+    HKEY m_hKey64;
 };
