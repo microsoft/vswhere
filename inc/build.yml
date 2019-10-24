@@ -8,6 +8,12 @@ parameters:
   Sign: false
 
 steps:
+- powershell: |
+    dotnet tool install --tool-path "${env:AGENT_TOOLSDIRECTORY}\nbgv" nbgv
+    $version = & "${env:AGENT_TOOLSDIRECTORY}\nbgv\nbgv.exe" get-version --variable SemVer1
+    & "${env:AGENT_TOOLSDIRECTORY}\nbgv\nbgv.exe" cloud --version $version
+  displayName: Set cloud build version
+
 - task: NuGetToolInstaller@0
   displayName: Install nuget
   inputs:
