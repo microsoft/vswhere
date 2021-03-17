@@ -23,8 +23,7 @@ If you wanted to find MSBuild - now installed under the Visual Studio 2017 and n
 ```batch
 @echo off
 setlocal enabledelayedexpansion
-
-for /f "usebackq tokens=*" %%i in (`vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`) do (
+for /f "usebackq delims=" %%i in (`"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere" -latest -products * -requires Microsoft.VisualStudio.Workload.ManagedDesktop Microsoft.VisualStudio.Workload.Web -requiresAny -property installationPath`) do (
   "%%i" %*
   exit /b !errorlevel!
 )
