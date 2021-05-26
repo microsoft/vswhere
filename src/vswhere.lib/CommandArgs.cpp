@@ -20,6 +20,9 @@ const vector<wstring> CommandArgs::s_Products
     L"Microsoft.VisualStudio.Product.Enterprise",
     L"Microsoft.VisualStudio.Product.Professional",
     L"Microsoft.VisualStudio.Product.Community",
+    L"Microsoft.VisualStudio.Product.EnterpriseX86",
+    L"Microsoft.VisualStudio.Product.ProfessionalX86",
+    L"Microsoft.VisualStudio.Product.CommunityX86",
 };
 
 const wstring CommandArgs::s_Format = L"text";

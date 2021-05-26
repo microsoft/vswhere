@@ -30,10 +30,13 @@ public:
         Assert::IsTrue(args.get_Logo());
 
         auto& products = args.get_Products();
-        Assert::AreEqual<size_t>(3, products.size());
+        Assert::AreEqual<size_t>(6, products.size());
         Assert::IsFalse(find(products.begin(), products.end(), L"Microsoft.VisualStudio.Product.Enterprise") == products.end());
         Assert::IsFalse(find(products.begin(), products.end(), L"Microsoft.VisualStudio.Product.Professional") == products.end());
         Assert::IsFalse(find(products.begin(), products.end(), L"Microsoft.VisualStudio.Product.Community") == products.end());
+        Assert::IsFalse(find(products.begin(), products.end(), L"Microsoft.VisualStudio.Product.EnterpriseX86") == products.end());
+        Assert::IsFalse(find(products.begin(), products.end(), L"Microsoft.VisualStudio.Product.ProfessionalX86") == products.end());
+        Assert::IsFalse(find(products.begin(), products.end(), L"Microsoft.VisualStudio.Product.CommunityX86") == products.end());
 
         auto& requires = args.get_Requires();
         Assert::AreEqual<size_t>(0, requires.size());
@@ -239,7 +242,7 @@ public:
     TEST_METHOD(Parse_Products_Asterisk)
     {
         CommandArgs args;
-        Assert::AreEqual<size_t>(3, args.get_Products().size());
+        Assert::AreEqual<size_t>(6, args.get_Products().size());
 
         args.Parse(L"vswhere.exe -products *");
         Assert::IsTrue(args.get_Products().empty());
@@ -248,7 +251,7 @@ public:
     TEST_METHOD(Parse_Products_Asterisk_Multiple)
     {
         CommandArgs args;
-        Assert::AreEqual<size_t>(3, args.get_Products().size());
+        Assert::AreEqual<size_t>(6, args.get_Products().size());
 
         args.Parse(L"vswhere.exe -products A * B");
         Assert::IsTrue(args.get_Products().empty());
