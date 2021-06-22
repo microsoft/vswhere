@@ -203,4 +203,52 @@ public:
             Assert::AreEqual(ullMaxVersionExpected, ullMaxVersionActual, format(L"Unexpected maximum version parsing '%ls'", pwszVersionRange).c_str());
         }
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(ParseVersionRange_pullMinVersion_Empty)
+        TEST_WORKITEM(238)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(ParseVersionRange_pullMinVersion_Empty)
+    {
+        auto pHelper = new VersionRange;
+        ISetupHelperPtr sut(pHelper, false);
+
+        ULONGLONG ullMinVersion = 0;
+        ULONGLONG ullMaxVersion = 0;
+
+        Assert::AreEqual(S_OK, sut->ParseVersionRange(L"[,17.0)", &ullMinVersion, &ullMaxVersion));
+        Assert::AreEqual(0ULL, ullMinVersion);
+        Assert::AreEqual(4785074604081151ULL, ullMaxVersion);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(ParseVersionRange_pullMinVersion_0)
+        TEST_WORKITEM(238)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(ParseVersionRange_pullMinVersion_0)
+    {
+        auto pHelper = new VersionRange;
+        ISetupHelperPtr sut(pHelper, false);
+
+        ULONGLONG ullMinVersion = 0;
+        ULONGLONG ullMaxVersion = 0;
+
+        Assert::AreEqual(S_OK, sut->ParseVersionRange(L"[0,17.0)", &ullMinVersion, &ullMaxVersion));
+        Assert::AreEqual(0ULL, ullMinVersion);
+        Assert::AreEqual(4785074604081151ULL, ullMaxVersion);
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(ParseVersionRange_pullMinVersion_1)
+        TEST_WORKITEM(238)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(ParseVersionRange_pullMinVersion_1)
+    {
+        auto pHelper = new VersionRange;
+        ISetupHelperPtr sut(pHelper, false);
+
+        ULONGLONG ullMinVersion = 0;
+        ULONGLONG ullMaxVersion = 0;
+
+        Assert::AreEqual(S_OK, sut->ParseVersionRange(L"[1,17.0)", &ullMinVersion, &ullMaxVersion));
+        Assert::AreEqual(281474976710656ULL, ullMinVersion);
+        Assert::AreEqual(4785074604081151ULL, ullMaxVersion);
+    }
 };

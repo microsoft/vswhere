@@ -697,4 +697,58 @@ public:
         Assert::AreEqual(S_OK, selected[1]->GetInstanceId(bstrInstanceId.GetAddress()));
         Assert::AreEqual(L"a", bstrInstanceId);
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Select_Version_Empty_MinVersion)
+        TEST_WORKITEM(238)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Select_Version_Empty_MinVersion)
+    {
+        TestPackageReference v16product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestInstance::MapType v16properties =
+        {
+            { L"InstanceId", L"v16" },
+            { L"InstallationName", L"v16" },
+            { L"InstallationVersion", L"16.11.31418.215" },
+        };
+
+        TestInstance v16(&v16product, {}, v16properties);
+
+        TestPackageReference v17product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestInstance::MapType v17properties =
+        {
+            { L"InstanceId", L"v17" },
+            { L"InstallationName", L"v17" },
+            { L"InstallationVersion", L"17.0.31418.319" },
+        };
+
+        TestInstance v17(&v17product, {}, v17properties);
+
+        TestEnumInstances instances =
+        {
+            &v16,
+            &v17,
+        };
+
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -products * -version [,17.0) -latest");
+
+        ISetupHelperPtr helper(new VersionRange, false);
+
+        InstanceSelector sut(args, helper);
+        auto selected = sut.Select(&instances);
+
+        Assert::AreEqual<size_t>(1, selected.size());
+
+        bstr_t bstrInstanceId;
+        Assert::AreEqual(S_OK, selected[0]->GetInstanceId(bstrInstanceId.GetAddress()));
+        Assert::AreEqual(L"v16", bstrInstanceId);
+    }
 };

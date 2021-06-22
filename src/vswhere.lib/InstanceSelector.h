@@ -34,7 +34,7 @@ private:
     bool IsVersionMatch(_In_ ISetupInstance* pInstance) const;
     bool HasVersionRange() const
     {
-        return m_ullMinimumVersion != 0 && m_ullMaximumVersion != 0;
+        return m_ullMaximumVersion != 0;
     }
 
     const CommandArgs& m_args;
