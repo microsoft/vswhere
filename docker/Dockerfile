@@ -4,7 +4,7 @@
 # Licensed under the MIT license. See LICENSE.txt in the project root for license information.
 
 # Based on latest image cached by Azure Pipelines: https://docs.microsoft.com/azure/devops/pipelines/agents/hosted#software
-FROM microsoft/windowsservercore@sha256:05de0a0ac13d3652bd1f2281b8589459ebb611092e3fe4d8f1be91f1f6984266
+FROM microsoft/windowsservercore@sha256:431315d3208b79a74c7e598aacb469f0e58a18977f5b93885b1d8d7027cae03d
 SHELL ["powershell.exe", "-ExecutionPolicy", "Bypass", "-Command"]
 
 ENV INSTALLER_VERSION=1.14.190.31519 `
