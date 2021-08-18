@@ -14,7 +14,7 @@ trigger:
 pr: none
 
 queue:
-  name: VSEng-MicroBuildVS2017
+  name: VSEng-MicroBuildVS2019
   timeoutInMinutes: 120
   demands: 
   - ChocolateyInstall
