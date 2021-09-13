@@ -169,6 +169,10 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         {
             m_utf8 = true;
         }
+        else if (ArgumentEquals(arg.Value, L"color"))
+        {
+            m_color = true;
+        }
         else if (ArgumentEquals(arg.Value, L"?")
               || ArgumentEquals(arg.Value, L"h")
               || ArgumentEquals(arg.Value, L"help"))

@@ -642,4 +642,36 @@ public:
 
         Assert::AreEqual(expected, console);
     }
+
+    TEST_METHOD(Write_Instance_With_Color)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -color");
+
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallDate", L"2017-02-23T01:22:35Z"},
+            { L"State", L"4294967295" },
+            { L"IsComplete", L"true"},
+        };
+
+        XmlFormatter sut(args, console);
+        sut.Write(&instance);
+
+        auto expected =
+            L"\033[38;2;86;156;214m<?xml\033[0m \033[38;2;156;220;254mversion\033[0m=\033[38;2;206;145;120m\"1.0\"\033[38;2;86;156;214m?>\033[0m\n"
+            L"\033[38;2;86;156;214m<instances>\033[0m\n"
+            L"  \033[38;2;86;156;214m<instance>\033[0m\n"
+            L"    \033[38;2;86;156;214m<instanceId>\033[0ma1b2c3\033[38;2;86;156;214m</instanceId>\033[0m\n"
+            L"    \033[38;2;86;156;214m<installDate>\033[0m2017-02-23T01:22:35Z\033[38;2;86;156;214m</installDate>\033[0m\n"
+            L"    \033[38;2;86;156;214m<state>\033[0m4294967295\033[38;2;86;156;214m</state>\033[0m\n"
+            L"    \033[38;2;86;156;214m<isComplete>\033[0m1\033[38;2;86;156;214m</isComplete>\033[0m\n"
+            L"    \033[38;2;86;156;214m<isRebootRequired>\033[0m0\033[38;2;86;156;214m</isRebootRequired>\033[0m\n"
+            L"  \033[38;2;86;156;214m</instance>\033[0m\n"
+            L"\033[38;2;86;156;214m</instances>\033[0m\n";
+
+        Assert::AreEqual(expected, console);
+    }
 };

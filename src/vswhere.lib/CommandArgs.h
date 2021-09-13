@@ -19,6 +19,7 @@ public:
         m_includePackages(false),
         m_nologo(false),
         m_utf8(false),
+        m_color(false),
         m_help(false)
     {
     }
@@ -41,6 +42,7 @@ public:
         m_find(obj.m_find),
         m_nologo(obj.m_nologo),
         m_utf8(obj.m_utf8),
+        m_color(obj.m_color),
         m_help(obj.m_help)
     {
     }
@@ -140,6 +142,12 @@ public:
         return m_utf8;
     }
 
+    const bool get_Color() const noexcept
+
+    {
+        return m_color;
+    }
+
     const bool get_Help() const noexcept
     {
         return m_help;
@@ -174,5 +182,6 @@ private:
     std::wstring m_find;
     bool m_nologo;
     bool m_utf8;
+    bool m_color;
     bool m_help;
 };

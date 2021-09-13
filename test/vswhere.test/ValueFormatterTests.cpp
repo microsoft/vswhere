@@ -544,4 +544,29 @@ public:
 
         Assert::AreEqual(expected, console);
     }
+
+    TEST_METHOD(Write_Instance_With_Color)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -color");
+
+        TestConsole console(args);
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"State", L"4294967295" },
+            { L"IsComplete", L"true"},
+        };
+
+        ValueFormatter sut(args, console);
+        sut.Write(&instance);
+
+        auto expected =
+            L"a1b2c3\n"
+            L"4294967295\n"
+            L"1\n"
+            L"0\n";
+
+        Assert::AreEqual(expected, console);
+    }
 };

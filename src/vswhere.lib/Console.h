@@ -10,13 +10,15 @@ class Console
 public:
     Console(_In_ const CommandArgs& args) :
         m_args(args),
-        m_fInitialized(false)
+        m_fInitialized(false),
+        m_fColorSupported(false)
     {
     }
 
     Console(_In_ const Console& obj) :
         m_args(obj.m_args),
-        m_fInitialized(obj.m_fInitialized)
+        m_fInitialized(obj.m_fInitialized),
+        m_fColorSupported(obj.m_fColorSupported)
     {
     }
 
@@ -30,12 +32,17 @@ public:
 
     virtual bool IsColorSupported() const noexcept
     {
-        return m_fColorSupported;
+        return m_fColorSupported && m_args.get_Color();
     }
 
 protected:
     virtual void Initialize() noexcept;
     virtual void Write(_In_ LPCWSTR wzFormat, va_list args);
+
+    const CommandArgs& Args() const noexcept
+    {
+        return m_args;
+    }
 
 private:
     bool static IsConsole(_In_ FILE* f) noexcept;

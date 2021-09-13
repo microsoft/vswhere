@@ -25,6 +25,11 @@ public:
         return m_output.c_str();
     }
 
+    bool IsColorSupported() const noexcept override
+    {
+        return Args().get_Color();
+    }
+
 protected:
     void Initialize() noexcept override
     {
