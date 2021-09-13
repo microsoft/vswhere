@@ -43,7 +43,8 @@ void TextFormatter::WriteProperty(_In_ const std::wstring& name, _In_ const std:
         prefix = m_scopes.top();
     }
 
-    Console().WriteLine(L"%ls%ls: %ls", prefix.c_str(), name.c_str(), value.c_str());
+    Console().Write(L"%ls%ls%ls%ls: ", Console().Color(ColorName), prefix.c_str(), name.c_str(), Console().ResetColor());
+    Console().WriteLine(L"%ls%ls%ls", Console().Color(ColorValue), value.c_str(), Console().ResetColor());
 }
 
 void TextFormatter::EndObject()

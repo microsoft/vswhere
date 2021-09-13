@@ -41,6 +41,10 @@ Formatter::FormatterMap Formatter::Formatters =
     { L"xml", make_tuple(IDS_FORMAT_XML, XmlFormatter::Create) },
 };
 
+// Colors from Visual Studio Code's Dark+ theme.
+const LPCWSTR Formatter::ColorName = L"\033[38;2;156;220;254m";
+const LPCWSTR Formatter::ColorValue = L"\033[38;2;206;145;120m";
+
 const wstring Formatter::s_delims(L"./_");
 ci_equal Formatter::s_comparer;
 

@@ -7,9 +7,16 @@
 
 using namespace std;
 
+const LPCWSTR XmlFormatter::ColorTag = L"\033[38;2;86;156;214m";
+
 void XmlFormatter::StartDocument()
 {
-    Console().WriteLine(L"<?xml version=\"1.0\"?>");
+    Console().WriteLine(
+        L"%1$ls<?xml%4$ls %2$lsversion%4$ls=%3$ls\"1.0\"%1$ls?>%4$ls",
+        Console().Color(ColorTag),
+        Console().Color(ColorName),
+        Console().Color(ColorValue),
+        Console().ResetColor());
 }
 
 void XmlFormatter::StartArray(_In_opt_ const wstring& name)
@@ -25,7 +32,14 @@ void XmlFormatter::StartObject(_In_opt_ const wstring& name)
 void XmlFormatter::WriteProperty(_In_ const wstring& name, _In_ const wstring& value)
 {
     m_scopes.top().WriteStart();
-    Console().WriteLine(L"%1$ls<%2$ls>%3$ls</%2$ls>", m_padding.c_str(), name.c_str(), value.c_str());
+
+    Console().WriteLine(
+        L"%1$ls%4$ls<%2$ls>%5$ls%3$ls%4$ls</%2$ls>%5$ls",
+        m_padding.c_str(),
+        name.c_str(),
+        value.c_str(),
+        Console().Color(ColorTag),
+        Console().ResetColor());
 }
 
 void XmlFormatter::EndObject()

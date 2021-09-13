@@ -36,6 +36,8 @@ public:
         return true;
     }
 
+    static const LPCWSTR ColorTag;
+
 protected:
     void StartDocument() override;
     void StartArray(_In_opt_ const std::wstring& name = empty_wstring) override;

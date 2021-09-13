@@ -40,7 +40,13 @@ void JsonScope::WriteStartImpl()
 
     if (writeKey && Name().length())
     {
-        Console().Write(L"%ls\"%ls\": %lc", Padding().c_str(), Name().c_str(), StartChar());
+        Console().Write(
+            L"%ls%ls\"%ls\"%ls: %lc",
+            Padding().c_str(),
+            Console().Color(JsonFormatter::ColorName),
+            Name().c_str(),
+            Console().ResetColor(),
+            StartChar());
     }
     else
     {

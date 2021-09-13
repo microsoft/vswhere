@@ -27,13 +27,29 @@ void Console::Initialize() noexcept
             ::setlocale(LC_CTYPE, sz);
         }
 
-        if (IsVirtualTerminal(stdout))
-        {
-            m_fColorSupported = true;
-        }
-
+        m_fColorSupported = IsVirtualTerminal(stdout);
         m_fInitialized = true;
     }
+}
+
+LPCWSTR Console::Color(_In_ LPCWSTR wzColor) const
+{
+    if (IsColorSupported())
+    {
+        return wzColor;
+    }
+
+    return L"";
+}
+
+LPCWSTR Console::ResetColor() const
+{
+    if (IsColorSupported())
+    {
+        return L"\033[0m";
+    }
+
+    return L"";
 }
 
 void __cdecl Console::Write(_In_ LPCWSTR wzFormat, ...)

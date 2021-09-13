@@ -38,6 +38,9 @@ public:
         return true;
     }
 
+    static const LPCWSTR ColorBool;
+    static const LPCWSTR ColorNumber;
+
 protected:
     void StartArray(_In_opt_ const std::wstring& name = empty_wstring) override;
     void StartObject(_In_opt_ const std::wstring& name = empty_wstring) override;

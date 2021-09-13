@@ -36,6 +36,9 @@ public:
         return false;
     }
 
+    static const LPCWSTR ColorName;
+    static const LPCWSTR ColorValue;
+
 protected:
     typedef std::function<HRESULT(_In_ ISetupInstance*, _Out_ VARIANT*)> PropertyFunction;
     typedef std::vector<std::pair<std::wstring, PropertyFunction>> PropertyArray;

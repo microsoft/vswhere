@@ -20,6 +20,9 @@ public:
     {
     }
 
+    LPCWSTR Color(_In_ LPCWSTR wzColor) const;
+    LPCWSTR ResetColor() const;
+
     void __cdecl Write(_In_ LPCWSTR wzFormat, ...);
     void __cdecl Write(_In_ const std::wstring& value);
     void __cdecl WriteLine(_In_ LPCWSTR wzFormat = NULL, ...);

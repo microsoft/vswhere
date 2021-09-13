@@ -7,6 +7,9 @@
 
 using namespace std;
 
+const LPCWSTR JsonFormatter::ColorBool = L"\033[38;2;86;156;214m";
+const LPCWSTR JsonFormatter::ColorNumber = L"\033[38;2;181;206;168m";
+
 wstring JsonFormatter::Escape(_In_ const wstring& value)
 {
     wstring buffer;
@@ -41,19 +44,19 @@ void JsonFormatter::WriteProperty(_In_ const wstring& name, _In_ const wstring& 
     StartProperty(name);
 
     auto escaped = Escape(value);
-    Console().Write(L"\"%ls\"",escaped.c_str());
+    Console().Write(L"%ls\"%ls\"%ls", Console().Color(ColorValue), escaped.c_str(), Console().ResetColor());
 }
 
 void JsonFormatter::WriteProperty(_In_ const wstring& name, _In_ bool value)
 {
     StartProperty(name);
-    Console().Write(value ? L"true" : L"false");
+    Console().Write(L"%ls%ls%ls", Console().Color(ColorBool), value ? L"true" : L"false", Console().ResetColor());
 }
 
 void JsonFormatter::WriteProperty(_In_ const wstring& name, _In_ long long value)
 {
     StartProperty(name);
-    Console().Write(L"%I64d", value);
+    Console().Write(L"%ls%I64d%ls", Console().Color(ColorNumber), value, Console().ResetColor());
 }
 
 void JsonFormatter::EndObject()
@@ -118,7 +121,7 @@ void JsonFormatter::StartProperty(_In_ const std::wstring& name)
     Console().Write(L"\n%ls", m_padding.c_str());
     if (m_scopes.top().IsObject())
     {
-        Console().Write(L"\"%ls\": ", name.c_str());
+        Console().Write(L"%ls\"%ls\"%ls: ", Console().Color(ColorName), name.c_str(), Console().ResetColor());
     }
 }
 

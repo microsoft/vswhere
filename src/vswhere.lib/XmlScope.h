@@ -25,13 +25,6 @@ public:
     }
 
 protected:
-    void WriteStartImpl() override
-    {
-        Console().WriteLine(L"%ls<%ls>", Padding().c_str(), Name().c_str());
-    }
-
-    void WriteEndImpl() override
-    {
-        Console().WriteLine(L"%ls</%ls>", Padding().c_str(), Name().c_str());
-    }
+    void WriteStartImpl() override;
+    void WriteEndImpl() override;
 };
