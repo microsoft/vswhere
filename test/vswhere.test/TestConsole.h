@@ -10,13 +10,15 @@ class TestConsole :
 {
 public:
     TestConsole(_In_ const CommandArgs& args) :
-        Console(args)
+        Console(args),
+        m_color(false)
     {
     }
 
     TestConsole(_In_ const TestConsole& obj) :
         Console(obj),
-        m_output(obj.m_output)
+        m_output(obj.m_output),
+        m_color(obj.m_color)
     {
     }
 
@@ -25,9 +27,14 @@ public:
         return m_output.c_str();
     }
 
+    void SetColorSupported(bool enable) noexcept
+    {
+        m_color = enable;
+    }
+
     bool IsColorSupported() const noexcept override
     {
-        return Args().get_Color();
+        return m_color;
     }
 
 protected:
@@ -39,4 +46,5 @@ protected:
 
 private:
     std::wstring m_output;
+    bool m_color;
 };

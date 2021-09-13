@@ -548,9 +548,9 @@ public:
     TEST_METHOD(Write_Instance_With_Color)
     {
         CommandArgs args;
-        args.Parse(L"vswhere.exe -color");
-
         TestConsole console(args);
+        console.SetColorSupported(true);
+
         TestInstance instance =
         {
             { L"InstanceId", L"a1b2c3" },

@@ -28,6 +28,7 @@ public:
         Assert::IsFalse(args.get_Help());
         Assert::IsFalse(args.get_UTF8());
         Assert::IsTrue(args.get_Logo());
+        Assert::IsTrue(args.get_Color());
 
         auto& products = args.get_Products();
         Assert::AreEqual<size_t>(3, products.size());
@@ -162,6 +163,15 @@ public:
         CommandArgs args;
 
         Assert::ExpectException<win32_error>([&] { args.Parse(L"vswhere.exe -format invalid"); });
+    }
+
+    TEST_METHOD(Parse_NoColor)
+    {
+        CommandArgs args;
+        Assert::IsTrue(args.get_Color());
+
+        args.Parse(L"vswhere.exe -nocolor");
+        Assert::IsFalse(args.get_Color());
     }
 
     TEST_METHOD(Parse_NoLogo)

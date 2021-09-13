@@ -17,9 +17,9 @@ public:
         m_legacy(false),
         m_prerelease(false),
         m_includePackages(false),
+        m_nocolor(false),
         m_nologo(false),
         m_utf8(false),
-        m_color(false),
         m_help(false)
     {
     }
@@ -40,9 +40,9 @@ public:
         m_property(obj.m_property),
         m_includePackages(obj.m_includePackages),
         m_find(obj.m_find),
+        m_nocolor(obj.m_nocolor),
         m_nologo(obj.m_nologo),
         m_utf8(obj.m_utf8),
-        m_color(obj.m_color),
         m_help(obj.m_help)
     {
     }
@@ -132,6 +132,12 @@ public:
         return m_find;
     }
 
+    const bool get_Color() const noexcept
+
+    {
+        return !m_nocolor;
+    }
+
     const bool get_Logo() const noexcept
     {
         return !m_nologo;
@@ -140,12 +146,6 @@ public:
     const bool get_UTF8() const noexcept
     {
         return m_utf8;
-    }
-
-    const bool get_Color() const noexcept
-
-    {
-        return m_color;
     }
 
     const bool get_Help() const noexcept
@@ -180,8 +180,8 @@ private:
     std::wstring m_property;
     bool m_includePackages;
     std::wstring m_find;
+    bool m_nocolor;
     bool m_nologo;
     bool m_utf8;
-    bool m_color;
     bool m_help;
 };

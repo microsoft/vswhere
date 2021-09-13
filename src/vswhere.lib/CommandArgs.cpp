@@ -161,6 +161,10 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
 
             m_find = ParseArgument(it, args.end(), arg);
         }
+        else if (ArgumentEquals(arg.Value, L"nocolor"))
+        {
+            m_nocolor = true;
+        }
         else if (ArgumentEquals(arg.Value, L"nologo"))
         {
             m_nologo = true;
@@ -168,10 +172,6 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         else if (ArgumentEquals(arg.Value, L"utf8"))
         {
             m_utf8 = true;
-        }
-        else if (ArgumentEquals(arg.Value, L"color"))
-        {
-            m_color = true;
         }
         else if (ArgumentEquals(arg.Value, L"?")
               || ArgumentEquals(arg.Value, L"h")
