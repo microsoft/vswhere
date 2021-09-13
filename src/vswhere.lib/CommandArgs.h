@@ -133,7 +133,6 @@ public:
     }
 
     const bool get_Color() const noexcept
-
     {
         return !m_nocolor;
     }
