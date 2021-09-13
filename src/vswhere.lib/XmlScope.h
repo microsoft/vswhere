@@ -9,13 +9,13 @@ class XmlScope :
     public Scope<XmlScope>
 {
 public:
-    XmlScope(_In_opt_ XmlScope* pParent, _In_ const std::wstring& padding, _In_ const std::wstring& name) :
-        Scope(pParent, padding, name)
+    XmlScope(_In_opt_ XmlScope* pParent, _In_ ::Console& console, _In_ const std::wstring& padding, _In_ const std::wstring& name) :
+        Scope(pParent, console, padding, name)
     {
     }
 
-    XmlScope(_In_opt_ XmlScope* pParent, _In_ std::wstring& padding, _In_ std::wstring::const_pointer name) :
-        Scope(pParent, padding, name)
+    XmlScope(_In_opt_ XmlScope* pParent, _In_ ::Console& console, _In_ std::wstring& padding, _In_ std::wstring::const_pointer name) :
+        Scope(pParent, console, padding, name)
     {
     }
 
@@ -25,13 +25,13 @@ public:
     }
 
 protected:
-    void WriteStartImpl(_In_ Console& console) override
+    void WriteStartImpl() override
     {
-        console.WriteLine(L"%ls<%ls>", Padding().c_str(), Name().c_str());
+        Console().WriteLine(L"%ls<%ls>", Padding().c_str(), Name().c_str());
     }
 
-    void WriteEndImpl(_In_ Console& console) override
+    void WriteEndImpl() override
     {
-        console.WriteLine(L"%ls</%ls>", Padding().c_str(), Name().c_str());
+        Console().WriteLine(L"%ls</%ls>", Padding().c_str(), Name().c_str());
     }
 };

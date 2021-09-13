@@ -9,13 +9,13 @@ class ValueFormatter :
     public Formatter
 {
 public:
-    static std::unique_ptr<Formatter> Create()
+    static std::unique_ptr<Formatter> Create(_In_ CommandArgs& args, _In_ ::Console& console)
     {
-        return std::unique_ptr<ValueFormatter>(new ValueFormatter());
+        return std::unique_ptr<ValueFormatter>(new ValueFormatter(args, console));
     }
 
-    ValueFormatter() :
-        Formatter()
+    ValueFormatter(_In_ CommandArgs& args, _In_ ::Console& console) :
+        Formatter(args, console)
     {
     }
 
@@ -30,5 +30,5 @@ public:
     }
 
 protected:
-    void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
+    void WriteProperty(_In_ const std::wstring& name, _In_ const std::wstring& value) override;
 };

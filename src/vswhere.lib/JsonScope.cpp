@@ -7,25 +7,25 @@
 
 using namespace std;
 
-void JsonScope::StartScope(_In_ Console& console)
+void JsonScope::StartScope()
 {
-    WriteSeparator(console);
+    WriteSeparator();
 }
 
-void JsonScope::StartProperty(_In_ Console& console)
+void JsonScope::StartProperty()
 {
     // Delay writing the parent scope until we write a property.
-    WriteStart(console);
+    WriteStart();
 
-    WriteSeparator(console);
+    WriteSeparator();
     RequireSeparator();
 }
 
-void JsonScope::WriteStartImpl(_In_ Console& console)
+void JsonScope::WriteStartImpl()
 {
     bool writeKey = false;
 
-    WriteSeparator(console);
+    WriteSeparator();
 
     if (Parent())
     {
@@ -35,29 +35,29 @@ void JsonScope::WriteStartImpl(_In_ Console& console)
         }
 
         // Write new line if not the root scope.
-        console.WriteLine();
+        Console().WriteLine();
     }
 
     if (writeKey && Name().length())
     {
-        console.Write(L"%ls\"%ls\": %lc", Padding().c_str(), Name().c_str(), StartChar());
+        Console().Write(L"%ls\"%ls\": %lc", Padding().c_str(), Name().c_str(), StartChar());
     }
     else
     {
-        console.Write(L"%ls%lc", Padding().c_str(), StartChar());
+        Console().Write(L"%ls%lc", Padding().c_str(), StartChar());
     }
 }
 
-void JsonScope::WriteEndImpl(_In_ Console& console)
+void JsonScope::WriteEndImpl()
 {
     if (m_requireSep)
     {
         // Write new line and padding only if elements were written.
         // This keeps empty arrays and objects looking like [] and {}.
-        console.Write(L"\n%ls", Padding().c_str());
+        Console().Write(L"\n%ls", Padding().c_str());
     }
 
-    console.Write(L"%lc", EndChar());
+    Console().Write(L"%lc", EndChar());
 }
 
 void JsonScope::RequireSeparator() noexcept
@@ -70,10 +70,10 @@ void JsonScope::RequireSeparator() noexcept
     }
 }
 
-void JsonScope::WriteSeparator(_In_ Console& console)
+void JsonScope::WriteSeparator()
 {
     if (m_requireSep)
     {
-        console.Write(L",");
+        Console().Write(L",");
     }
 }

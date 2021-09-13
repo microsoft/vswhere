@@ -23,8 +23,8 @@ public:
             { L"Description", L"This description contains \"quotes\"." },
         };
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -62,8 +62,8 @@ public:
             &instance2,
         };
 
-        JsonFormatter sut;
-        sut.Write(args, console, instances);
+        JsonFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"[\n"
@@ -87,8 +87,8 @@ public:
         TestConsole console(args);
         vector<ISetupInstancePtr> instances;
 
-        JsonFormatter sut;
-        sut.Write(args, console, instances);
+        JsonFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"[]\n";
@@ -118,8 +118,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -161,8 +161,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -202,8 +202,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -241,8 +241,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -292,8 +292,8 @@ public:
             &instance2,
         };
 
-        JsonFormatter sut;
-        sut.Write(args, console, instances);
+        JsonFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"[\n"
@@ -351,8 +351,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[]\n";
@@ -393,8 +393,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -433,8 +433,8 @@ public:
             { L"IsLaunchable", L"false" },
         };
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -465,8 +465,8 @@ public:
             { L"IsLaunchable", L"true" },
         };
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -496,8 +496,8 @@ public:
             L"c",
         };
 
-        JsonFormatter sut;
-        sut.Write(console, L"values", L"value", values);
+        JsonFormatter sut(args, console);
+        sut.Write(L"values", L"value", values);
 
         auto expected =
             L"[\n"
@@ -606,8 +606,8 @@ public:
 
         TestConsole console(args);
 
-        JsonFormatter sut;
-        sut.Write(args, console, instances);
+        JsonFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"[\n"

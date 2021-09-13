@@ -11,8 +11,8 @@ class JsonScope :
 public:
     typedef enum { array, object } Type;
 
-    JsonScope(_In_opt_ JsonScope* pParent, _In_ const std::wstring& padding, _In_ Type type, _In_ const std::wstring& name) :
-        Scope(pParent, padding, name),
+    JsonScope(_In_opt_ JsonScope* pParent, _In_ ::Console& console, _In_ const std::wstring& padding, _In_ Type type, _In_ const std::wstring& name) :
+        Scope(pParent, console, padding, name),
         m_type(type),
         m_requireSep(false)
     {
@@ -35,16 +35,16 @@ public:
         return m_type == Type::object;
     }
 
-    void StartScope(_In_ Console& console);
-    void StartProperty(_In_ Console& console);
+    void StartScope();
+    void StartProperty();
 
 protected:
-    void WriteStartImpl(_In_ Console& console) override;
-    void WriteEndImpl(_In_ Console& console) override;
+    void WriteStartImpl() override;
+    void WriteEndImpl() override;
 
 private:
     void RequireSeparator() noexcept;
-    void WriteSeparator(_In_ Console& console);
+    void WriteSeparator();
 
     wchar_t StartChar() const noexcept
     {

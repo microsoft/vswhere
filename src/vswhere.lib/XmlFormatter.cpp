@@ -7,35 +7,35 @@
 
 using namespace std;
 
-void XmlFormatter::StartDocument(_In_ Console& console)
+void XmlFormatter::StartDocument()
 {
-    console.WriteLine(L"<?xml version=\"1.0\"?>");
+    Console().WriteLine(L"<?xml version=\"1.0\"?>");
 }
 
-void XmlFormatter::StartArray(_In_ Console& console, _In_opt_ const wstring& name)
+void XmlFormatter::StartArray(_In_opt_ const wstring& name)
 {
-    StartScope(console, name, L"instances");
+    StartScope(name, L"instances");
 }
 
-void XmlFormatter::StartObject(_In_ Console& console, _In_opt_ const wstring& name)
+void XmlFormatter::StartObject(_In_opt_ const wstring& name)
 {
-    StartScope(console, name, L"instance");
+    StartScope(name, L"instance");
 }
 
-void XmlFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ const wstring& value)
+void XmlFormatter::WriteProperty(_In_ const wstring& name, _In_ const wstring& value)
 {
-    m_scopes.top().WriteStart(console);
-    console.WriteLine(L"%1$ls<%2$ls>%3$ls</%2$ls>", m_padding.c_str(), name.c_str(), value.c_str());
+    m_scopes.top().WriteStart();
+    Console().WriteLine(L"%1$ls<%2$ls>%3$ls</%2$ls>", m_padding.c_str(), name.c_str(), value.c_str());
 }
 
-void XmlFormatter::EndObject(_In_ Console& console)
+void XmlFormatter::EndObject()
 {
-    EndScope(console);
+    EndScope();
 }
 
-void XmlFormatter::EndArray(_In_ Console& console)
+void XmlFormatter::EndArray()
 {
-    EndScope(console);
+    EndScope();
 }
 
 wstring XmlFormatter::FormatDate(_In_ const FILETIME& value)
@@ -56,7 +56,7 @@ void XmlFormatter::Pop()
     }
 }
 
-void XmlFormatter::StartScope(_In_ Console& console, _In_opt_ const wstring& name, _In_ std::wstring::const_pointer fallback)
+void XmlFormatter::StartScope(_In_opt_ const wstring& name, _In_ std::wstring::const_pointer fallback)
 {
     XmlScope* pParent = nullptr;
     if (m_scopes.size())
@@ -66,26 +66,26 @@ void XmlFormatter::StartScope(_In_ Console& console, _In_opt_ const wstring& nam
 
     if (name.empty())
     {
-        m_scopes.push(XmlScope(pParent, m_padding, fallback));
+        m_scopes.push(XmlScope(pParent, Console(), m_padding, fallback));
     }
     else
     {
-        m_scopes.push(XmlScope(pParent, m_padding, name));
+        m_scopes.push(XmlScope(pParent, Console(), m_padding, name));
     }
 
     // Always write the root scope.
     if (m_scopes.size() == 1)
     {
-        m_scopes.top().WriteStart(console);
+        m_scopes.top().WriteStart();
     }
 
     Push();
 }
 
-void XmlFormatter::EndScope(_In_ Console& console)
+void XmlFormatter::EndScope()
 {
     Pop();
 
-    m_scopes.top().WriteEnd(console);
+    m_scopes.top().WriteEnd();
     m_scopes.pop();
 }

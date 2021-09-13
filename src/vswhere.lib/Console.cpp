@@ -27,6 +27,11 @@ void Console::Initialize() noexcept
             ::setlocale(LC_CTYPE, sz);
         }
 
+        if (IsVirtualTerminal(stdout))
+        {
+            m_fColorSupported = true;
+        }
+
         m_fInitialized = true;
     }
 }
@@ -71,7 +76,7 @@ void Console::Write(_In_ LPCWSTR wzFormat, va_list args)
     ::_vwprintf_p(wzFormat, args);
 }
 
-bool Console::IsConsole(_In_ FILE* f) const noexcept
+bool Console::IsConsole(_In_ FILE* f) noexcept
 {
     auto fno = ::_fileno(f);
     auto hFile = (HANDLE)::_get_osfhandle(fno);
@@ -91,4 +96,21 @@ bool Console::IsConsole(_In_ FILE* f) const noexcept
     }
 
     return true;
+}
+
+bool Console::IsVirtualTerminal(_In_ FILE* f) noexcept
+{
+    auto fno = ::_fileno(f);
+    auto hFile = (HANDLE)::_get_osfhandle(fno);
+
+    DWORD dwMode;
+    if (::GetConsoleMode(hFile, &dwMode))
+    {
+        // Defined in newer SDK but can try to enable on older platforms.
+        const DWORD ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x4;
+
+        return 0 != ::SetConsoleMode(hFile, dwMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+    }
+
+    return false;
 }

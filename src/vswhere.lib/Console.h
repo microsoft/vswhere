@@ -25,13 +25,20 @@ public:
     void __cdecl WriteLine(_In_ LPCWSTR wzFormat = NULL, ...);
     void __cdecl WriteLine(_In_ const std::wstring& value);
 
+    virtual bool IsColorSupported() const noexcept
+    {
+        return m_fColorSupported;
+    }
+
 protected:
     virtual void Initialize() noexcept;
     virtual void Write(_In_ LPCWSTR wzFormat, va_list args);
 
 private:
-    bool IsConsole(_In_ FILE* f) const noexcept;
+    bool static IsConsole(_In_ FILE* f) noexcept;
+    bool static IsVirtualTerminal(_In_ FILE* f) noexcept;
 
     const CommandArgs& m_args;
     bool m_fInitialized;
+    bool m_fColorSupported;
 };

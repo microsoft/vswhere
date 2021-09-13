@@ -22,8 +22,8 @@ public:
             { L"Description", L"This description contains \"quotes\"." },
         };
 
-        TextFormatter sut;
-        sut.Write(args, console, &instance);
+        TextFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"instanceId: a1b2c3\n"
@@ -56,8 +56,8 @@ public:
             &instance2,
         };
 
-        TextFormatter sut;
-        sut.Write(args, console, instances);
+        TextFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"instanceId: a1b2c3\n"
@@ -90,8 +90,8 @@ public:
 
         TestInstance instance(&product, {}, properties);
 
-        TextFormatter sut;
-        sut.Write(args, console, &instance);
+        TextFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"instanceId: a1b2c3\n"
@@ -114,8 +114,8 @@ public:
             { L"ProductPath", L"Common7\\IDE\\devenv.exe" },
         };
 
-        TextFormatter sut;
-        sut.Write(args, console, &instance);
+        TextFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"instanceId: a1b2c3\n"
@@ -146,8 +146,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        TextFormatter sut;
-        sut.Write(args, console, &instance);
+        TextFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"instanceId: a1b2c3\n"
@@ -182,8 +182,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        TextFormatter sut;
-        sut.Write(args, console, &instance);
+        TextFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"properties_campaignId: abcd1234\n"
@@ -217,8 +217,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        TextFormatter sut;
-        sut.Write(args, console, &instance);
+        TextFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"properties_nickname: test\n";
@@ -250,8 +250,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        TextFormatter sut;
-        sut.Write(args, console, &instance);
+        TextFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"properties_nickname: test\n";
@@ -295,8 +295,8 @@ public:
             &instance2,
         };
 
-        TextFormatter sut;
-        sut.Write(args, console, instances);
+        TextFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"instanceId: a1b2c3\n"
@@ -346,8 +346,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        TextFormatter sut;
-        sut.Write(args, console, &instance);
+        TextFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected = L"";
 
@@ -386,8 +386,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        TextFormatter sut;
-        sut.Write(args, console, &instance);
+        TextFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"instanceId: a1b2c3\n"
@@ -417,8 +417,8 @@ public:
             { L"IsLaunchable", L"false" },
         };
 
-        TextFormatter sut;
-        sut.Write(args, console, &instance);
+        TextFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"instanceId: a1b2c3\n"
@@ -445,8 +445,8 @@ public:
             { L"IsLaunchable", L"true" },
         };
 
-        TextFormatter sut;
-        sut.Write(args, console, &instance);
+        TextFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"instanceId: a1b2c3\n"
@@ -472,8 +472,8 @@ public:
             L"c",
         };
 
-        TextFormatter sut;
-        sut.Write(console, L"values", L"value", values);
+        TextFormatter sut(args, console);
+        sut.Write(L"values", L"value", values);
 
         auto expected =
             L"value: a\n"
@@ -557,8 +557,8 @@ public:
 
         TestConsole console(args);
 
-        TextFormatter sut;
-        sut.Write(args, console, instances);
+        TextFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"instanceId: a1b2c3\n"

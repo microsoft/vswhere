@@ -9,13 +9,13 @@ class JsonFormatter :
     public Formatter
 {
 public:
-    static std::unique_ptr<Formatter> Create()
+    static std::unique_ptr<Formatter> Create(_In_ CommandArgs& args, _In_ ::Console& console)
     {
-        return std::unique_ptr<JsonFormatter>(new JsonFormatter());
+        return std::unique_ptr<JsonFormatter>(new JsonFormatter(args, console));
     }
 
-    JsonFormatter() :
-        Formatter()
+    JsonFormatter(_In_ CommandArgs& args, _In_ ::Console& console) :
+        Formatter(args, console)
     {
     }
 
@@ -39,14 +39,14 @@ public:
     }
 
 protected:
-    void StartArray(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;
-    void StartObject(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;
-    void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
-    void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ bool value) override;
-    void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ long long value) override;
-    void EndObject(_In_ Console& console) override;
-    void EndArray(_In_ Console& console) override;
-    void EndDocument(_In_ Console& console) override;
+    void StartArray(_In_opt_ const std::wstring& name = empty_wstring) override;
+    void StartObject(_In_opt_ const std::wstring& name = empty_wstring) override;
+    void WriteProperty(_In_ const std::wstring& name, _In_ const std::wstring& value) override;
+    void WriteProperty(_In_ const std::wstring& name, _In_ bool value) override;
+    void WriteProperty(_In_ const std::wstring& name, _In_ long long value) override;
+    void EndObject() override;
+    void EndArray() override;
+    void EndDocument() override;
     std::wstring FormatDate(_In_ const FILETIME& value) override;
 
 private:
@@ -55,9 +55,9 @@ private:
     void Push();
     void Pop();
 
-    void StartScope(_In_ Console& console, _In_ JsonScope::Type type, _In_ const std::wstring& name);
-    void StartProperty(_In_ Console& console, _In_ const std::wstring& name);
-    void EndScope(_In_ Console& console);
+    void StartScope(_In_ JsonScope::Type type, _In_ const std::wstring& name);
+    void StartProperty(_In_ const std::wstring& name);
+    void EndScope();
 
     std::wstring m_padding;
     std::stack<JsonScope> m_scopes;
