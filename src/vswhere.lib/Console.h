@@ -22,6 +22,8 @@ public:
     {
     }
 
+    virtual void Initialize() noexcept;
+
     LPCWSTR Color(_In_ LPCWSTR wzColor) const;
     LPCWSTR ResetColor() const;
 
@@ -30,13 +32,13 @@ public:
     void __cdecl WriteLine(_In_ LPCWSTR wzFormat = NULL, ...);
     void __cdecl WriteLine(_In_ const std::wstring& value);
 
-    virtual bool IsColorSupported() const noexcept
+    virtual bool IsColorSupported() const
     {
+        _ASSERTE(m_fInitialized);
         return m_fColorSupported && m_args.get_Color();
     }
 
 protected:
-    virtual void Initialize() noexcept;
     virtual void Write(_In_ LPCWSTR wzFormat, va_list args);
 
     const CommandArgs& Args() const noexcept
@@ -44,11 +46,12 @@ protected:
         return m_args;
     }
 
+    bool m_fInitialized;
+
 private:
     bool static IsConsole(_In_ FILE* f) noexcept;
     bool static IsVirtualTerminal(_In_ FILE* f) noexcept;
 
     const CommandArgs& m_args;
-    bool m_fInitialized;
     bool m_fColorSupported;
 };

@@ -87,8 +87,7 @@ void __cdecl Console::WriteLine(_In_ const std::wstring& value)
 
 void Console::Write(_In_ LPCWSTR wzFormat, va_list args)
 {
-    Initialize();
-
+    _ASSERTE(m_fInitialized);
     ::_vwprintf_p(wzFormat, args);
 }
 

@@ -22,6 +22,11 @@ public:
     {
     }
 
+    void Initialize() noexcept override
+    {
+        m_fInitialized = true;
+    }
+
     operator const wchar_t*() const
     {
         return m_output.c_str();
@@ -32,16 +37,12 @@ public:
         m_color = enable;
     }
 
-    bool IsColorSupported() const noexcept override
+    bool IsColorSupported() const override
     {
         return m_color;
     }
 
 protected:
-    void Initialize() noexcept override
-    {
-    }
-
     void Write(_In_ LPCWSTR wzFormat, va_list args) override;
 
 private:
