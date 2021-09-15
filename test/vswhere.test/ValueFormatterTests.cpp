@@ -24,8 +24,8 @@ public:
             { L"Description", L"This description contains \"quotes\"." },
         };
 
-        ValueFormatter sut;
-        sut.Write(args, console, &instance);
+        ValueFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected = L"a1b2c3\n"
             L"test\n"
@@ -59,8 +59,8 @@ public:
             &instance2,
         };
 
-        ValueFormatter sut;
-        sut.Write(args, console, instances);
+        ValueFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected = L"C:\\ShouldNotExist\n";
 
@@ -92,8 +92,8 @@ public:
             &instance2,
         };
 
-        ValueFormatter sut;
-        sut.Write(args, console, instances);
+        ValueFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"a1b2c3\n"
@@ -123,8 +123,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        ValueFormatter sut;
-        sut.Write(args, console, &instance);
+        ValueFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"a1b2c3\n"
@@ -159,8 +159,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        ValueFormatter sut;
-        sut.Write(args, console, &instance);
+        ValueFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"abcd1234\n"
@@ -193,8 +193,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        ValueFormatter sut;
-        sut.Write(args, console, &instance);
+        ValueFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"test\n";
@@ -226,8 +226,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        ValueFormatter sut;
-        sut.Write(args, console, &instance);
+        ValueFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"test\n";
@@ -271,8 +271,8 @@ public:
             &instance2,
         };
 
-        ValueFormatter sut;
-        sut.Write(args, console, instances);
+        ValueFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"a1b2c3\n"
@@ -320,8 +320,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        ValueFormatter sut;
-        sut.Write(args, console, &instance);
+        ValueFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected = L"";
 
@@ -360,8 +360,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        ValueFormatter sut;
-        sut.Write(args, console, &instance);
+        ValueFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"a1b2c3\n"
@@ -391,8 +391,8 @@ public:
             { L"IsLaunchable", L"false" },
         };
 
-        ValueFormatter sut;
-        sut.Write(args, console, &instance);
+        ValueFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"a1b2c3\n"
@@ -419,8 +419,8 @@ public:
             { L"IsLaunchable", L"true" },
         };
 
-        ValueFormatter sut;
-        sut.Write(args, console, &instance);
+        ValueFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"a1b2c3\n"
@@ -446,8 +446,8 @@ public:
             L"c",
         };
 
-        ValueFormatter sut;
-        sut.Write(console, L"values", L"value", values);
+        ValueFormatter sut(args, console);
+        sut.Write(L"values", L"value", values);
 
         auto expected =
             L"a\n"
@@ -531,8 +531,8 @@ public:
 
         TestConsole console(args);
 
-        ValueFormatter sut;
-        sut.Write(args, console, instances);
+        ValueFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"a1b2c3\n"
@@ -541,6 +541,31 @@ public:
             L"b1c2d3\n"
             L"test\n"
             L"Microsoft.VisualStudio.Product.Enterprise\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    TEST_METHOD(Write_Instance_With_Color)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        console.SetColorSupported(true);
+
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"State", L"4294967295" },
+            { L"IsComplete", L"true"},
+        };
+
+        ValueFormatter sut(args, console);
+        sut.Write(&instance);
+
+        auto expected =
+            L"a1b2c3\n"
+            L"4294967295\n"
+            L"1\n"
+            L"0\n";
 
         Assert::AreEqual(expected, console);
     }

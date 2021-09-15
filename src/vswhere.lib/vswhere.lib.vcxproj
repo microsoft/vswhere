@@ -148,6 +148,7 @@
     <ClCompile Include="ValueFormatter.cpp" />
     <ClCompile Include="VersionRange.cpp" />
     <ClCompile Include="XmlFormatter.cpp" />
+    <ClCompile Include="XmlScope.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

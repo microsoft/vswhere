@@ -9,8 +9,9 @@ template <typename _Type>
 class Scope
 {
 public:
-    Scope(_In_opt_ _Type* pParent, _In_ const std::wstring& padding, _In_ const std::wstring& name) :
+    Scope(_In_opt_ _Type* pParent, _In_ ::Console& console, _In_ const std::wstring& padding, _In_ const std::wstring& name) :
         m_pParent(pParent),
+        m_console(console),
         m_padding(padding),
         m_name(name),
         m_writeStart(true),
@@ -18,8 +19,9 @@ public:
     {
     }
 
-    Scope(_In_opt_ _Type* pParent, _In_ std::wstring& padding, _In_ std::wstring::const_pointer name) :
+    Scope(_In_opt_ _Type* pParent, _In_ ::Console& console, _In_ std::wstring& padding, _In_ std::wstring::const_pointer name) :
         m_pParent(pParent),
+        m_console(console),
         m_padding(padding),
         m_name(name),
         m_writeStart(true),
@@ -29,6 +31,7 @@ public:
 
     Scope(_In_ const Scope& obj) :
         m_pParent(obj.m_pParent),
+        m_console(obj.m_console),
         m_padding(obj.m_padding),
         m_name(obj.m_name),
         m_writeStart(obj.m_writeStart),
@@ -36,27 +39,27 @@ public:
     {
     }
 
-    void WriteStart(_In_ Console& console)
+    void WriteStart()
     {
         if (m_writeStart)
         {
             // Write the parent scope first (may have already been written to console).
             if (m_pParent)
             {
-                m_pParent->WriteStart(console);
+                m_pParent->WriteStart();
             }
 
-            WriteStartImpl(console);
+            WriteStartImpl();
             m_writeStart = false;
             m_writeEnd = true;
         }
     }
 
-    void WriteEnd(_In_ Console& console)
+    void WriteEnd()
     {
         if (m_writeEnd)
         {
-            WriteEndImpl(console);
+            WriteEndImpl();
         }
     }
 
@@ -64,6 +67,11 @@ protected:
     _Type* Parent() const noexcept
     {
         return m_pParent;
+    }
+
+    ::Console& Console() const noexcept
+    {
+        return m_console;
     }
 
     const std::wstring& Padding() const noexcept
@@ -76,11 +84,12 @@ protected:
         return m_name;
     }
 
-    virtual void WriteStartImpl(_In_ Console& console) = 0;
-    virtual void WriteEndImpl(_In_ Console& console) = 0;
+    virtual void WriteStartImpl() = 0;
+    virtual void WriteEndImpl() = 0;
 
 private:
     _Type* m_pParent;
+    ::Console& m_console;
     const std::wstring m_padding;
     const std::wstring m_name;
     bool m_writeStart;

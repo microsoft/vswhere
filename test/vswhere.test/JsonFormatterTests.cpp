@@ -23,8 +23,8 @@ public:
             { L"Description", L"This description contains \"quotes\"." },
         };
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -62,8 +62,8 @@ public:
             &instance2,
         };
 
-        JsonFormatter sut;
-        sut.Write(args, console, instances);
+        JsonFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"[\n"
@@ -87,8 +87,8 @@ public:
         TestConsole console(args);
         vector<ISetupInstancePtr> instances;
 
-        JsonFormatter sut;
-        sut.Write(args, console, instances);
+        JsonFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"[]\n";
@@ -118,8 +118,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -161,8 +161,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -202,8 +202,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -241,8 +241,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -292,8 +292,8 @@ public:
             &instance2,
         };
 
-        JsonFormatter sut;
-        sut.Write(args, console, instances);
+        JsonFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"[\n"
@@ -351,8 +351,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[]\n";
@@ -393,8 +393,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -433,8 +433,8 @@ public:
             { L"IsLaunchable", L"false" },
         };
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -465,8 +465,8 @@ public:
             { L"IsLaunchable", L"true" },
         };
 
-        JsonFormatter sut;
-        sut.Write(args, console, &instance);
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"[\n"
@@ -496,8 +496,8 @@ public:
             L"c",
         };
 
-        JsonFormatter sut;
-        sut.Write(console, L"values", L"value", values);
+        JsonFormatter sut(args, console);
+        sut.Write(L"values", L"value", values);
 
         auto expected =
             L"[\n"
@@ -606,8 +606,8 @@ public:
 
         TestConsole console(args);
 
-        JsonFormatter sut;
-        sut.Write(args, console, instances);
+        JsonFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"[\n"
@@ -644,6 +644,37 @@ public:
             L"        \"type\": \"Component\"\n"
             L"      }\n"
             L"    ]\n"
+            L"  }\n"
+            L"]\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    TEST_METHOD(Write_Instance_With_Color)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        console.SetColorSupported(true);
+
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallDate", L"2017-02-23T01:22:35Z"},
+            { L"State", L"4294967295" },
+            { L"IsComplete", L"true"},
+        };
+
+        JsonFormatter sut(args, console);
+        sut.Write(&instance);
+
+        auto expected =
+            L"[\n"
+            L"  {\n"
+            L"    \033[38;2;156;220;254m\"instanceId\"\033[0m: \033[38;2;206;145;120m\"a1b2c3\"\033[0m,\n"
+            L"    \033[38;2;156;220;254m\"installDate\"\033[0m: \033[38;2;206;145;120m\"2017-02-23T01:22:35Z\"\033[0m,\n"
+            L"    \033[38;2;156;220;254m\"state\"\033[0m: \033[38;2;181;206;168m4294967295\033[0m,\n"
+            L"    \033[38;2;156;220;254m\"isComplete\"\033[0m: \033[38;2;86;156;214mtrue\033[0m,\n"
+            L"    \033[38;2;156;220;254m\"isRebootRequired\"\033[0m: \033[38;2;86;156;214mfalse\033[0m\n"
             L"  }\n"
             L"]\n";
 
