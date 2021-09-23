@@ -1,0 +1,78 @@
+# Copyright (C) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT license. See LICENSE.txt in the project root for license information.
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+    - develop
+  paths:
+    exclude:
+    - README.md
+
+pr: none
+
+queue:
+  name: VSEngSS-MicroBuild2019-1ES
+  timeoutInMinutes: 120
+  demands: 
+  - ChocolateyInstall
+  - MSBuild
+  - VisualStudio
+  - VSTest
+
+steps:
+- template: inc/build.yml
+  parameters:
+      BuildConfiguration: $(BuildConfiguration)
+      BuildPlatform: $(BuildPlatform)
+      Sign: false
+
+- task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
+  displayName: Detect components
+  inputs:
+    sourceScanPath: $(Build.SourcesDirectory)
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-prefast.SDLNativeRules@2
+  displayName: 'Run the PREfast SDL Native Rules for MSBuild'
+  continueOnError: true
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@1
+  displayName: 'Run PoliCheck'
+  inputs:
+    targetType: F
+    targetArgument: '$(Build.SourcesDirectory)'
+    optionsFC: 0
+    optionsXS: 1
+    optionsHMENABLE: 0
+  continueOnError: true
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-binskim.BinSkim@3
+  displayName: 'Run BinSkim'
+  inputs:
+    InputType: Basic
+    Function: analyze
+    AnalyzeTarget: 'bin\$(BuildConfiguration)\*.exe'
+    AnalyzeSymPath: 'bin\$(BuildConfiguration)'
+    AnalyzeVerbose: true
+    AnalyzeHashes: true
+  continueOnError: true
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-credscan.CredScan@2
+  displayName: 'Run CredScan'
+  inputs:
+    debugMode: false
+
+# Publish compliance results
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-publishsecurityanalysislogs.PublishSecurityAnalysisLogs@2
+  displayName: 'Publish Security Analysis Logs'
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@1
+  displayName: Check SDL results
+  inputs:
+    AllTools: true
+
+- task: ms-vseng.MicroBuildTasks.521a94ea-9e68-468a-8167-6dcf361ea776.MicroBuildCleanup@1
+  displayName: Clean up
+  condition: succeededOrFailed()
