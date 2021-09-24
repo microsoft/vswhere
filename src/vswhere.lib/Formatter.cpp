@@ -62,7 +62,7 @@ std::unique_ptr<Formatter> Formatter::Create(_In_ const wstring& type, _In_ Comm
     throw win32_error(ERROR_NOT_SUPPORTED);
 }
 
-void Formatter::Write(const std::wstring& root, _In_ const std::wstring& name, _In_ const std::vector<std::wstring> values)
+void Formatter::Write(_In_ const std::wstring& root, _In_ const std::wstring& name, _In_ const std::vector<std::wstring> values)
 {
     StartDocument();
     StartArray(root);
@@ -101,7 +101,7 @@ void Formatter::Write(_In_ vector<ISetupInstancePtr> instances)
     EndDocument();
 }
 
-void Formatter::WriteFiles(vector<ISetupInstancePtr> instances)
+void Formatter::WriteFiles(_In_ vector<ISetupInstancePtr> instances)
 {
     StartDocument();
     StartArray(L"files");
@@ -136,7 +136,7 @@ wstring Formatter::FormatDateISO8601(_In_ const FILETIME& value)
     }
 
     wchar_t wz[21] = {};
-    auto cch = ::swprintf_s(wz, L"%04d-%02d-%02dT%02d:%02d:%02dZ", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+    auto cch = ::swprintf_s(wz, L"%04u-%02u-%02uT%02u:%02u:%02uZ", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 
     return wstring(wz, cch);
 }
@@ -515,6 +515,10 @@ HRESULT Formatter::GetInstallDate(_In_ ISetupInstance* pInstance, _Out_ VARIANT*
             vt.vt = VT_BSTR;
             *pvtInstallDate = vt.Detach();
         }
+        else
+        {
+            hr = E_FAIL;
+        }
     }
 
     return hr;
@@ -556,6 +560,10 @@ HRESULT Formatter::GetProductId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* p
                 *pvtProductId = vt.Detach();
             }
         }
+        else if (SUCCEEDED(hr))
+        {
+            hr = E_FAIL;
+        }
     }
 
     return hr;
@@ -581,6 +589,10 @@ HRESULT Formatter::GetProductPath(_In_ ISetupInstance* pInstance, _Out_ VARIANT*
                 vt.vt = VT_BSTR;
                 *pvtProductPath = vt.Detach();
             }
+        }
+        else if (SUCCEEDED(hr))
+        {
+            hr = E_FAIL;
         }
     }
 
