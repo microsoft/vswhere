@@ -17,6 +17,7 @@ public:
         auto pHelper = new VersionRange;
         ISetupHelperPtr sut(pHelper, false);
 
+        #pragma warning(suppress: 6387) // Expected to pass invalid arg
         Assert::AreEqual(E_INVALIDARG, sut->ParseVersion(NULL, NULL));
     }
 
@@ -25,6 +26,7 @@ public:
         auto pHelper = new VersionRange;
         ISetupHelperPtr sut(pHelper, false);
 
+        #pragma warning(suppress: 6387) // Expected to pass invalid arg
         Assert::AreEqual(E_POINTER, sut->ParseVersion(L"1.0", NULL));
     }
 
@@ -130,6 +132,7 @@ public:
         auto pHelper = new VersionRange;
         ISetupHelperPtr sut(pHelper, false);
 
+        #pragma warning(suppress: 6387) // Expected to pass invalid arg
         Assert::AreEqual(E_INVALIDARG, sut->ParseVersionRange(NULL, NULL, NULL));
     }
 
@@ -138,6 +141,7 @@ public:
         auto pHelper = new VersionRange;
         ISetupHelperPtr sut(pHelper, false);
 
+        #pragma warning(suppress: 6387) // Expected to pass invalid arg
         Assert::AreEqual(E_POINTER, sut->ParseVersionRange(L"[1.0,)", NULL, NULL));
     }
 
@@ -147,6 +151,8 @@ public:
         ISetupHelperPtr sut(pHelper, false);
 
         ULONGLONG ullMinVersion = 0;
+
+        #pragma warning(suppress: 6387) // Expected to pass invalid arg
         Assert::AreEqual(E_POINTER, sut->ParseVersionRange(L"[1.0,)", &ullMinVersion, NULL));
     }
 
