@@ -13,16 +13,16 @@ void Console::Initialize() noexcept
     {
         if (m_args.get_UTF8())
         {
-            ::_setmode(_fileno(stdout), _O_U8TEXT);
+            static_cast<void>(::_setmode(_fileno(stdout), _O_U8TEXT));
         }
         else if (IsConsole(stdout))
         {
-            ::_setmode(_fileno(stdout), _O_WTEXT);
+            static_cast<void>(::_setmode(_fileno(stdout), _O_WTEXT));
         }
         else
         {
             char sz[10];
-            ::sprintf_s(sz, ".%d", ::GetConsoleCP());
+            ::sprintf_s(sz, ".%u", ::GetConsoleCP());
 
             ::setlocale(LC_CTYPE, sz);
         }
@@ -66,7 +66,7 @@ void __cdecl Console::Write(_In_ const std::wstring& value)
     Write(value.c_str(), NULL);
 }
 
-void __cdecl Console::WriteLine(_In_ LPCWSTR wzFormat, ...)
+void __cdecl Console::WriteLine(_In_opt_ LPCWSTR wzFormat, ...)
 {
     if (wzFormat)
     {
@@ -80,7 +80,7 @@ void __cdecl Console::WriteLine(_In_ LPCWSTR wzFormat, ...)
     Write(L"\n", NULL);
 }
 
-void __cdecl Console::WriteLine(_In_ const std::wstring& value)
+void __cdecl Console::WriteLine(_In_opt_ const std::wstring& value)
 {
     Write(L"%ls\n", value.c_str());
 }

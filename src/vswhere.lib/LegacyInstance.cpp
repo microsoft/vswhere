@@ -8,7 +8,7 @@
 using namespace std;
 
 template <class T>
-inline HRESULT NotImplemented(_In_ T* p)
+inline HRESULT NotImplemented(_Out_opt_ T* p)
 {
     if (!p)
     {
@@ -20,7 +20,7 @@ inline HRESULT NotImplemented(_In_ T* p)
 }
 
 template<>
-inline HRESULT NotImplemented(_In_ LPFILETIME pft)
+inline HRESULT NotImplemented(_Out_opt_ LPFILETIME pft)
 {
     if (!pft)
     {

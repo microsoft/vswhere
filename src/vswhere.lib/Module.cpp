@@ -50,7 +50,7 @@ const wstring& Module::get_FileVersion() noexcept
     }
 
     vector<byte> buffer(cbVersionInfo);
-    if (!::GetFileVersionInfoW(path.c_str(), dwHandle, buffer.size(), buffer.data()))
+    if (!::GetFileVersionInfoW(path.c_str(), 0, buffer.size(), buffer.data()))
     {
         return m_fileVersion;
     }
@@ -63,7 +63,7 @@ const wstring& Module::get_FileVersion() noexcept
     }
 
     auto cch = _scwprintf(
-        L"%d.%d.%d.%d",
+        L"%u.%u.%u.%u",
         (pFileInfo->dwFileVersionMS >> 16) & 0xffff,
         pFileInfo->dwFileVersionMS & 0xffff,
         (pFileInfo->dwFileVersionLS >> 16) & 0xffff,
@@ -77,7 +77,7 @@ const wstring& Module::get_FileVersion() noexcept
     swprintf_s(
         const_cast<LPWSTR>(m_fileVersion.c_str()),
         m_fileVersion.size(),
-        L"%d.%d.%d.%d",
+        L"%u.%u.%u.%u",
         (pFileInfo->dwFileVersionMS >> 16) & 0xffff,
         pFileInfo->dwFileVersionMS & 0xffff,
         (pFileInfo->dwFileVersionLS >> 16) & 0xffff,
