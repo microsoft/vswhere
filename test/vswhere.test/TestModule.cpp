@@ -37,5 +37,6 @@ wstring __cdecl format(_In_ LPCWSTR fmt, ...)
 
 TEST_MODULE_INITIALIZE(ModuleInitialize)
 {
+    #pragma warning(suppress: 6387) // Ignore potential failure when getting module handle
     ResourceManager::SetInstance(::GetModuleHandleW(L"vswhere.test.dll"));
 }

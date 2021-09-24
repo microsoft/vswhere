@@ -66,16 +66,16 @@ public:
     STDMETHODIMP Next(
         _In_ ULONG celt,
         _Out_writes_to_(celt, *pceltFetched) ISetupInstance** rgelt,
-        _Out_opt_ _Deref_out_range_(0, celt) ULONG* pceltFetched
+        _Out_ _Deref_out_range_(0, celt) ULONG* pceltFetched
     )
     {
+        *pceltFetched = 0;
         auto remaining = m_instances.size() - m_i;
         if (0 == remaining)
         {
             return S_FALSE;
         }
-
-        *pceltFetched = 0;
+        
         for (unsigned long i = 0; i < celt && m_i < m_instances.size(); ++i, ++m_i, ++*pceltFetched)
         {
             rgelt[i] = m_instances[m_i];

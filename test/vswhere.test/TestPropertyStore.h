@@ -147,7 +147,7 @@ private:
         }
 
         static ci_equal equals;
-        VARENUM vt;
+        VARENUM vt = VT_EMPTY;
         std::wstring value;
 
         auto hr = TryGet(wszName, vt, value);

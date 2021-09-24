@@ -112,9 +112,13 @@ public:
             const int num_fields = 6;
             SYSTEMTIME st = {};
 
-            if (num_fields == ::swscanf_s(value.c_str(), L"%hd-%hd-%hdT%hd:%hd:%hd", &st.wYear, &st.wMonth, &st.wDay, &st.wHour, &st.wMinute, &st.wSecond))
+            if (num_fields == ::swscanf_s(value.c_str(), L"%hu-%hu-%huT%hu:%hu:%hu", &st.wYear, &st.wMonth, &st.wDay, &st.wHour, &st.wMinute, &st.wSecond))
             {
                 ::SystemTimeToFileTime(&st, pInstallDate);
+            }
+            else
+            {
+                hr = E_FAIL;
             }
         }
 
