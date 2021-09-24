@@ -121,9 +121,6 @@ bool Console::IsVirtualTerminal(_In_ FILE* f) noexcept
     DWORD dwMode;
     if (::GetConsoleMode(hFile, &dwMode))
     {
-        // Defined in newer SDK but can try to enable on older platforms.
-        const DWORD ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x4;
-
         return 0 != ::SetConsoleMode(hFile, dwMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
     }
 
