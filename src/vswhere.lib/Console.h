@@ -30,7 +30,7 @@ public:
     void __cdecl Write(_In_ LPCWSTR wzFormat, ...);
     void __cdecl Write(_In_ const std::wstring& value);
     void __cdecl WriteLine(_In_opt_ LPCWSTR wzFormat = NULL, ...);
-    void __cdecl WriteLine(_In_opt_ const std::wstring& value);
+    void __cdecl WriteLine(_In_ const std::wstring& value);
 
     virtual bool IsColorSupported() const
     {

@@ -80,7 +80,7 @@ void __cdecl Console::WriteLine(_In_opt_ LPCWSTR wzFormat, ...)
     Write(L"\n", NULL);
 }
 
-void __cdecl Console::WriteLine(_In_opt_ const std::wstring& value)
+void __cdecl Console::WriteLine(_In_ const std::wstring& value)
 {
     Write(L"%ls\n", value.c_str());
 }

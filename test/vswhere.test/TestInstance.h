@@ -101,6 +101,7 @@ public:
         return TryGetBSTR(L"InstanceId", pbstrInstanceId);
     }
 
+    #pragma warning(suppress: 6101) // pInstallDate is not set if value is an invalid date but we still return success
     STDMETHODIMP GetInstallDate(
         _Out_ LPFILETIME pInstallDate)
     {
@@ -115,10 +116,6 @@ public:
             if (num_fields == ::swscanf_s(value.c_str(), L"%hu-%hu-%huT%hu:%hu:%hu", &st.wYear, &st.wMonth, &st.wDay, &st.wHour, &st.wMinute, &st.wSecond))
             {
                 ::SystemTimeToFileTime(&st, pInstallDate);
-            }
-            else
-            {
-                hr = E_FAIL;
             }
         }
 

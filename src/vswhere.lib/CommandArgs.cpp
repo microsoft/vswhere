@@ -110,9 +110,9 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         else if (ArgumentEquals(arg.Value, L"format"))
         {
             auto format = ParseArgument(it, args.end(), arg);
-            auto formatIt = Formatter::Formatters.find(format);
+            auto formatterIt = Formatter::Formatters.find(format);
 
-            if (formatIt != Formatter::Formatters.end())
+            if (formatterIt != Formatter::Formatters.end())
             {
                 m_format = format;
             }
