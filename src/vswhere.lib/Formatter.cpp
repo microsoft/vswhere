@@ -495,7 +495,7 @@ HRESULT Formatter::GetInstanceId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* 
     return GetStringProperty(bind(&ISetupInstance::GetInstanceId, pInstance, _1), pvtInstanceId);
 }
 
-#pragma warning(suppress: 6101) // pvtInstallDate is not set if value is empty but we still return success
+#pragma warning(suppress: 6101) // pvtInstallDate is not set if value is empty, but it should be empty so we still return success
 HRESULT Formatter::GetInstallDate(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallDate)
 {
     FILETIME ft = {};
@@ -536,7 +536,7 @@ HRESULT Formatter::GetInstallationVersion(_In_ ISetupInstance* pInstance, _Out_ 
     return GetStringProperty(bind(&ISetupInstance::GetInstallationVersion, pInstance, _1), pvtInstallationVersion);
 }
 
-#pragma warning(suppress: 6101) // pvtProductId is not set if instance product is null but we still return success
+#pragma warning(suppress: 6101) // pvtProductId is not set if instance product is null, but it should be empty so we still return success
 HRESULT Formatter::GetProductId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtProductId)
 {
     ISetupInstance2Ptr instance;
@@ -563,7 +563,7 @@ HRESULT Formatter::GetProductId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* p
     return hr;
 }
 
-#pragma warning(suppress: 6101) // pvtProductPath is not set if product path is null but we still return success
+#pragma warning(suppress: 6101) // pvtProductPath is not set if product path is null, but it should be empty so we still return success
 HRESULT Formatter::GetProductPath(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtProductPath)
 {
     ISetupInstance2Ptr instance;
