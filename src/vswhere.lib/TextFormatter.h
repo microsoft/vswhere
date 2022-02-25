@@ -9,13 +9,13 @@ class TextFormatter :
     public Formatter
 {
 public:
-    static std::unique_ptr<Formatter> Create()
+    static std::unique_ptr<Formatter> Create(_In_ CommandArgs& args, _In_ ::Console& console)
     {
-        return std::unique_ptr<TextFormatter>(new TextFormatter());
+        return std::unique_ptr<TextFormatter>(new TextFormatter(args, console));
     }
 
-    TextFormatter() :
-        Formatter(),
+    TextFormatter(_In_ CommandArgs& args, _In_ ::Console& console) :
+        Formatter(args, console),
         m_first(false)
     {
     }
@@ -28,10 +28,10 @@ public:
     }
 
 protected:
-    void StartArray(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;
-    void StartObject(_In_ Console& console, _In_opt_ const std::wstring& name = empty_wstring) override;
-    void WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value) override;
-    void EndObject(_In_ Console& console) override;
+    void StartArray(_In_opt_ const std::wstring& name = empty_wstring) override;
+    void StartObject(_In_opt_ const std::wstring& name = empty_wstring) override;
+    void WriteProperty(_In_ const std::wstring& name, _In_ const std::wstring& value) override;
+    void EndObject() override;
 
 private:
     bool m_first;

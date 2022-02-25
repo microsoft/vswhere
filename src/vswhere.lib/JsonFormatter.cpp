@@ -7,6 +7,9 @@
 
 using namespace std;
 
+const LPCWSTR JsonFormatter::ColorBool = L"\033[38;2;86;156;214m";
+const LPCWSTR JsonFormatter::ColorNumber = L"\033[38;2;181;206;168m";
+
 wstring JsonFormatter::Escape(_In_ const wstring& value)
 {
     wstring buffer;
@@ -26,49 +29,49 @@ wstring JsonFormatter::Escape(_In_ const wstring& value)
     return buffer;
 }
 
-void JsonFormatter::StartArray(_In_ Console& console, _In_opt_ const std::wstring& name)
+void JsonFormatter::StartArray(_In_opt_ const std::wstring& name)
 {
-    StartScope(console, JsonScope::Type::array, name);
+    StartScope(JsonScope::Type::array, name);
 }
 
-void JsonFormatter::StartObject(_In_ Console& console, _In_opt_ const wstring& name)
+void JsonFormatter::StartObject(_In_opt_ const wstring& name)
 {
-    StartScope(console, JsonScope::Type::object, name);
+    StartScope(JsonScope::Type::object, name);
 }
 
-void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ const wstring& value)
+void JsonFormatter::WriteProperty(_In_ const wstring& name, _In_ const wstring& value)
 {
-    StartProperty(console, name);
+    StartProperty(name);
 
     auto escaped = Escape(value);
-    console.Write(L"\"%ls\"",escaped.c_str());
+    Console().Write(L"%ls\"%ls\"%ls", Console().Color(ColorValue), escaped.c_str(), Console().ResetColor());
 }
 
-void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ bool value)
+void JsonFormatter::WriteProperty(_In_ const wstring& name, _In_ bool value)
 {
-    StartProperty(console, name);
-    console.Write(value ? L"true" : L"false");
+    StartProperty(name);
+    Console().Write(L"%ls%ls%ls", Console().Color(ColorBool), value ? L"true" : L"false", Console().ResetColor());
 }
 
-void JsonFormatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ long long value)
+void JsonFormatter::WriteProperty(_In_ const wstring& name, _In_ long long value)
 {
-    StartProperty(console, name);
-    console.Write(L"%I64d", value);
+    StartProperty(name);
+    Console().Write(L"%ls%I64d%ls", Console().Color(ColorNumber), value, Console().ResetColor());
 }
 
-void JsonFormatter::EndObject(_In_ Console& console)
+void JsonFormatter::EndObject()
 {
-    EndScope(console);
+    EndScope();
 }
 
-void JsonFormatter::EndArray(_In_ Console& console)
+void JsonFormatter::EndArray()
 {
-    EndScope(console);
+    EndScope();
 }
 
-void JsonFormatter::EndDocument(_In_ Console& console)
+void JsonFormatter::EndDocument()
 {
-    console.WriteLine();
+    Console().WriteLine();
 }
 
 wstring JsonFormatter::FormatDate(_In_ const FILETIME& value)
@@ -89,43 +92,43 @@ void JsonFormatter::Pop()
     }
 }
 
-void JsonFormatter::StartScope(_In_ Console& console, _In_ JsonScope::Type type, _In_ const std::wstring& name)
+void JsonFormatter::StartScope(_In_ JsonScope::Type type, _In_ const std::wstring& name)
 {
     JsonScope* pParent = nullptr;
     if (m_scopes.size())
     {
         auto& top = m_scopes.top();
-        top.StartScope(console);
+        top.StartScope();
 
         pParent = &top;
     }
 
-    m_scopes.push(JsonScope(pParent, m_padding, type, name));
+    m_scopes.push(JsonScope(pParent, Console(), m_padding, type, name));
 
     // Always write the root scope.
     if (m_scopes.size() == 1)
     {
-        m_scopes.top().WriteStart(console);
+        m_scopes.top().WriteStart();
     }
 
     Push();
 }
 
-void JsonFormatter::StartProperty(_In_ Console& console, _In_ const std::wstring& name)
+void JsonFormatter::StartProperty(_In_ const std::wstring& name)
 {
-    m_scopes.top().StartProperty(console);
+    m_scopes.top().StartProperty();
 
-    console.Write(L"\n%ls", m_padding.c_str());
+    Console().Write(L"\n%ls", m_padding.c_str());
     if (m_scopes.top().IsObject())
     {
-        console.Write(L"\"%ls\": ", name.c_str());
+        Console().Write(L"%ls\"%ls\"%ls: ", Console().Color(ColorName), name.c_str(), Console().ResetColor());
     }
 }
 
-void JsonFormatter::EndScope(_In_ Console& console)
+void JsonFormatter::EndScope()
 {
     Pop();
 
-    m_scopes.top().WriteEnd(console);
+    m_scopes.top().WriteEnd();
     m_scopes.pop();
 }

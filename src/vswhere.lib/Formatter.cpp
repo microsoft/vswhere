@@ -10,7 +10,9 @@ using namespace std::placeholders;
 
 const std::wstring Formatter::empty_wstring;
 
-Formatter::Formatter()
+Formatter::Formatter(_In_ CommandArgs& args, _In_ ::Console& console) :
+    m_args(args),
+    m_console(console)
 {
     m_properties =
     {
@@ -39,10 +41,14 @@ Formatter::FormatterMap Formatter::Formatters =
     { L"xml", make_tuple(IDS_FORMAT_XML, XmlFormatter::Create) },
 };
 
+// Colors from Visual Studio Code's Dark+ theme.
+const LPCWSTR Formatter::ColorName = L"\033[38;2;156;220;254m";
+const LPCWSTR Formatter::ColorValue = L"\033[38;2;206;145;120m";
+
 const wstring Formatter::s_delims(L"./_");
 ci_equal Formatter::s_comparer;
 
-std::unique_ptr<Formatter> Formatter::Create(const wstring& type)
+std::unique_ptr<Formatter> Formatter::Create(_In_ const wstring& type, _In_ CommandArgs& args, _In_ ::Console& console)
 {
     auto it = Formatters.find(type);
     if (it != Formatters.end())
@@ -50,55 +56,55 @@ std::unique_ptr<Formatter> Formatter::Create(const wstring& type)
         FormatterFactory factory;
         tie(ignore, factory) = it->second;
 
-        return factory();
+        return factory(args, console);
     }
 
     throw win32_error(ERROR_NOT_SUPPORTED);
 }
 
-void Formatter::Write(_In_ Console& console, _In_ const std::wstring& root, _In_ const std::wstring& name, _In_ const std::vector<std::wstring> values)
+void Formatter::Write(_In_ const std::wstring& root, _In_ const std::wstring& name, _In_ const std::vector<std::wstring> values)
 {
-    StartDocument(console);
-    StartArray(console, root);
+    StartDocument();
+    StartArray(root);
 
     for (const auto& value : values)
     {
-        WriteProperty(console, name, value);
+        WriteProperty(name, value);
     }
 
-    EndArray(console);
-    EndDocument(console);
+    EndArray();
+    EndDocument();
 }
 
-void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance)
+void Formatter::Write(_In_ ISetupInstance* pInstance)
 {
-    StartDocument(console);
-    StartArray(console);
+    StartDocument();
+    StartArray();
 
-    WriteInternal(args, console, pInstance);
+    WriteInternal(pInstance);
 
-    EndArray(console);
-    EndDocument(console);
+    EndArray();
+    EndDocument();
 }
 
-void Formatter::Write(_In_ const CommandArgs& args, _In_ Console& console, _In_ vector<ISetupInstancePtr> instances)
+void Formatter::Write(_In_ vector<ISetupInstancePtr> instances)
 {
-    StartDocument(console);
-    StartArray(console);
+    StartDocument();
+    StartArray();
 
     for (const auto& instance : instances)
     {
-        WriteInternal(args, console, instance);
+        WriteInternal(instance);
     }
 
-    EndArray(console);
-    EndDocument(console);
+    EndArray();
+    EndDocument();
 }
 
-void Formatter::WriteFiles(_In_ const CommandArgs& args, _In_ Console& console, vector<ISetupInstancePtr> instances)
+void Formatter::WriteFiles(_In_ vector<ISetupInstancePtr> instances)
 {
-    StartDocument(console);
-    StartArray(console, L"files");
+    StartDocument();
+    StartArray(L"files");
 
     bstr_t bstrInstallationPath;
     for (const auto& instance : instances)
@@ -106,18 +112,18 @@ void Formatter::WriteFiles(_In_ const CommandArgs& args, _In_ Console& console, 
         auto hr = instance->GetInstallationPath(bstrInstallationPath.GetAddress());
         if (SUCCEEDED(hr))
         {
-            Glob glob(static_cast<LPCWSTR>(bstrInstallationPath), args.get_Find());
+            Glob glob(static_cast<LPCWSTR>(bstrInstallationPath), Args().get_Find());
 
-            auto entries = glob.Entries(args.get_Sort());
+            auto entries = glob.Entries(Args().get_Sort());
             for (const auto& entry : entries)
             {
-                WriteProperty(console, L"file", entry);
+                WriteProperty(L"file", entry);
             }
         }
     }
 
-    EndArray(console);
-    EndDocument(console);
+    EndArray();
+    EndDocument();
 }
 
 wstring Formatter::FormatDateISO8601(_In_ const FILETIME& value)
@@ -130,7 +136,7 @@ wstring Formatter::FormatDateISO8601(_In_ const FILETIME& value)
     }
 
     wchar_t wz[21] = {};
-    auto cch = ::swprintf_s(wz, L"%04d-%02d-%02dT%02d:%02d:%02dZ", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+    auto cch = ::swprintf_s(wz, L"%04u-%02u-%02uT%02u:%02u:%02uZ", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 
     return wstring(wz, cch);
 }
@@ -185,13 +191,13 @@ wstring Formatter::FormatDate(_In_ const FILETIME& value)
     return date + L" " + time;
 }
 
-void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance)
+void Formatter::WriteInternal(_In_ ISetupInstance* pInstance)
 {
     _ASSERTE(pInstance);
 
-    StartObject(console);
+    StartObject();
 
-    wstring specified = args.get_Property();
+    wstring specified = Args().get_Property();
     variant_t vtValue;
     bool found = false;
 
@@ -204,14 +210,14 @@ void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& consol
             auto hr = property.second(pInstance, vtValue.GetAddress());
             if (SUCCEEDED(hr))
             {
-                WriteProperty(console, property.first, vtValue);
+                WriteProperty(property.first, vtValue);
             }
         }
     }
 
     if (specified.empty() || !found)
     {
-        found = WriteProperties(args, console, pInstance);
+        found = WriteProperties(pInstance);
 
         // Output catalog information.
         if (specified.empty() || !found)
@@ -227,11 +233,11 @@ void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& consol
                 if (SUCCEEDED(hr) && !!store)
                 {
                     wstring name(L"catalog");
-                    StartObject(console, name);
+                    StartObject(name);
 
-                    found = WriteProperties(args, console, store, name);
+                    found = WriteProperties(store, name);
 
-                    EndObject(console);
+                    EndObject();
                 }
             }
         }
@@ -250,79 +256,79 @@ void Formatter::WriteInternal(_In_ const CommandArgs& args, _In_ Console& consol
                 if (SUCCEEDED(hr) && !!store)
                 {
                     wstring name(L"properties");
-                    StartObject(console, name);
+                    StartObject(name);
 
-                    found = WriteProperties(args, console, store, name);
+                    found = WriteProperties(store, name);
 
-                    EndObject(console);
+                    EndObject();
                 }
             }
         }
 
-        if (args.get_IncludePackages() && SupportsPackages())
+        if (Args().get_IncludePackages() && SupportsPackages())
         {
             if (specified.empty() || s_comparer(specified, L"packages"))
             {
-                WritePackages(args, console, pInstance);
+                WritePackages(pInstance);
             }
         }
     }
 
-    EndObject(console);
+    EndObject();
 }
 
-void Formatter::WritePackage(_In_ Console& console, _In_ ISetupPackageReference* pPackage)
+void Formatter::WritePackage(_In_ ISetupPackageReference* pPackage)
 {
-    StartObject(console, L"package");
+    StartObject(L"package");
 
     bstr_t bstr;
     auto hr = pPackage->GetId(bstr.GetAddress());
     if (SUCCEEDED(hr))
     {
-        WriteProperty(console, L"id", bstr);
+        WriteProperty(L"id", bstr);
     }
 
     hr = pPackage->GetVersion(bstr.GetAddress());
     if (SUCCEEDED(hr) && bstr.length())
     {
-        WriteProperty(console, L"version", bstr);
+        WriteProperty(L"version", bstr);
     }
 
     hr = pPackage->GetChip(bstr.GetAddress());
     if (SUCCEEDED(hr) && bstr.length())
     {
-        WriteProperty(console, L"chip", bstr);
+        WriteProperty(L"chip", bstr);
     }
 
     hr = pPackage->GetLanguage(bstr.GetAddress());
     if (SUCCEEDED(hr) && bstr.length())
     {
-        WriteProperty(console, L"language", bstr);
+        WriteProperty(L"language", bstr);
     }
 
     hr = pPackage->GetBranch(bstr.GetAddress());
     if (SUCCEEDED(hr) && bstr.length())
     {
-        WriteProperty(console, L"branch", bstr);
+        WriteProperty(L"branch", bstr);
     }
 
     hr = pPackage->GetType(bstr.GetAddress());
     if (SUCCEEDED(hr))
     {
-        WriteProperty(console, L"type", bstr);
+        WriteProperty(L"type", bstr);
     }
 
     VARIANT_BOOL vtBool;
     hr = pPackage->GetIsExtension(&vtBool);
     if (SUCCEEDED(hr) && VARIANT_TRUE == vtBool)
     {
-        WriteProperty(console, L"extension", true);
+        WriteProperty(L"extension", true);
     }
 
-    EndObject(console);
+    EndObject();
 }
 
-void Formatter::WritePackages(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance)
+void Formatter::WritePackages(_In_ ISetupInstance* pInstance)
 {
     ISetupInstance2Ptr instance2;
     LPSAFEARRAY psaPackages;
@@ -333,31 +339,31 @@ void Formatter::WritePackages(_In_ const CommandArgs& args, _In_ Console& consol
         hr = instance2->GetPackages(&psaPackages);
         if (SUCCEEDED(hr) && psaPackages->rgsabound[0].cElements)
         {
-            StartArray(console, L"packages");
+            StartArray(L"packages");
 
             SafeArray<ISetupPackageReference*> saPackages(psaPackages);
             const auto packages = saPackages.Elements();
 
             for (const auto& package : packages)
             {
-                WritePackage(console, package);
+                WritePackage(package);
             }
 
-            EndArray(console);
+            EndArray();
         }
     }
 }
 
-void Formatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _In_ const variant_t& value)
+void Formatter::WriteProperty(_In_ const wstring& name, _In_ const variant_t& value)
 {
     switch (value.vt)
     {
     case VT_BOOL:
-        WriteProperty(console, name, VARIANT_TRUE == value.boolVal);
+        WriteProperty(name, VARIANT_TRUE == value.boolVal);
         break;
 
     case VT_BSTR:
-        WriteProperty(console, name, wstring(value.bstrVal));
+        WriteProperty(name, wstring(value.bstrVal));
         break;
 
     case VT_I1:
@@ -367,12 +373,12 @@ void Formatter::WriteProperty(_In_ Console& console, _In_ const wstring& name, _
     case VT_UI1:
     case VT_UI2:
     case VT_UI4:
-        WriteProperty(console, name, value.llVal);
+        WriteProperty(name, value.llVal);
         break;
     }
 }
 
-bool Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupInstance* pInstance)
+bool Formatter::WriteProperties(_In_ ISetupInstance* pInstance)
 {
     _ASSERTE(pInstance);
 
@@ -389,10 +395,10 @@ bool Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ Console& cons
         return false;
     }
 
-    return WriteProperties(args, console, store);
+    return WriteProperties(store);
 }
 
-bool Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ Console& console, _In_ ISetupPropertyStore* pProperties, _In_opt_ const wstring& prefix)
+bool Formatter::WriteProperties(_In_ ISetupPropertyStore* pProperties, _In_opt_ const wstring& prefix)
 {
     _ASSERTE(pProperties);
 
@@ -408,7 +414,7 @@ bool Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ Console& cons
     }
 
     // Trim optional nested object name from specified property if matching current scope.
-    wstring specified = args.get_Property();
+    wstring specified = Args().get_Property();
     if (prefix.size() > 0)
     {
         auto pos = specified.find_first_of(s_delims);
@@ -448,7 +454,7 @@ bool Formatter::WriteProperties(_In_ const CommandArgs& args, _In_ Console& cons
                 hr = pProperties->GetValue(bstrName, vtValue.GetAddress());
                 if (SUCCEEDED(hr))
                 {
-                    WriteProperty(console, name, vtValue);
+                    WriteProperty(name, vtValue);
                 }
             }
 
@@ -489,6 +495,7 @@ HRESULT Formatter::GetInstanceId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* 
     return GetStringProperty(bind(&ISetupInstance::GetInstanceId, pInstance, _1), pvtInstanceId);
 }
 
+#pragma warning(suppress: 6101) // pvtInstallDate is not set if value is empty, but it should be empty so we still return success
 HRESULT Formatter::GetInstallDate(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtInstallDate)
 {
     FILETIME ft = {};
@@ -529,6 +536,7 @@ HRESULT Formatter::GetInstallationVersion(_In_ ISetupInstance* pInstance, _Out_ 
     return GetStringProperty(bind(&ISetupInstance::GetInstallationVersion, pInstance, _1), pvtInstallationVersion);
 }
 
+#pragma warning(suppress: 6101) // pvtProductId is not set if instance product is null, but it should be empty so we still return success
 HRESULT Formatter::GetProductId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtProductId)
 {
     ISetupInstance2Ptr instance;
@@ -555,6 +563,7 @@ HRESULT Formatter::GetProductId(_In_ ISetupInstance* pInstance, _Out_ VARIANT* p
     return hr;
 }
 
+#pragma warning(suppress: 6101) // pvtProductPath is not set if product path is null, but it should be empty so we still return success
 HRESULT Formatter::GetProductPath(_In_ ISetupInstance* pInstance, _Out_ VARIANT* pvtProductPath)
 {
     ISetupInstance2Ptr instance;

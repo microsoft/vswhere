@@ -13,22 +13,43 @@ void Console::Initialize() noexcept
     {
         if (m_args.get_UTF8())
         {
-            ::_setmode(_fileno(stdout), _O_U8TEXT);
+            static_cast<void>(::_setmode(_fileno(stdout), _O_U8TEXT));
         }
         else if (IsConsole(stdout))
         {
-            ::_setmode(_fileno(stdout), _O_WTEXT);
+            static_cast<void>(::_setmode(_fileno(stdout), _O_WTEXT));
         }
         else
         {
             char sz[10];
-            ::sprintf_s(sz, ".%d", ::GetConsoleCP());
+            ::sprintf_s(sz, ".%u", ::GetConsoleCP());
 
             ::setlocale(LC_CTYPE, sz);
         }
 
+        m_fColorSupported = IsVirtualTerminal(stdout);
         m_fInitialized = true;
     }
+}
+
+LPCWSTR Console::Color(_In_ LPCWSTR wzColor) const
+{
+    if (IsColorSupported())
+    {
+        return wzColor;
+    }
+
+    return L"";
+}
+
+LPCWSTR Console::ResetColor() const
+{
+    if (IsColorSupported())
+    {
+        return L"\033[0m";
+    }
+
+    return L"";
 }
 
 void __cdecl Console::Write(_In_ LPCWSTR wzFormat, ...)
@@ -45,7 +66,7 @@ void __cdecl Console::Write(_In_ const std::wstring& value)
     Write(value.c_str(), NULL);
 }
 
-void __cdecl Console::WriteLine(_In_ LPCWSTR wzFormat, ...)
+void __cdecl Console::WriteLine(_In_opt_ LPCWSTR wzFormat, ...)
 {
     if (wzFormat)
     {
@@ -66,12 +87,11 @@ void __cdecl Console::WriteLine(_In_ const std::wstring& value)
 
 void Console::Write(_In_ LPCWSTR wzFormat, va_list args)
 {
-    Initialize();
-
+    _ASSERTE(m_fInitialized);
     ::_vwprintf_p(wzFormat, args);
 }
 
-bool Console::IsConsole(_In_ FILE* f) const noexcept
+bool Console::IsConsole(_In_ FILE* f) noexcept
 {
     auto fno = ::_fileno(f);
     auto hFile = (HANDLE)::_get_osfhandle(fno);
@@ -91,4 +111,18 @@ bool Console::IsConsole(_In_ FILE* f) const noexcept
     }
 
     return true;
+}
+
+bool Console::IsVirtualTerminal(_In_ FILE* f) noexcept
+{
+    auto fno = ::_fileno(f);
+    auto hFile = (HANDLE)::_get_osfhandle(fno);
+
+    DWORD dwMode;
+    if (::GetConsoleMode(hFile, &dwMode))
+    {
+        return 0 != ::SetConsoleMode(hFile, dwMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+    }
+
+    return false;
 }

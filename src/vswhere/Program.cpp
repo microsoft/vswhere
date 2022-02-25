@@ -17,6 +17,7 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
     Console console(args);
     Module queryModule;
 
+    console.Initialize();
     try
     {
         CoInitializer init;
@@ -78,7 +79,7 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         }
 
         // Create the formatter and optionally show the logo.
-        auto formatter = Formatter::Create(args.get_Format());
+        auto formatter = Formatter::Create(args.get_Format(), args, console);
         if (formatter->ShowLogo())
         {
             WriteLogo(args, console, queryModule);
@@ -86,11 +87,11 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
 
         if (args.get_Find().length())
         {
-            formatter->WriteFiles(args, console, instances);
+            formatter->WriteFiles(instances);
         }
         else
         {
-            formatter->Write(args, console, instances);
+            formatter->Write(instances);
         }
 
         return ERROR_SUCCESS;

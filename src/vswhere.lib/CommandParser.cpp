@@ -20,7 +20,7 @@ vector<CommandParser::Token> CommandParser::Parse(_In_ LPCWSTR wszCommandLine)
     }
 
     // Make sure the argument array is released when it falls out of scope.
-    unique_ptr<LPWSTR*, void(*)(LPWSTR**)> args(&argv, [](LPWSTR** ppwsz)
+    unique_ptr<LPWSTR*, void(*)(LPWSTR**)> args(&argv, [](_In_opt_ LPWSTR** ppwsz)
     {
         if (ppwsz)
         {

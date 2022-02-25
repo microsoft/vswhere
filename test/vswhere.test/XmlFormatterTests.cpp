@@ -23,8 +23,8 @@ public:
             { L"Description", L"This description contains \"quotes\"." },
         };
 
-        XmlFormatter sut;
-        sut.Write(args, console, &instance);
+        XmlFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -63,8 +63,8 @@ public:
             &instance2,
         };
 
-        XmlFormatter sut;
-        sut.Write(args, console, instances);
+        XmlFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -89,8 +89,8 @@ public:
         TestConsole console(args);
         vector<ISetupInstancePtr> instances;
 
-        XmlFormatter sut;
-        sut.Write(args, console, instances);
+        XmlFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -122,8 +122,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        XmlFormatter sut;
-        sut.Write(args, console, &instance);
+        XmlFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -166,8 +166,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        XmlFormatter sut;
-        sut.Write(args, console, &instance);
+        XmlFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -208,8 +208,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        XmlFormatter sut;
-        sut.Write(args, console, &instance);
+        XmlFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -248,8 +248,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        XmlFormatter sut;
-        sut.Write(args, console, &instance);
+        XmlFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -300,8 +300,8 @@ public:
             &instance2,
         };
 
-        XmlFormatter sut;
-        sut.Write(args, console, instances);
+        XmlFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -360,8 +360,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        XmlFormatter sut;
-        sut.Write(args, console, &instance);
+        XmlFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -404,8 +404,8 @@ public:
 
         instance.AssignAdditionalProperties(properties);
 
-        XmlFormatter sut;
-        sut.Write(args, console, &instance);
+        XmlFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -445,8 +445,8 @@ public:
             { L"IsLaunchable", L"false" },
         };
 
-        XmlFormatter sut;
-        sut.Write(args, console, &instance);
+        XmlFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -478,8 +478,8 @@ public:
             { L"IsLaunchable", L"true" },
         };
 
-        XmlFormatter sut;
-        sut.Write(args, console, &instance);
+        XmlFormatter sut(args, console);
+        sut.Write(&instance);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -510,8 +510,8 @@ public:
             L"c",
         };
 
-        XmlFormatter sut;
-        sut.Write(console, L"values", L"value", values);
+        XmlFormatter sut(args, console);
+        sut.Write(L"values", L"value", values);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -598,8 +598,8 @@ public:
 
         TestConsole console(args);
 
-        XmlFormatter sut;
-        sut.Write(args, console, instances);
+        XmlFormatter sut(args, console);
+        sut.Write(instances);
 
         auto expected =
             L"<?xml version=\"1.0\"?>\n"
@@ -639,6 +639,38 @@ public:
             L"    </packages>\n"
             L"  </instance>\n"
             L"</instances>\n";
+
+        Assert::AreEqual(expected, console);
+    }
+
+    TEST_METHOD(Write_Instance_With_Color)
+    {
+        CommandArgs args;
+        TestConsole console(args);
+        console.SetColorSupported(true);
+
+        TestInstance instance =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallDate", L"2017-02-23T01:22:35Z"},
+            { L"State", L"4294967295" },
+            { L"IsComplete", L"true"},
+        };
+
+        XmlFormatter sut(args, console);
+        sut.Write(&instance);
+
+        auto expected =
+            L"\033[38;2;86;156;214m<?xml\033[0m \033[38;2;156;220;254mversion\033[0m=\033[38;2;206;145;120m\"1.0\"\033[38;2;86;156;214m?>\033[0m\n"
+            L"\033[38;2;86;156;214m<instances>\033[0m\n"
+            L"  \033[38;2;86;156;214m<instance>\033[0m\n"
+            L"    \033[38;2;86;156;214m<instanceId>\033[0ma1b2c3\033[38;2;86;156;214m</instanceId>\033[0m\n"
+            L"    \033[38;2;86;156;214m<installDate>\033[0m2017-02-23T01:22:35Z\033[38;2;86;156;214m</installDate>\033[0m\n"
+            L"    \033[38;2;86;156;214m<state>\033[0m4294967295\033[38;2;86;156;214m</state>\033[0m\n"
+            L"    \033[38;2;86;156;214m<isComplete>\033[0m1\033[38;2;86;156;214m</isComplete>\033[0m\n"
+            L"    \033[38;2;86;156;214m<isRebootRequired>\033[0m0\033[38;2;86;156;214m</isRebootRequired>\033[0m\n"
+            L"  \033[38;2;86;156;214m</instance>\033[0m\n"
+            L"\033[38;2;86;156;214m</instances>\033[0m\n";
 
         Assert::AreEqual(expected, console);
     }

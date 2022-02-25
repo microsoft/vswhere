@@ -7,16 +7,16 @@
 
 using namespace std;
 
-void TextFormatter::StartArray(_In_ Console& console, _In_opt_ const std::wstring& name)
+void TextFormatter::StartArray(_In_opt_ const std::wstring& name)
 {
     m_first = true;
 }
 
-void TextFormatter::StartObject(_In_ Console& console, _In_opt_ const wstring& name)
+void TextFormatter::StartObject(_In_opt_ const wstring& name)
 {
     if (!m_first && m_scopes.empty())
     {
-        console.WriteLine();
+        Console().WriteLine();
     }
 
     m_first = false;
@@ -35,7 +35,7 @@ void TextFormatter::StartObject(_In_ Console& console, _In_opt_ const wstring& n
     }
 }
 
-void TextFormatter::WriteProperty(_In_ Console& console, _In_ const std::wstring& name, _In_ const std::wstring& value)
+void TextFormatter::WriteProperty(_In_ const std::wstring& name, _In_ const std::wstring& value)
 {
     wstring prefix = L"";
     if (!m_scopes.empty())
@@ -43,10 +43,11 @@ void TextFormatter::WriteProperty(_In_ Console& console, _In_ const std::wstring
         prefix = m_scopes.top();
     }
 
-    console.WriteLine(L"%ls%ls: %ls", prefix.c_str(), name.c_str(), value.c_str());
+    Console().Write(L"%ls%ls%ls%ls: ", Console().Color(ColorName), prefix.c_str(), name.c_str(), Console().ResetColor());
+    Console().WriteLine(L"%ls%ls%ls", Console().Color(ColorValue), value.c_str(), Console().ResetColor());
 }
 
-void TextFormatter::EndObject(_In_ Console& console)
+void TextFormatter::EndObject()
 {
     m_scopes.pop();
 }

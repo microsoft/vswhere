@@ -10,14 +10,21 @@ class TestConsole :
 {
 public:
     TestConsole(_In_ const CommandArgs& args) :
-        Console(args)
+        Console(args),
+        m_color(false)
     {
     }
 
     TestConsole(_In_ const TestConsole& obj) :
         Console(obj),
-        m_output(obj.m_output)
+        m_output(obj.m_output),
+        m_color(obj.m_color)
     {
+    }
+
+    void Initialize() noexcept override
+    {
+        m_fInitialized = true;
     }
 
     operator const wchar_t*() const
@@ -25,13 +32,20 @@ public:
         return m_output.c_str();
     }
 
-protected:
-    void Initialize() noexcept override
+    void SetColorSupported(bool enable) noexcept
     {
+        m_color = enable;
     }
 
+    bool IsColorSupported() const override
+    {
+        return m_color;
+    }
+
+protected:
     void Write(_In_ LPCWSTR wzFormat, va_list args) override;
 
 private:
     std::wstring m_output;
+    bool m_color;
 };

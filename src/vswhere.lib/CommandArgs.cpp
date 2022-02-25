@@ -110,9 +110,9 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         else if (ArgumentEquals(arg.Value, L"format"))
         {
             auto format = ParseArgument(it, args.end(), arg);
-            auto it = Formatter::Formatters.find(format);
+            auto formatterIt = Formatter::Formatters.find(format);
 
-            if (it != Formatter::Formatters.end())
+            if (formatterIt != Formatter::Formatters.end())
             {
                 m_format = format;
             }
@@ -160,6 +160,10 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
             }
 
             m_find = ParseArgument(it, args.end(), arg);
+        }
+        else if (ArgumentEquals(arg.Value, L"nocolor"))
+        {
+            m_nocolor = true;
         }
         else if (ArgumentEquals(arg.Value, L"nologo"))
         {
