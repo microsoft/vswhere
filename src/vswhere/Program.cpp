@@ -17,7 +17,6 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
     Console console(args);
     Module queryModule;
 
-    console.Initialize();
     try
     {
         CoInitializer init;
@@ -37,6 +36,8 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
         queryModule.FromIUnknown(static_cast<IUnknown*>(query));
 
         args.Parse(argc, argv);
+        console.Initialize();
+
         if (args.get_Help())
         {
             WriteLogo(args, console, queryModule);
