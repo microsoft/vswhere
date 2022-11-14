@@ -2,9 +2,7 @@
   "version": "1.0",
   "components": [
     "Microsoft.VisualStudio.Component.CoreEditor",
-    "Microsoft.VisualStudio.Workload.CoreEditor",
     "Microsoft.VisualStudio.Component.NuGet",
-    "Microsoft.VisualStudio.Component.Roslyn.Compiler",
     "Microsoft.Component.MSBuild",
     "Microsoft.VisualStudio.Component.TextTemplating",
     "Microsoft.VisualStudio.Component.VC.CoreIde",
@@ -14,7 +12,7 @@
     "Microsoft.VisualStudio.Component.VC.DiagnosticTools",
     "Microsoft.VisualStudio.Component.VC.Redist.14.Latest",
     "Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Core",
-    "Microsoft.VisualStudio.Component.Windows10SDK.17763",
+    "Microsoft.VisualStudio.Component.Windows10SDK.19041",
     "Microsoft.VisualStudio.Component.VC.v141.x86.x64",
     "Microsoft.VisualStudio.Workload.NativeDesktop",
     "Microsoft.VisualStudio.Component.Git",

@@ -5,11 +5,13 @@ trigger:
   batch: true
   branches:
     include:
-    - master
-    - develop
+    - main
   paths:
     exclude:
     - README.md
+  tags:
+    include:
+    - "*"
 
 pr: none
 

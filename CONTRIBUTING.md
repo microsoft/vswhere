@@ -9,7 +9,7 @@ This project uses the following software. Newer versions may work but backward c
 
 ## Coding
 
-This project uses a Git flow model releasing from the `master` branch with development based on and stabilize in the `develop` branch. You can view current build status in the [README](README.md) document.
+This project uses a GitHub flow model with development and releases based on the `main` branch. You can view current build status in the [README](README.md) document.
 
 Please follow project code styles including,
 

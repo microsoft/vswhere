@@ -5,8 +5,7 @@ trigger:
   batch: true
   branches:
     include:
-    - master
-    - develop
+    - main
   paths:
     exclude:
     - README.md
@@ -35,11 +34,11 @@ steps:
     sourceScanPath: $(Build.SourcesDirectory)
 
 - task: securedevelopmentteam.vss-secure-development-tools.build-task-prefast.SDLNativeRules@2
-  displayName: 'Run the PREfast SDL Native Rules for MSBuild'
+  displayName: Run the PREfast SDL Native Rules for MSBuild
   continueOnError: true
 
 - task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@1
-  displayName: 'Run PoliCheck'
+  displayName: Run PoliCheck
   inputs:
     targetType: F
     targetArgument: '$(Build.SourcesDirectory)'
@@ -49,7 +48,7 @@ steps:
   continueOnError: true
 
 - task: securedevelopmentteam.vss-secure-development-tools.build-task-binskim.BinSkim@3
-  displayName: 'Run BinSkim'
+  displayName: Run BinSkim
   inputs:
     InputType: Basic
     Function: analyze
@@ -60,13 +59,13 @@ steps:
   continueOnError: true
 
 - task: securedevelopmentteam.vss-secure-development-tools.build-task-credscan.CredScan@2
-  displayName: 'Run CredScan'
+  displayName: Run CredScan
   inputs:
     debugMode: false
 
 # Publish compliance results
 - task: securedevelopmentteam.vss-secure-development-tools.build-task-publishsecurityanalysislogs.PublishSecurityAnalysisLogs@2
-  displayName: 'Publish Security Analysis Logs'
+  displayName: Publish Security Analysis Logs
 
 - task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@1
   displayName: Check SDL results

@@ -99,6 +99,9 @@ int wmain(_In_ int argc, _In_ LPCWSTR argv[])
     }
     catch (const system_error& ex)
     {
+        // Make sure the console is initialized even for parsing errors.
+        console.Initialize();
+
         const auto code = ex.code().value();
         if (ERROR_INVALID_PARAMETER == code)
         {
