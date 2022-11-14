@@ -8,6 +8,8 @@
 using namespace std;
 using std::placeholders::_1;
 
+ci_equal InstanceSelector::s_comparer;
+
 InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_ ILegacyProvider& provider, _In_opt_ ISetupHelper* pHelper) :
     m_args(args),
     m_provider(provider),
@@ -17,7 +19,7 @@ InstanceSelector::InstanceSelector(_In_ const CommandArgs& args, _In_ ILegacyPro
     m_helper = pHelper;
     if (m_helper)
     {
-        auto version = args.get_Version();
+        auto& version = args.get_Version();
         if (!version.empty())
         {
             auto hr = m_helper->ParseVersionRange(version.c_str(), &m_ullMinimumVersion, &m_ullMaximumVersion);
@@ -224,7 +226,7 @@ bool InstanceSelector::IsProductMatch(_In_ ISetupInstance2* pInstance) const
     }
 
     // Asterisk on command line will clear the array to find any products.
-    const auto products = m_args.get_Products();
+    const auto& products = m_args.get_Products();
     if (products.empty())
     {
         return true;
@@ -250,19 +252,17 @@ bool InstanceSelector::IsWorkloadMatch(_In_ ISetupInstance2* pInstance) const
 {
     _ASSERT(pInstance);
 
-    const auto requires = m_args.get_Requires();
-    if (requires.empty())
+    // Create copies and erase elements as found.
+    auto literals = m_args.get_Requires();
+    auto literals_count = literals.size();
+
+    auto patterns = m_args.get_RequiresPattern();
+    auto patterns_count = patterns.size();
+
+    if (literals.empty() && patterns.empty())
     {
         // No workloads required matches every instance.
         return true;
-    }
-
-    // Keep track of which requirements we matched.
-    typedef map<wstring, bool, ci_less> MapType;
-    MapType found;
-    for (const auto& require : requires)
-    {
-        found.emplace(make_pair(require, false));
     }
 
     LPSAFEARRAY psa = NULL;
@@ -277,25 +277,34 @@ bool InstanceSelector::IsWorkloadMatch(_In_ ISetupInstance2* pInstance) const
     {
         auto id = GetId(package);
 
-        auto it = found.find(id);
-        if (it != found.end())
+        for (auto it = literals.cbegin(); it != literals.cend(); ++it)
         {
-            it->second = true;
+            if (s_comparer(id, *it))
+            {
+                literals.erase(it);
+                goto next;
+            }
         }
+
+        for (auto it = patterns.cbegin(); it != patterns.cend(); ++it)
+        {
+            if (regex_match(id, *it))
+            {
+                patterns.erase(it);
+                goto next;
+            }
+        }
+
+    next: continue;
     }
 
     if (m_args.get_RequiresAny())
     {
-        return any_of(found.begin(), found.end(), [](MapType::const_reference pair) -> bool
-        {
-            return pair.second;
-        });
+        return literals.size() < literals_count
+            || patterns.size() < patterns_count;
     }
 
-    return all_of(found.begin(), found.end(), [](MapType::const_reference pair) -> bool
-    {
-        return pair.second;
-    });
+    return literals.empty() && patterns.empty();
 }
 
 bool InstanceSelector::IsVersionMatch(_In_ ISetupInstance* pInstance) const

@@ -401,4 +401,56 @@ public:
         Assert::IsFalse(args.get_Logo());
         Assert::IsTrue(args.get_UTF8());
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Parse_Requires_Patterns)
+        TEST_WORKITEM(276)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Parse_Requires_Patterns)
+    {
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -requires foo ba* qux");
+
+        const auto& literals = args.get_Requires();
+        const auto& patterns = args.get_RequiresPattern();
+
+        Assert::AreEqual(1, count(literals.cbegin(), literals.cend(), wstring(L"foo")));
+        Assert::AreEqual(1, count(literals.cbegin(), literals.cend(), wstring(L"qux")));
+        Assert::AreEqual<size_t>(1, patterns.size());
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(ParseRegex_Theory)
+        TEST_WORKITEM(276)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(ParseRegex_Theory)
+    {
+        const wstring id = L"Foo.Bar";
+        vector<tuple<wstring, bool>> data =
+        {
+            { L"Foo.Bar", true },
+            { L"Foo.*", true },
+            { L"*.Bar", true },
+            { L"F*R", true },
+            { L"foo?bar", true },
+            { L"f??", false },
+            { L"f??.??r", true },
+            { L"*", true },
+            { L".*", false },
+            { L"?", false },
+            { L"Baz", false },
+            { L"*baz", false },
+            { L"foo.bar*", true },
+        };
+
+        for (const auto& item : data)
+        {
+            wstring pattern;
+            bool expected;
+
+            tie(pattern, expected) = item;
+            auto re = CommandArgs::ParseRegex(pattern);
+            bool actual = regex_match(id, re);
+
+            Assert::AreEqual(expected, actual, format(L"\"%ls\" =~ /%ls/", id.c_str(), pattern.c_str()).c_str());
+        }
+    }
 };

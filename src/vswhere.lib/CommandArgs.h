@@ -30,6 +30,7 @@ public:
         m_productsAll(obj.m_productsAll),
         m_products(obj.m_products),
         m_requires(obj.m_requires),
+        m_requiresPattern(obj.m_requiresPattern),
         m_version(obj.m_version),
         m_latest(obj.m_latest),
         m_legacy(obj.m_legacy),
@@ -70,6 +71,11 @@ public:
     const std::vector<std::wstring>& get_Requires() const noexcept
     {
         return m_requires;
+    }
+
+    const std::vector<std::wregex>& get_RequiresPattern() const noexcept
+    {
+        return m_requiresPattern;
     }
 
     const bool get_RequiresAny() const noexcept
@@ -157,6 +163,8 @@ public:
     void Parse(_In_ int argc, _In_ LPCWSTR argv[]);
     void Usage(_In_ Console& console) const;
 
+    static std::wregex ParseRegex(_In_ const std::wstring& pattern) noexcept;
+
 private:
     static const std::vector<std::wstring> s_Products;
     static const std::wstring s_Format;
@@ -168,6 +176,7 @@ private:
     bool m_productsAll;
     std::vector<std::wstring> m_products;
     std::vector<std::wstring> m_requires;
+    std::vector<std::wregex> m_requiresPattern;
     bool m_requiresAny;
     std::wstring m_version;
     bool m_latest;

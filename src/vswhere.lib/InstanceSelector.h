@@ -27,6 +27,8 @@ public:
     std::vector<ISetupInstancePtr> Select(_In_opt_ IEnumSetupInstances* pEnum) const;
 
 private:
+    static ci_equal s_comparer;
+
     static std::wstring GetId(_In_ ISetupPackageReference* pPackageReference);
     bool IsMatch(_In_ ISetupInstance* pInstance) const;
     bool IsProductMatch(_In_ ISetupInstance2* pInstance) const;

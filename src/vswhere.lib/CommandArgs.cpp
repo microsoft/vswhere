@@ -15,6 +15,9 @@ static wstring ParseArgument(IteratorType& it, const IteratorType& end, const Co
 template <class IteratorType>
 static void ParseArgumentArray(IteratorType& it, const IteratorType& end, const CommandParser::Token& arg, vector<wstring>& arr);
 
+template <class IteratorType>
+static void ParseRequiresArray(IteratorType& it, const IteratorType& end, const CommandParser::Token& arg, vector<wstring>& literals, vector<wregex>& patterns);
+
 const vector<wstring> CommandArgs::s_Products
 {
     L"Microsoft.VisualStudio.Product.Enterprise",
@@ -71,7 +74,7 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
         }
         else if (ArgumentEquals(arg.Value, L"requires"))
         {
-            ParseArgumentArray(it, args.end(), arg, m_requires);
+            ParseRequiresArray(it, args.end(), arg, m_requires, m_requiresPattern);
             hasSelection = true;
         }
         else if (ArgumentEquals(arg.Value, L"requiresAny"))
@@ -218,7 +221,7 @@ void CommandArgs::Parse(_In_ vector<CommandParser::Token> args)
 void CommandArgs::Usage(_In_ Console& console) const
 {
     auto pos = m_path.find_last_of(L"\\");
-    auto path = ++pos != wstring::npos ? m_path.substr(pos) : m_path;
+    auto& path = ++pos != wstring::npos ? m_path.substr(pos) : m_path;
 
     console.WriteLine(ResourceManager::FormatString(IDS_USAGE, path.c_str()));
 
@@ -229,6 +232,37 @@ void CommandArgs::Usage(_In_ Console& console) const
         tie(nID, ignore) = formatter.second;
         console.WriteLine(ResourceManager::FormatString(nID, formatter.first.c_str()));
     }
+}
+
+std::wregex CommandArgs::ParseRegex(_In_ const std::wstring& pattern) noexcept
+{
+    // Reserve ~125% of the incoming pattern to hold any changes.
+    wstring accumulator;
+    accumulator.reserve(pattern.size() * 1.25);
+
+    for (auto it = pattern.begin(); it != pattern.end(); ++it)
+    {
+        switch (*it)
+        {
+        case L'.':
+            accumulator += L"\\.";
+            break;
+
+        case L'*':
+            accumulator += L".*";
+            break;
+
+        case L'?':
+            accumulator += L".";
+            break;
+
+        default:
+            accumulator += *it;
+            break;
+        }
+    }
+
+    return std::move(wregex(accumulator, wregex::basic | wregex::icase | wregex::nosubs));
 }
 
 static bool ArgumentEquals(_In_ const wstring& name, _In_ LPCWSTR expect)
@@ -279,5 +313,40 @@ static void ParseArgumentArray(IteratorType& it, const IteratorType& end, const 
         ++nit;
 
         arr.push_back(it->Value);
+    }
+}
+
+template <class IteratorType>
+static void ParseRequiresArray(IteratorType& it, const IteratorType& end, const CommandParser::Token& arg, vector<wstring>& literals, vector<wregex>& patterns)
+{
+    wstring& param = it->Value;
+    auto nit = next(it);
+
+    // Require arguments if the parameter is specified.
+    if (nit == end || CommandParser::Token::eArgument != nit->Type)
+    {
+        auto message = ResourceManager::FormatString(IDS_E_ARGREQUIRED, param.c_str());
+        throw win32_error(ERROR_INVALID_PARAMETER, message);
+    }
+
+    while (nit != end)
+    {
+        if (CommandParser::Token::eParameter == nit->Type)
+        {
+            break;
+        }
+
+        ++it;
+        ++nit;
+
+        if (it->Value.find(L'*', 0) == wstring::npos && it->Value.find(L'?', 0) == wstring::npos)
+        {
+            literals.push_back(it->Value);
+        }
+        else
+        {
+            auto pattern = CommandArgs::ParseRegex(it->Value);
+            patterns.push_back(std::move(pattern));
+        }
     }
 }

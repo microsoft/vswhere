@@ -36,7 +36,7 @@ const wstring& Module::get_Path() noexcept
 
 const wstring& Module::get_FileVersion() noexcept
 {
-    auto path = get_Path();
+    auto& path = get_Path();
     if (path.empty())
     {
         return m_fileVersion;
