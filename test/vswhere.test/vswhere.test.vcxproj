@@ -16,8 +16,8 @@
     <ProjectGuid>{76268871-D5A5-46BD-9805-41DB1C3072D1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>vswheretest</RootNamespace>
-    <TargetUniversalCRTVersion>10.0.17763.0</TargetUniversalCRTVersion>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <TargetUniversalCRTVersion>10.0.19041.0</TargetUniversalCRTVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
     <ProjectSubType>NativeUnitTestProject</ProjectSubType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

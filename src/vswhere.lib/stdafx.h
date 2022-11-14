@@ -9,10 +9,6 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-#ifndef MAXUINT
-#define MAXUINT 0xffff
-#endif
-
 // Windows headers
 #include <windows.h>
 #include <fcntl.h>
