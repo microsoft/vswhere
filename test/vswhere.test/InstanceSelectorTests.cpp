@@ -697,4 +697,82 @@ public:
         Assert::AreEqual(S_OK, selected[1]->GetInstanceId(bstrInstanceId.GetAddress()));
         Assert::AreEqual(L"a", bstrInstanceId);
     }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Select_RequiresPattern_Workload)
+        TEST_WORKITEM(276)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Select_RequiresPattern_Workload)
+    {
+        TestPackageReference product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestPackageReference managedDesktop = { { L"Id", L"Microsoft.VisualStudio.Workload.ManagedDesktop" } };
+        TestPackageReference nativeDesktop = { { L"Id", L"Microsoft.VisualStudio.Workload.NativeDesktop" } };
+        vector<TestInstance::ElementType> packages =
+        {
+            &managedDesktop,
+            &nativeDesktop,
+        };
+
+        TestInstance::MapType properties =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+        };
+
+        TestInstance instance(&product, packages, properties);
+        TestEnumInstances instances =
+        {
+            &instance,
+        };
+
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -requires microsoft.visualstudio.workload.*desktop");
+
+        InstanceSelector sut(args);
+        auto selected = sut.Select(&instances);
+
+        Assert::AreEqual<size_t>(1, selected.size());
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Select_RequiresAnyPattern_Workload)
+        TEST_WORKITEM(276)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Select_RequiresAnyPattern_Workload)
+    {
+        TestPackageReference product =
+        {
+            { L"Id", L"Microsoft.VisualStudio.Product.Enterprise" },
+        };
+
+        TestPackageReference managedDesktop = { { L"Id", L"Microsoft.VisualStudio.Workload.ManagedDesktop" } };
+        TestPackageReference nativeDesktop = { { L"Id", L"Microsoft.VisualStudio.Workload.NativeDesktop" } };
+        vector<TestInstance::ElementType> packages =
+        {
+            &managedDesktop,
+            &nativeDesktop,
+        };
+
+        TestInstance::MapType properties =
+        {
+            { L"InstanceId", L"a1b2c3" },
+            { L"InstallationName", L"test" },
+        };
+
+        TestInstance instance(&product, packages, properties);
+        TestEnumInstances instances =
+        {
+            &instance,
+        };
+
+        CommandArgs args;
+        args.Parse(L"vswhere.exe -requires microsoft.visualstudio.workload.azure microsoft.visualstudio.workload.manageddeskto? -requiresAny");
+
+        InstanceSelector sut(args);
+        auto selected = sut.Select(&instances);
+
+        Assert::AreEqual<size_t>(1, selected.size());
+    }
 };

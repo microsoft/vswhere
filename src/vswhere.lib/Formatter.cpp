@@ -342,7 +342,7 @@ void Formatter::WritePackages(_In_ ISetupInstance* pInstance)
             StartArray(L"packages");
 
             SafeArray<ISetupPackageReference*> saPackages(psaPackages);
-            const auto packages = saPackages.Elements();
+            const auto& packages = saPackages.Elements();
 
             for (const auto& package : packages)
             {
@@ -431,6 +431,7 @@ bool Formatter::WriteProperties(_In_ ISetupPropertyStore* pProperties, _In_opt_ 
 
     SafeArray<BSTR> saNames(psaNames);
     
+    // Copy the elements so we can sort them.
     auto elems = saNames.Elements();
     sort(elems.begin(), elems.end(), less);
 

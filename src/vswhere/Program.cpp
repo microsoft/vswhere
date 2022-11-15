@@ -198,7 +198,7 @@ void WriteLogo(_In_ const CommandArgs& args, _In_ Console& console, _In_ Module&
 {
     if (args.get_Logo())
     {
-        const auto version = module.get_FileVersion();
+        const auto& version = module.get_FileVersion();
         const auto nID = version.empty() ? IDS_PROGRAMINFO : IDS_PROGRAMINFOEX;
 
         console.WriteLine(ResourceManager::FormatString(nID, NBGV_INFORMATIONAL_VERSION, version.c_str()));

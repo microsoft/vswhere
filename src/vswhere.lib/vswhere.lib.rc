@@ -83,9 +83,12 @@ BEGIN
 \n                 See https://aka.ms/vs/workloads for a list of product IDs.\
 \n  -requires arg  One or more workload or component IDs required when finding instances.\
 \n                 All specified IDs must be installed unless -requiresAny is specified.\
+\n                 You can specify wildcards including ""?"" to match any one character,\
+\n                 or ""*"" to match zero or more of any characters.\
 \n                 See https://aka.ms/vs/workloads for a list of workload and component IDs.\
 \n  -requiresAny   Find instances with any one or more workload or components IDs passed to -requires.\
 \n  -version arg   A version range for instances to find. Example: [15.0,16.0) will find versions 15.*.\
+\n                 See https://aka.ms/vswhere/versions for more information about versions.\
 \n  -latest        Return only the newest version and last installed.\
 \n  -sort          Sorts the instances from newest version and last installed to oldest.\
 \n                 When used with ""find"", first instances are sorted then files are sorted lexigraphically.\
