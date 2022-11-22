@@ -34,9 +34,9 @@ if ($Type -contains 'Unit' -or $Type -contains 'Functional')
     # Find vstest.console.exe.
     $cmd = get-command vstest.console.exe -ea SilentlyContinue | select-object -expand Path
     if (-not $cmd) {
-        $vswhere = get-childitem "$PSScriptRoot\..\packages\vswhere*" -filter vswhere.exe -recurse | select-object -first 1 -expand FullName
+        $vswhere = get-childitem "$PSScriptRoot\..\bin\*" -filter vswhere.exe -recurse | select-object -first 1 -expand FullName
         if (-not $vswhere) {
-            write-error 'Please run "nuget restore" on the solution to download vswhere.'
+            write-error 'Please build vswhere before running tests.'
             exit 1
         }
 
