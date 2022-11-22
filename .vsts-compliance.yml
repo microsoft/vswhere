@@ -9,6 +9,14 @@ trigger:
   paths:
     exclude:
     - README.md
+    
+schedules:
+- cron: "0 18 * * Mon"
+  displayName: Monday 11am PDT (6pm UTC) build
+  branches:
+    include:
+    - master
+  always: true   
 
 pr: none
 
