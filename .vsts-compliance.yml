@@ -15,7 +15,7 @@ schedules:
   displayName: Monday 11am PDT (6pm UTC) build
   branches:
     include:
-    - master
+    - main
   always: true   
 
 pr: none
