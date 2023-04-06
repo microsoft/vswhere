@@ -65,10 +65,12 @@
       <SDLCheck>true</SDLCheck>
       <ControlFlowGuard>Guard</ControlFlowGuard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/Zi %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>/profile %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>vswhere.exe.manifest</AdditionalManifestFiles>
