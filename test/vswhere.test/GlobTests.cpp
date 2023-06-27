@@ -8,6 +8,10 @@
 using namespace std;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+#ifdef _DEBUG
+#define ASSERT_PATTERN
+#endif
+
 TEST_CLASS(GlobTests)
 {
 public:
@@ -19,7 +23,7 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L"MSBuild\\15.0\\Bin\\MSBuild.exe");
         Assert::AreEqual(L"C:\\ShouldNotExist\\MSBuild\\15.0\\Bin", sut.Root().c_str());
 
-#ifdef _DEBUG
+#ifdef ASSERT_PATTERN
         Assert::AreEqual(L"^\\\\MSBuild\\.exe$", sut.Pattern().c_str());
 #endif
 
@@ -35,8 +39,8 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L"MSBuild\\**\\MSBuild.exe");
         Assert::AreEqual(L"C:\\ShouldNotExist\\MSBuild", sut.Root().c_str());
 
-#ifdef _DEBUG
-        Assert::AreEqual(L"^\\\\.*\\\\?MSBuild\\.exe$", sut.Pattern().c_str());
+#ifdef ASSERT_PATTERN
+        Assert::AreEqual(L"^\\\\(.*\\\\)?MSBuild\\.exe$", sut.Pattern().c_str());
 #endif
 
         Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\MSBuild.exe"));
@@ -54,8 +58,8 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L"MSBuild\\**\\Bin\\**\\MSBuild.exe");
         Assert::AreEqual(L"C:\\ShouldNotExist\\MSBuild", sut.Root().c_str());
 
-#ifdef _DEBUG
-        Assert::AreEqual(L"^\\\\.*\\\\?Bin\\\\.*\\\\?MSBuild\\.exe$", sut.Pattern().c_str());
+#ifdef ASSERT_PATTERN
+        Assert::AreEqual(L"^\\\\(.*\\\\)?Bin\\\\(.*\\\\)?MSBuild\\.exe$", sut.Pattern().c_str());
 #endif
 
         Assert::IsFalse(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\MSBuild.exe"));
@@ -73,8 +77,8 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L"MSBuild\\**\\Bin\\*\\MSBuild.exe");
         Assert::AreEqual(L"C:\\ShouldNotExist\\MSBuild", sut.Root().c_str());
 
-#ifdef _DEBUG
-        Assert::AreEqual(L"^\\\\.*\\\\?Bin\\\\[^\\]*\\\\MSBuild\\.exe$", sut.Pattern().c_str());
+#ifdef ASSERT_PATTERN
+        Assert::AreEqual(L"^\\\\(.*\\\\)?Bin\\\\[^\\]*\\\\MSBuild\\.exe$", sut.Pattern().c_str());
 #endif
 
         Assert::IsFalse(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\MSBuild.exe"));
@@ -92,7 +96,7 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L"MSBuild\\Current\\Bin\\MSBuild.ex?");
         Assert::AreEqual(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin", sut.Root().c_str());
 
-#ifdef _DEBUG
+#ifdef ASSERT_PATTERN
         Assert::AreEqual(L"^\\\\MSBuild\\.ex[^\\]$", sut.Pattern().c_str());
 #endif
 
@@ -110,8 +114,8 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L"VC\\Tools\\MSVC\\14.*\\bin\\**\\cl.exe");
         Assert::AreEqual(L"C:\\ShouldNotExist\\VC\\Tools\\MSVC", sut.Root().c_str());
 
-#ifdef _DEBUG
-        Assert::AreEqual(L"^\\\\14\\.[^\\]*\\\\bin\\\\.*\\\\?cl\\.exe$", sut.Pattern().c_str());
+#ifdef ASSERT_PATTERN
+        Assert::AreEqual(L"^\\\\14\\.[^\\]*\\\\bin\\\\(.*\\\\)?cl\\.exe$", sut.Pattern().c_str());
 #endif
 
         Assert::IsFalse(sut.Match(L"C:\\ShouldNotExist\\VC\\Tools\\MSVC\\15.0\\bin\\cl.exe"));
@@ -128,8 +132,8 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L"msbuild\\**\\msbuild.exe");
         Assert::AreEqual(L"C:\\ShouldNotExist\\msbuild", sut.Root().c_str());
 
-#ifdef _DEBUG
-        Assert::AreEqual(L"^\\\\.*\\\\?msbuild\\.exe$", sut.Pattern().c_str());
+#ifdef ASSERT_PATTERN
+        Assert::AreEqual(L"^\\\\(.*\\\\)?msbuild\\.exe$", sut.Pattern().c_str());
 #endif
 
         Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\MSBuild.exe"));
@@ -180,7 +184,7 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L"MSBuild\\**");
         Assert::AreEqual(L"C:\\ShouldNotExist\\MSBuild", sut.Root().c_str());
 
-#ifdef _DEBUG
+#ifdef ASSERT_PATTERN
         Assert::AreEqual(L"^\\\\.*$", sut.Pattern().c_str());
 #endif
 
@@ -199,8 +203,8 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L"\\MSBuild\\**\\MSBuild.exe");
         Assert::AreEqual(L"C:\\ShouldNotExist\\MSBuild", sut.Root().c_str());
 
-#ifdef _DEBUG
-        Assert::AreEqual(L"^\\\\.*\\\\?MSBuild\\.exe$", sut.Pattern().c_str());
+#ifdef ASSERT_PATTERN
+        Assert::AreEqual(L"^\\\\(.*\\\\)?MSBuild\\.exe$", sut.Pattern().c_str());
 #endif
 
         Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\MSBuild.exe"));
@@ -218,8 +222,8 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L"\\\\MSBuild\\**\\MSBuild.exe");
         Assert::AreEqual(L"C:\\ShouldNotExist\\MSBuild", sut.Root().c_str());
 
-#ifdef _DEBUG
-        Assert::AreEqual(L"^\\\\.*\\\\?MSBuild\\.exe$", sut.Pattern().c_str());
+#ifdef ASSERT_PATTERN
+        Assert::AreEqual(L"^\\\\(.*\\\\)?MSBuild\\.exe$", sut.Pattern().c_str());
 #endif
 
         Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\MSBuild.exe"));
@@ -237,8 +241,8 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L"MSBuild\\**\\Bin\\\\MSBuild.exe");
         Assert::AreEqual(L"C:\\ShouldNotExist\\MSBuild", sut.Root().c_str());
 
-#ifdef _DEBUG
-        Assert::AreEqual(L"^\\\\.*\\\\?Bin\\\\MSBuild\\.exe$", sut.Pattern().c_str());
+#ifdef ASSERT_PATTERN
+        Assert::AreEqual(L"^\\\\(.*\\\\)?Bin\\\\MSBuild\\.exe$", sut.Pattern().c_str());
 #endif
 
         Assert::IsFalse(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\MSBuild.exe"));
@@ -292,8 +296,8 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L".\\**\\msbuild.exe");
         Assert::AreEqual(L"C:\\ShouldNotExist", sut.Root().c_str());
 
-#ifdef _DEBUG
-        Assert::AreEqual(L"^\\\\.*\\\\?msbuild\\.exe$", sut.Pattern().c_str());
+#ifdef ASSERT_PATTERN
+        Assert::AreEqual(L"^\\\\(.*\\\\)?msbuild\\.exe$", sut.Pattern().c_str());
 #endif
 
         Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild.exe"));
@@ -311,8 +315,8 @@ public:
         Glob sut(L"C:\\ShouldNotExist", L"**\\.\\msbuild.exe");
         Assert::AreEqual(L"C:\\ShouldNotExist", sut.Root().c_str());
 
-#ifdef _DEBUG
-        Assert::AreEqual(L"^\\\\.*\\\\?msbuild\\.exe$", sut.Pattern().c_str());
+#ifdef ASSERT_PATTERN
+        Assert::AreEqual(L"^\\\\(.*\\\\)?msbuild\\.exe$", sut.Pattern().c_str());
 #endif
 
         Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild.exe"));
@@ -320,5 +324,59 @@ public:
         Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\MSBuild.exe"));
         Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\MSBuild.exe"));
         Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe"));
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Ignores_Trailing_Separator)
+        TEST_WORKITEM(290)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Ignores_Trailing_Separator)
+    {
+        Glob sut(L"C:\\ShouldNotExist\\", L"**\\cl.exe");
+
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe"));
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Issue290)
+        TEST_WORKITEM(290)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Issue290)
+    {
+        Glob sut(L"C:\\ShouldNotExist", L"**\\cl.exe");
+
+#ifdef ASSERT_PATTERN
+        Assert::AreEqual(L"^\\\\(.*\\\\)?cl\\.exe$", sut.Pattern().c_str());
+#endif
+
+
+        Assert::IsFalse(sut.Match(L"C:\\ShouldNotExist\\Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer\\Git\\usr\\bin\\getfacl.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\arm64\\cl.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx86\\arm\\cl.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx86\\x86\\cl.exe"));
+        
+        // Assert the reason the last directory specifier is optional: to make sure we find cl.exe in the root directory.
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\cl.exe"));
+    }
+
+    BEGIN_TEST_METHOD_ATTRIBUTE(Issue290_With_Wildcard_Filename)
+        TEST_WORKITEM(290)
+    END_TEST_METHOD_ATTRIBUTE()
+    TEST_METHOD(Issue290_With_Wildcard_Filename)
+    {
+        Glob sut(L"C:\\ShouldNotExist", L"**\\*cl.exe");
+
+#ifdef ASSERT_PATTERN
+        Assert::AreEqual(L"^\\\\(.*\\\\)?[^\\]*cl\\.exe$", sut.Pattern().c_str());
+#endif
+
+
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer\\Git\\usr\\bin\\getfacl.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\arm64\\cl.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx86\\arm\\cl.exe"));
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx86\\x86\\cl.exe"));
+        
+        // Assert the reason the last directory specifier is optional: to make sure we find cl.exe in the root directory.
+        Assert::IsTrue(sut.Match(L"C:\\ShouldNotExist\\cl.exe"));
     }
 };

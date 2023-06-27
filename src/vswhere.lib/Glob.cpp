@@ -8,9 +8,10 @@
 using namespace std;
 using namespace std::experimental::filesystem;
 
+std::wstring rtrim(const std::wstring& value);
 
 Glob::Glob(_In_ const wstring& root, _In_ const wstring& pattern) :
-    m_root(root)
+    m_root(rtrim(root))
 {
     wstring value;
     wstring value_raw;
@@ -36,8 +37,8 @@ Glob::Glob(_In_ const wstring& root, _In_ const wstring& pattern) :
             {
                 if (found_globstar)
                 {
-                    // Replase globstar with any characer match plus optional directory separator.
-                    accumulator += L".*\\\\?";
+                    // Replace globstar with any character match plus directory separator.
+                    accumulator += L"(.*\\\\)?";
                 }
                 else if (value_raw.length() == 1 && value_raw == L".")
                 {
@@ -134,6 +135,20 @@ Glob::Glob(_In_ const wstring& root, _In_ const wstring& pattern) :
                 // Invalid leading globstar before non-separator or invalid character.
                 ThrowError(pattern);
             }
+            else if (found_wildcard)
+            {
+                // A single star (asterisk) searches the any subdirectory not including the current directory.
+                if (value.length() == 1 && value[0] == L'*')
+                {
+                    accumulator += L"[^\\]*";
+                }
+                else
+                {
+                    accumulator += value;
+                }
+
+                value.clear();
+            }
 
             if (RequiresEscape(ch))
             {
@@ -175,8 +190,9 @@ Glob::Glob(_In_ const wstring& root, _In_ const wstring& pattern) :
     {
         m_re = wregex(accumulator, wregex::extended | wregex::icase | wregex::nosubs | wregex::optimize);
     }
-    catch (const regex_error&)
+    catch (const regex_error& ex)
     {
+        _RPTN(_CRT_ERROR, "regex parse error: %s", ex.what());
         ThrowError(pattern);
     }
 }
@@ -250,4 +266,22 @@ void Glob::ThrowError(_In_ const wstring& pattern)
 {
     auto message = ResourceManager::FormatString(IDS_E_INVALIDPATTERN, pattern.c_str());
     throw win32_error(ERROR_INVALID_PARAMETER, message);
+}
+
+std::wstring rtrim(const std::wstring& value)
+{
+    if (value.back() != L'\\' && value.back() != L'/')
+    {
+        return value;
+    }
+
+    wstring copy(value);
+    wstring::reverse_iterator it = copy.rbegin();
+    while (it != copy.rend() && (*it == L'\\' || *it == L'/'))
+    {
+        it++;
+    }
+
+    copy.erase(it.base(), copy.end());
+    return copy;
 }
