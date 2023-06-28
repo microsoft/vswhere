@@ -8,6 +8,12 @@ parameters:
   Sign: false
 
 steps:
+- task: UseDotNet@2
+  displayName: "Install .NET SDK"
+  inputs:
+    packageType: sdk
+    version: 6.x
+
 - powershell: |
     dotnet tool install --tool-path "${env:AGENT_TOOLSDIRECTORY}\nbgv" nbgv
     $version = & "${env:AGENT_TOOLSDIRECTORY}\nbgv\nbgv.exe" get-version --variable SemVer1
