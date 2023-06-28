@@ -87,12 +87,14 @@
       <SDLCheck>true</SDLCheck>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <ControlFlowGuard>Guard</ControlFlowGuard>
+      <AdditionalOptions>/Zi %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>/DEBUG:full /DEBUGTYPE:CV,FIXUP %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>vswhere.exe.manifest</AdditionalManifestFiles>
