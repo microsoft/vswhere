@@ -7,7 +7,7 @@ Visual Studio Locator
 [![nuget: all](https://img.shields.io/nuget/dt/vswhere.svg?logo=nuget&logoColor=white&label=nuget)](https://nuget.org/packages/vswhere)
 [![chocolatey: all](https://img.shields.io/chocolatey/dt/vswhere.svg?label=chocolatey)](https://chocolatey.org/packages/vswhere)
 
-Over the years Visual Studio could be discovered using registry keys, but with recent changes to the deployment and extensibility models a new method is needed to discover possibly more than once installed instance. These changes facilitate a smaller, faster default install complimented by on-demand install of other workloads and components.
+Over the years Visual Studio could be discovered using registry keys, but with recent changes to the deployment and extensibility models a new method is needed to discover possibly more than one installed instance. These changes facilitate a smaller, faster default install complimented by on-demand install of other workloads and components.
 
 _vswhere_ is designed to be a redistributable, single-file executable that can be used in build or deployment scripts to find where Visual Studio - or other products in the Visual Studio family - is located. For example, if you know the relative path to MSBuild, you can find the root of the Visual Studio install and combine the paths to find what you need.
 
