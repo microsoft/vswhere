@@ -13,7 +13,7 @@ _vswhere_ is designed to be a redistributable, single-file executable that can b
 
 You can emit different formats for information based on what your scripts can consume, including plain text, JSON, and XML. Pull requests may be accepted for other common formats as well.
 
-_vswhere_ is included with the installer as of Visual Studio 2017 version 15.2 and later, and can be found at the following location: `%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe`. The binary may be copied from that location as needed, [installed using Chocolatey](https://chocolatey.org/packages/vswhere), or the latest version may be [downloaded from the releases page](https://github.com/Microsoft/vswhere/releases). More information about how to get _vswhere_ is [on the wiki](https://github.com/Microsoft/vswhere/wiki/Installing). 
+_vswhere_ is included with the installer as of Visual Studio 2017 version 15.2 and later, and can be found at the following location: `%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe`. The binary may be executed from that location as needed, [installed using popular package managers including WinGet](https://github.com/Microsoft/vswhere/wiki/Installing), or the latest version may be [downloaded from the releases page](https://github.com/Microsoft/vswhere/releases).
 
 ## Example
 
