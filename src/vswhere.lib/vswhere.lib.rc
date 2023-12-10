@@ -91,7 +91,7 @@ BEGIN
 \n                 See https://aka.ms/vswhere/versions for more information about versions.\
 \n  -latest        Return only the newest version and last installed.\
 \n  -sort          Sorts the instances from newest version and last installed to oldest.\
-\n                 When used with ""find"", first instances are sorted then files are sorted lexigraphically.\
+\n                 When used with ""find"", first instances are sorted then files are sorted lexicographically.\
 \n  -legacy        Also searches Visual Studio 2015 and older products. Information is limited.\
 \n                 This option cannot be used with either -products or -requires.\
 \n  -path          Gets the instance for the current path. Not compatible with any other selection option.\
