@@ -66,7 +66,7 @@ bool InstanceSelector::Less(const ISetupInstancePtr& a, const ISetupInstancePtr&
         else
         {
             // If ISetupHelper is not available we have only legacy products, or very early pre-releases of VS2017.
-            // For version 10.0 and newer either should lexigraphically sort correctly.
+            // For version 10.0 and newer either should lexicographically sort correctly.
             return less(wstring(bstrVersionA), wstring(bstrVersionB));
         }
     }
