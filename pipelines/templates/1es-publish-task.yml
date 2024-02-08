@@ -1,0 +1,22 @@
+parameters:
+  - name: path
+    type: string
+
+  - name: artifactName
+    type: string
+
+  - name: displayName
+    type: string
+    default: 'Publish artifact'
+
+  - name: condition
+    type: string
+    default: succeeded()
+
+steps:
+  - task: 1ES.PublishPipelineArtifact@1
+    displayName: ${{ parameters.displayName }}
+    condition: ${{ parameters.condition }}
+    inputs:
+      targetPath: ${{ parameters.path }}
+      artifactName: ${{ parameters.artifactName }}

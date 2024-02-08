@@ -1,0 +1,22 @@
+parameters:
+  - name: path
+    type: string
+  
+  - name: artifactName
+    type: string
+
+  - name: displayName
+    type: string
+    default: 'Publish artifact'
+
+  - name: condition
+    type: string
+    default: succeeded()
+
+steps:
+  - task: PublishBuildArtifacts@1
+    displayName: ${{ parameters.displayName }}
+    condition: ${{ parameters.condition }}
+    inputs:
+      PathtoPublish: ${{ parameters.path }}
+      ArtifactName: ${{ parameters.artifactName }}

@@ -12,15 +12,16 @@ pr:
     - README.md
 
 pool:
-  vmImage: windows-2019
+  vmImage: windows-2022
 
 variables:
   BuildConfiguration: Release
   BuildPlatform: x86
 
 steps:
-- template: inc/build.yml
+- template: /pipelines/templates/build.yml@self
   parameters:
-      BuildConfiguration: $(BuildConfiguration)
-      BuildPlatform: $(BuildPlatform)
-      Docker: true
+    BuildConfiguration: $(BuildConfiguration)
+    BuildPlatform: $(BuildPlatform)
+    Docker: true
+    PublishArtifactTemplate: /pipelines/templates/ado-publish-task.yml@self

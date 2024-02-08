@@ -15,33 +15,46 @@ trigger:
 
 pr: none
 
-queue:
-  name: VSEngSS-MicroBuild2019-1ES
-  timeoutInMinutes: 120
-  demands: 
-  - ChocolateyInstall
-  - MSBuild
-  - VisualStudio
-  - VSTest
+resources:
+  repositories:
+  - repository: MicroBuildTemplate
+    type: git
+    name: 1ESPipelineTemplates/MicroBuildTemplate
+    ref: refs/tags/release
 
-steps:
-- task: ms-vseng.MicroBuildTasks.30666190-6959-11e5-9f96-f56098202fef.MicroBuildSigningPlugin@2
-  displayName: Install signing plugin
-  inputs:
-    signType: $(SignType)
-    esrpSigning: true
-
-- template: inc/build.yml
+extends:
+  template: azure-pipelines/MicroBuild.1ES.Official.yml@MicroBuildTemplate
   parameters:
-      BuildConfiguration: $(BuildConfiguration)
-      BuildPlatform: $(BuildPlatform)
-      Sign: true
+    pool:
+      name: VSEngSS-MicroBuild2022-1ES
+    sdl:
+      sourceAnalysisPool:
+        name: AzurePipelines-EO
+        image: AzurePipelinesWindows2022compliantGPT
+      policheck:
+        enabled: true
+      binskim:
+        enabled: true
+        scanOutputDirectoryOnly: true # BinSkim scans whole source tree but we only need to scan the output dir.
 
-- task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
-  displayName: Detect components
-  inputs:
-    sourceScanPath: $(Build.SourcesDirectory)
+    stages:
+      - stage: Build
+        jobs:
+          - job: Build
+            templateContext:
+              mb:
+                signing:
+                  enabled: true
+                  signType: $(SignType)
 
-- task: ms-vseng.MicroBuildTasks.521a94ea-9e68-468a-8167-6dcf361ea776.MicroBuildCleanup@1
-  displayName: Clean up
-  condition: succeededOrFailed()
+            steps:
+            - template: /pipelines/templates/build.yml@self
+              parameters:
+                  BuildConfiguration: $(BuildConfiguration)
+                  BuildPlatform: $(BuildPlatform)
+                  Sign: true
+                  PublishArtifactTemplate: /pipelines/templates/1es-publish-task.yml@self
+
+            - task: ms-vseng.MicroBuildTasks.521a94ea-9e68-468a-8167-6dcf361ea776.MicroBuildCleanup@1
+              displayName: Clean up
+              condition: succeededOrFailed()
