@@ -23,8 +23,6 @@ steps:
 
 - task: NuGetToolInstaller@0
   displayName: Install nuget
-  inputs:
-    versionSpec: '4.1.0'
 
 - task: NuGetCommand@2
   displayName: Restore packages
