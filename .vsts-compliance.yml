@@ -21,7 +21,7 @@ schedules:
 pr: none
 
 queue:
-  name: VSEngSS-MicroBuild2019-1ES
+  name: VSEngSS-MicroBuild2022-1ES
   timeoutInMinutes: 120
   demands: 
   - ChocolateyInstall
@@ -30,11 +30,12 @@ queue:
   - VSTest
 
 steps:
-- template: inc/build.yml
+- template: /pipelines/templates/build.yml@self
   parameters:
-      BuildConfiguration: $(BuildConfiguration)
-      BuildPlatform: $(BuildPlatform)
-      Sign: false
+    BuildConfiguration: $(BuildConfiguration)
+    BuildPlatform: $(BuildPlatform)
+    Sign: false
+    PublishArtifactTemplate: /pipelines/templates/ado-publish-task.yml@self
 
 - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
   displayName: Detect components
