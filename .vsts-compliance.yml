@@ -20,67 +20,53 @@ schedules:
 
 pr: none
 
-queue:
-  name: VSEngSS-MicroBuild2022-1ES
-  timeoutInMinutes: 120
-  demands: 
-  - ChocolateyInstall
-  - MSBuild
-  - VisualStudio
-  - VSTest
+resources:
+  repositories:
+  - repository: MicroBuildTemplate
+    type: git
+    name: 1ESPipelineTemplates/MicroBuildTemplate
+    ref: refs/tags/release
 
-steps:
-- template: /pipelines/templates/build.yml@self
+extends:
+  template: azure-pipelines/MicroBuild.1ES.Unofficial.yml@MicroBuildTemplate
   parameters:
-    BuildConfiguration: $(BuildConfiguration)
-    BuildPlatform: $(BuildPlatform)
-    Sign: false
-    PublishArtifactTemplate: /pipelines/templates/ado-publish-task.yml@self
+    pool:
+      name: VSEngSS-MicroBuild2022-1ES
+    sdl:
+      sourceAnalysisPool:
+        name: AzurePipelines-EO
+        image: 1ESPT-Windows2022
+      antimalwareScan:
+        enabled: true
+      armory:
+        enabled: true
+      binskim:
+        enabled: true
+        scanOutputDirectoryOnly: true
+      codeql:
+        compiled:
+          enabled: true
+      credscan:
+        enabled: true
+      policheck:
+        enabled: true
+      psscriptanalyzer:
+        enabled: true
+      prefast:
+        enabled: true
+      tsa:
+        enabled: true
+        configFile: $(Build.SourcesDirectory)\.config\tsaoptions.json
 
-- task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
-  displayName: Detect components
-  inputs:
-    sourceScanPath: $(Build.SourcesDirectory)
-
-- task: securedevelopmentteam.vss-secure-development-tools.build-task-prefast.SDLNativeRules@2
-  displayName: Run the PREfast SDL Native Rules for MSBuild
-  continueOnError: true
-
-- task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@1
-  displayName: Run PoliCheck
-  inputs:
-    targetType: F
-    targetArgument: '$(Build.SourcesDirectory)'
-    optionsFC: 0
-    optionsXS: 1
-    optionsHMENABLE: 0
-  continueOnError: true
-
-- task: securedevelopmentteam.vss-secure-development-tools.build-task-binskim.BinSkim@3
-  displayName: Run BinSkim
-  inputs:
-    InputType: Basic
-    Function: analyze
-    AnalyzeTarget: 'bin\$(BuildConfiguration)\*.exe'
-    AnalyzeSymPath: 'bin\$(BuildConfiguration)'
-    AnalyzeVerbose: true
-    AnalyzeHashes: true
-  continueOnError: true
-
-- task: securedevelopmentteam.vss-secure-development-tools.build-task-credscan.CredScan@2
-  displayName: Run CredScan
-  inputs:
-    debugMode: false
-
-# Publish compliance results
-- task: securedevelopmentteam.vss-secure-development-tools.build-task-publishsecurityanalysislogs.PublishSecurityAnalysisLogs@2
-  displayName: Publish Security Analysis Logs
-
-- task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@1
-  displayName: Check SDL results
-  inputs:
-    AllTools: true
-
-- task: ms-vseng.MicroBuildTasks.521a94ea-9e68-468a-8167-6dcf361ea776.MicroBuildCleanup@1
-  displayName: Clean up
-  condition: succeededOrFailed()
+    stages:
+      - stage: Compliance
+        jobs:
+          - job: Compliance
+            templateContext:
+            steps:
+            - template: /pipelines/templates/build.yml@self
+              parameters:
+                  BuildConfiguration: $(BuildConfiguration)
+                  BuildPlatform: $(BuildPlatform)
+                  Sign: false
+                  PublishArtifactTemplate: /pipelines/templates/1es-publish-task.yml@self
