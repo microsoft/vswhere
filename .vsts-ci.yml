@@ -36,6 +36,10 @@ extends:
       binskim:
         enabled: true
         scanOutputDirectoryOnly: true # BinSkim scans whole source tree but we only need to scan the output dir.
+      tsa:
+        enabled: true
+        configFile: $(Build.SourcesDirectory)\.config\tsaoptions.json
+        onboard: false
 
     stages:
       - stage: Build

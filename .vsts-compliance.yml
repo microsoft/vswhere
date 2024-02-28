@@ -20,6 +20,10 @@ schedules:
 
 pr: none
 
+variables:
+  - group: vssetup-apiscan
+  - group: vssetup-apiscan-secrets
+
 resources:
   repositories:
   - repository: MicroBuildTemplate
@@ -57,16 +61,58 @@ extends:
       tsa:
         enabled: true
         configFile: $(Build.SourcesDirectory)\.config\tsaoptions.json
+        onboard: false
 
     stages:
       - stage: Compliance
         jobs:
           - job: Compliance
-            templateContext:
             steps:
-            - template: /pipelines/templates/build.yml@self
-              parameters:
-                  BuildConfiguration: $(BuildConfiguration)
-                  BuildPlatform: $(BuildPlatform)
-                  Sign: false
-                  PublishArtifactTemplate: /pipelines/templates/1es-publish-task.yml@self
+              - template: /pipelines/templates/build.yml@self
+                parameters:
+                    BuildConfiguration: $(BuildConfiguration)
+                    BuildPlatform: $(BuildPlatform)
+                    Sign: false
+                    PublishArtifactTemplate: /pipelines/templates/1es-publish-task.yml@self
+
+              - task: CopyFiles@2
+                displayName: Copy files for API scan
+                inputs:
+                  SourceFolder: $(Build.SourcesDirectory)\bin\$(BuildConfiguration)
+                  Contents: |
+                    **\*.?(exe|dll|pdb|xml)
+                  TargetFolder: $(Build.StagingDirectory)\apiscan-inputs
+
+              - task: APIScan@2
+                displayName: Run APIScan
+                inputs:
+                  softwareFolder: $(Build.StagingDirectory)\apiscan-inputs
+                  softwareName: 'Microsoft.VSWhere'
+                  softwareVersionNum: '3'
+                  toolVersion: Latest
+                env:
+                  AzureServicesAuthConnectionString: runAs=App;AppId=$(ApiScanClientId);TenantId=$(ApiScanTenant);AppKey=$(SetupAppApiScanSecret)
+
+              - task: PublishSecurityAnalysisLogs@3
+                displayName: Publish 'SDLAnalysis-APIScan' artifact
+                condition: succeededOrFailed()
+                inputs:
+                  ArtifactName: SDLAnalysis-APIScan
+                  AllTools: false
+                  APIScan: true
+
+              - task: PostAnalysis@2
+                displayName: Post Analysis
+                inputs:
+                  GdnBreakAllTools: false
+                  GdnBreakGdnToolApiScan: true
+                
+              - task: TSAUpload@2
+                displayName: Upload APIScan results to TSA
+                inputs:
+                  GdnPublishTsaOnboard: false
+                  GdnPublishTsaConfigFile: '$(Build.SourcesDirectory)\.config\tsaoptions.json'
+                  GdnPublishTsaExportedResultsPublishable: true
+                continueOnError: true
+                condition: succeededOrFailed()
+                enabled: true
