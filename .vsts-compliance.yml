@@ -81,6 +81,7 @@ extends:
                   SourceFolder: $(Build.SourcesDirectory)\bin\$(BuildConfiguration)
                   Contents: |
                     **\*.?(exe|dll|pdb|xml)
+                    !**\*.test.?(exe|dll|pdb|xml)
                   TargetFolder: $(Build.StagingDirectory)\apiscan-inputs
 
               - task: APIScan@2
