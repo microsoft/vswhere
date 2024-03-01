@@ -30,12 +30,16 @@ extends:
     sdl:
       sourceAnalysisPool:
         name: AzurePipelines-EO
-        image: AzurePipelinesWindows2022compliantGPT
+        image: 1ESPT-Windows2022
       policheck:
         enabled: true
       binskim:
         enabled: true
         scanOutputDirectoryOnly: true # BinSkim scans whole source tree but we only need to scan the output dir.
+      tsa:
+        enabled: true
+        configFile: $(Build.SourcesDirectory)\.config\tsaoptions.json
+        onboard: false
 
     stages:
       - stage: Build
@@ -54,7 +58,3 @@ extends:
                   BuildPlatform: $(BuildPlatform)
                   Sign: true
                   PublishArtifactTemplate: /pipelines/templates/1es-publish-task.yml@self
-
-            - task: ms-vseng.MicroBuildTasks.521a94ea-9e68-468a-8167-6dcf361ea776.MicroBuildCleanup@1
-              displayName: Clean up
-              condition: succeededOrFailed()
