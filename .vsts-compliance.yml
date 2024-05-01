@@ -22,7 +22,6 @@ pr: none
 
 variables:
   - group: vssetup-apiscan
-  - group: vssetup-apiscan-secrets
 
 resources:
   repositories:
