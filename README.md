@@ -4,7 +4,7 @@ Visual Studio Locator
 ![build status: main](https://devdiv.visualstudio.com/DevDiv/_apis/build/status/Setup/Setup-vswhere-CI?branchName=main&label=main)
 [![github release](https://img.shields.io/github/release/Microsoft/vswhere.svg?logo=github&logoColor=white)](https://github.com/Microsoft/vswhere/releases/latest)
 [![github releases: all](https://img.shields.io/github/downloads/Microsoft/vswhere/total.svg?logo=github&logoColor=white&label=github)](https://github.com/Microsoft/vswhere/releases)
-[![nuget: all](https://img.shields.io/nuget/dt/vswhere.svg?logo=nuget&logoColor=white&label=nuget)](https://nuget.org/packages/vswhere)
+[![nuget: all](https://img.shields.io/nuget/dt/vswhere.svg?label=nuget)](https://nuget.org/packages/vswhere)
 [![chocolatey: all](https://img.shields.io/chocolatey/dt/vswhere.svg?label=chocolatey)](https://chocolatey.org/packages/vswhere)
 
 Over the years Visual Studio could be discovered using registry keys, but with recent changes to the deployment and extensibility models a new method is needed to discover possibly more than one installed instance. These changes facilitate a smaller, faster default install complimented by on-demand install of other workloads and components.
