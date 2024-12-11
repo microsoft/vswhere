@@ -32,7 +32,7 @@ private:
     static bool RequiresEscape(_In_ const wchar_t ch);
     static void ThrowError(_In_ const std::wstring& pattern);
 
-    std::experimental::filesystem::path m_root;
+    std::filesystem::path m_root;
     size_t m_root_length;
     std::wregex m_re;
 
