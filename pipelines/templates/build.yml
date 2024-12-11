@@ -49,15 +49,16 @@ steps:
 
 - ${{ if eq(parameters.Docker, 'true') }}:
   # Make sure service images are rebuilt if Dockerfiles changed.
-  - task: DockerCompose@0
+  - task: DockerCompose@1
     displayName: Build images
     inputs:
       dockerComposeFile: docker/docker-compose.yml
       action: Build services
+      projectName: microsoft-vswhere
     env:
       CONFIGURATION: ${{ parameters.BuildConfiguration }}
 
-  - task: DockerCompose@0
+  - task: DockerCompose@1
     displayName: Runtime tests
     inputs:
       dockerComposeFile: docker/docker-compose.yml
@@ -65,6 +66,7 @@ steps:
       serviceName: test
       containerCommand: -Command Invoke-Pester C:\Tests -EnableExit -OutputFile C:\Tests\Results.xml -OutputFormat NUnitXml
       detached: false
+      projectName: microsoft-vswhere
     env:
       CONFIGURATION: ${{ parameters.BuildConfiguration }}
 
