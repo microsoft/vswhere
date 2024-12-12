@@ -6,7 +6,7 @@
 #include "stdafx.h"
 
 using namespace std;
-using namespace std::experimental::filesystem;
+using namespace std::filesystem;
 
 std::wstring rtrim(const std::wstring& value);
 

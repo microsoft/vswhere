@@ -28,7 +28,7 @@ public:
     {
         win32_error sut(ERROR_NOT_FOUND);
         Assert::AreEqual<int>(ERROR_NOT_FOUND, sut.code().value());
-        Assert::AreEqual("Element not found.\r\n", sut.what());
+        Assert::AreEqual("Element not found.", sut.what());
         Assert::AreEqual(L"Element not found.\r\n", sut.wwhat());
     }
 
@@ -36,7 +36,7 @@ public:
     {
         win32_error sut(ERROR_NOT_FOUND, L"property not found");
         Assert::AreEqual<int>(ERROR_NOT_FOUND, sut.code().value());
-        Assert::AreEqual("property not found: Element not found.\r\n", sut.what());
+        Assert::AreEqual("property not found: Element not found.", sut.what());
         Assert::AreEqual(L"property not found", sut.wwhat());
     }
 };

@@ -5,11 +5,9 @@
 
 #pragma once
 
-typedef std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wstring_converter;
-
 std::string to_string(const std::wstring& value);
 
-struct ci_equal : public std::binary_function<std::wstring, std::wstring, bool>
+struct ci_equal
 {
     bool operator()(const std::wstring& lhs, const std::wstring& rhs) const
     {
@@ -17,7 +15,7 @@ struct ci_equal : public std::binary_function<std::wstring, std::wstring, bool>
     }
 };
 
-struct ci_less : public std::binary_function<std::wstring, std::wstring, bool>
+struct ci_less
 {
     bool operator()(const std::wstring& lhs, const std::wstring& rhs) const
     {

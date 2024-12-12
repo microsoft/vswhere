@@ -174,7 +174,7 @@ public:
         auto hr = GetInstallationPath(bstrPath.GetAddress());
         if (SUCCEEDED(hr))
         {
-            std::experimental::filesystem::v1::path absolutePath((LPWSTR)bstrPath);
+            std::filesystem::path absolutePath((LPWSTR)bstrPath);
 
             hr = GetProductPath(bstrPath.GetAddress());
             if (SUCCEEDED(hr))
