@@ -13,7 +13,7 @@ steps:
   displayName: "Install .NET SDK"
   inputs:
     packageType: sdk
-    version: 6.x
+    version: 8.x
 
 - powershell: |
     dotnet tool install --tool-path "${env:AGENT_TOOLSDIRECTORY}\nbgv" nbgv
