@@ -29,6 +29,9 @@ resources:
     type: git
     name: 1ESPipelineTemplates/MicroBuildTemplate
     ref: refs/tags/release
+  pipelines:
+  - pipeline: Vswhere-CI # identifier for the resource (used in pipeline resource variables)
+    source: Setup-vswhere-CI # name of the pipeline that produces an artifact
 
 extends:
   template: azure-pipelines/MicroBuild.1ES.Unofficial.yml@MicroBuildTemplate
@@ -67,17 +70,20 @@ extends:
         jobs:
           - job: Compliance
             steps:
-              - template: /pipelines/templates/build.yml@self
-                parameters:
-                    BuildConfiguration: $(BuildConfiguration)
-                    BuildPlatform: $(BuildPlatform)
-                    Sign: false
-                    PublishArtifactTemplate: /pipelines/templates/1es-publish-task.yml@self
+              # - template: /pipelines/templates/build.yml@self
+              #   parameters:
+              #       BuildConfiguration: $(BuildConfiguration)
+              #       BuildPlatform: $(BuildPlatform)
+              #       Sign: false
+              #       PublishArtifactTemplate: /pipelines/templates/1es-publish-task.yml@self
+
+              - download: Vswhere-CI
+                artifact: drop
 
               - task: CopyFiles@2
                 displayName: Copy files for API scan
                 inputs:
-                  SourceFolder: $(Build.SourcesDirectory)\bin\$(BuildConfiguration)
+                  SourceFolder: $(Pipeline.Workspace)\Vswhere-CI\drop
                   Contents: |
                     **\*.?(exe|dll|pdb|xml)
                     !**\*.test.?(exe|dll|pdb|xml)
