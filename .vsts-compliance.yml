@@ -79,6 +79,7 @@ extends:
                   SourceFolder: $(Pipeline.Workspace)\Vswhere-CI\drop
                   Contents: |
                     **\*.?(exe|dll|pdb|xml)
+                    !**\*.test.?(exe|dll|pdb|xml)
                   TargetFolder: $(Build.StagingDirectory)\apiscan-inputs
 
               - task: APIScan@2
