@@ -9,12 +9,6 @@ parameters:
   PublishArtifactTemplate: /pipelines/template/1es-publish-task.yml@self
 
 steps:
-- task: UseDotNet@2
-  displayName: "Install .NET SDK"
-  inputs:
-    packageType: sdk
-    version: 8.x
-
 - powershell: |
     dotnet tool install --tool-path "${env:AGENT_TOOLSDIRECTORY}\nbgv" nbgv
     $version = & "${env:AGENT_TOOLSDIRECTORY}\nbgv\nbgv.exe" get-version --variable SemVer1
