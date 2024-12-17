@@ -70,13 +70,6 @@ extends:
         jobs:
           - job: Compliance
             steps:
-              # - template: /pipelines/templates/build.yml@self
-              #   parameters:
-              #       BuildConfiguration: $(BuildConfiguration)
-              #       BuildPlatform: $(BuildPlatform)
-              #       Sign: false
-              #       PublishArtifactTemplate: /pipelines/templates/1es-publish-task.yml@self
-
               - download: Vswhere-CI
                 artifact: drop
 
@@ -86,7 +79,6 @@ extends:
                   SourceFolder: $(Pipeline.Workspace)\Vswhere-CI\drop
                   Contents: |
                     **\*.?(exe|dll|pdb|xml)
-                    !**\*.test.?(exe|dll|pdb|xml)
                   TargetFolder: $(Build.StagingDirectory)\apiscan-inputs
 
               - task: APIScan@2
