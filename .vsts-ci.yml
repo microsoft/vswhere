@@ -36,7 +36,7 @@ extends:
       binskim:
         enabled: true
         scanOutputDirectoryOnly: true # BinSkim scans whole source tree but we only need to scan the output dir.
-        analyzeTargetGlob: +:f|$(Build.ArtifactStagingDirectory)\out\**;-f:|$(Build.ArtifactStagingDirectory)\out\*.test.?(exe|dll|pdb|xml)
+        analyzeTargetGlob: +:f|$(Build.ArtifactStagingDirectory)\out\**;-f:|$(Build.ArtifactStagingDirectory)\out\**\*.test.exe;-f:|$(Build.ArtifactStagingDirectory)\out\**\*.test.dll;-f:|$(Build.ArtifactStagingDirectory)\out\**\*.test.exp;-f:|$(Build.ArtifactStagingDirectory)\out\**\*.test.lib;-f:|$(Build.ArtifactStagingDirectory)\out\**\*.test.pdb;
       tsa:
         enabled: true
         configFile: $(Build.SourcesDirectory)\.config\tsaoptions.json
