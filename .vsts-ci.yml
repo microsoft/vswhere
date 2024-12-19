@@ -36,6 +36,7 @@ extends:
       binskim:
         enabled: true
         scanOutputDirectoryOnly: true # BinSkim scans whole source tree but we only need to scan the output dir.
+        analyzeTargetGlob: +:f|$(Build.ArtifactStagingDirectory)\out\**;-:f|$(Build.ArtifactStagingDirectory)\out\**\*.test.*
       tsa:
         enabled: true
         configFile: $(Build.SourcesDirectory)\.config\tsaoptions.json
