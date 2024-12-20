@@ -46,6 +46,7 @@ extends:
       binskim:
         enabled: true
         scanOutputDirectoryOnly: true
+        analyzeTargetGlob: +:f|$(Build.ArtifactStagingDirectory)\out\**;-:f|$(Build.ArtifactStagingDirectory)\out\**\*.test.*
       codeql:
         compiled:
           enabled: true
