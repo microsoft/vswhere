@@ -248,8 +248,10 @@ public:
         args.Parse(L"vswhere.exe -version invalid");
 
         TestHelper helper(0, 0);
-
+    #pragma warning(push)
+    #pragma warning(disable:26444) // Ignore warning C26444: Don't try to declare a local variable with no name since it is intended for below lambda 
         Assert::ExpectException<win32_error>([&] { InstanceSelector(args, &helper); });
+    #pragma warning(pop)
     }
 
     TEST_METHOD(Less_No_Version_A)
