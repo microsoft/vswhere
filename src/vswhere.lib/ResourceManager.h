@@ -28,7 +28,7 @@ public:
 private:
     ResourceManager() {}
     ResourceManager(const ResourceManager& obj) {}
-    ResourceManager(ResourceManager&& obj) {}
+    ResourceManager(ResourceManager&& obj) noexcept {}
 
     static std::wstring FormatString(_In_ DWORD nID, _In_ va_list args);
 
