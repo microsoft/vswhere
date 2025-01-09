@@ -13,8 +13,10 @@ public:
     CommandArgs() noexcept :
         m_all(false),
         m_productsAll(false),
+		m_requiresAny(false),
         m_latest(false),
         m_legacy(false),
+        m_sort(false),
         m_prerelease(false),
         m_includePackages(false),
         m_nocolor(false),
