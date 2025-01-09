@@ -29,8 +29,8 @@ public:
         Assert::IsFalse(args.get_UTF8());
         Assert::IsTrue(args.get_Logo());
         Assert::IsTrue(args.get_Color());
-		Assert::IsFalse(args.get_Sort());
-		Assert::IsFalse(args.get_RequiresAny());
+	Assert::IsFalse(args.get_Sort());
+	Assert::IsFalse(args.get_RequiresAny());
 
         auto& products = args.get_Products();
         Assert::AreEqual<size_t>(3, products.size());
