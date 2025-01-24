@@ -64,6 +64,7 @@ BEGIN
     IDS_E_ARGINCOMPAT       "The ""%1$ls"" parameter cannot be specified with the ""%2$ls"" parameter"
     IDS_E_INVALIDPATTERN    "The pattern ""%1$ls"" is invalid"
     IDS_E_UNSUPPORTEDARG    "Unsupported argument ""%1$ls"" for parameter ""%2$ls"""
+    IDS_E_PATHINCOMPATIBLE  "The ""path"" parameter cannot be specified with other selection parameters"
 END
 
 STRINGTABLE
