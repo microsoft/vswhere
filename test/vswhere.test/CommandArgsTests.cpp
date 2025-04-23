@@ -415,8 +415,8 @@ public:
         const auto& literals = args.get_Requires();
         const auto& patterns = args.get_RequiresPattern();
 
-        Assert::AreEqual(1, count(literals.cbegin(), literals.cend(), wstring(L"foo")));
-        Assert::AreEqual(1, count(literals.cbegin(), literals.cend(), wstring(L"qux")));
+        Assert::AreEqual<ptrdiff_t>(1, count(literals.cbegin(), literals.cend(), wstring(L"foo")));
+        Assert::AreEqual<ptrdiff_t>(1, count(literals.cbegin(), literals.cend(), wstring(L"qux")));
         Assert::AreEqual<size_t>(1, patterns.size());
     }
 

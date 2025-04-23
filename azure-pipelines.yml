@@ -14,9 +14,17 @@ pr:
 pool:
   vmImage: windows-2022
 
+strategy:
+  matrix:
+    x86:
+      BuildPlatform: x86
+    x64:
+      BuildPlatform: x64
+    arm64:
+      BuildPlatform: arm64
+
 variables:
   BuildConfiguration: Release
-  BuildPlatform: x86
 
 steps:
 - template: /pipelines/templates/build.yml@self
