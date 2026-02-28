@@ -91,8 +91,10 @@ extends:
                   softwareName: 'Microsoft.VSWhere'
                   softwareVersionNum: '3'
                   toolVersion: Latest
+                  azureSubscription: VSEng-APIScanSC
                 env:
-                  AzureServicesAuthConnectionString: runAs=App;AppId=$(ApiScanClientId)
+                  AzureServicesAuthConnectionString: RunAs=App;AppId=$(ApiScanClientId);TenantId=72f988bf-86f1-41af-91ab-2d7cd011db47;ServiceConnectionId=93e24264-c5e6-4681-8175-ec8a41668480;
+                  SYSTEM_ACCESSTOKEN: $(System.AccessToken)
 
               - task: PublishSecurityAnalysisLogs@3
                 displayName: Publish 'SDLAnalysis-APIScan' artifact
