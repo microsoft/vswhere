@@ -19,8 +19,8 @@
     <ProjectGuid>{210864F0-9A29-4479-B830-B802EE3F4D92}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>vswhere</RootNamespace>
-    <TargetUniversalCRTVersion>10.0.19041.0</TargetUniversalCRTVersion>
-    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <TargetUniversalCRTVersion>10.0.22621.0</TargetUniversalCRTVersion>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
