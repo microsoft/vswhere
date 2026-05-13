@@ -5,24 +5,24 @@ pipelines:
     retail:
       source:
         credscan:
-          lastModifiedDate: 2024-08-21
+          lastModifiedDate: 2026-05-13
         policheck:
-          lastModifiedDate: 2024-08-21
+          lastModifiedDate: 2026-05-13
         eslint:
-          lastModifiedDate: 2024-08-21
+          lastModifiedDate: 2026-05-13
         psscriptanalyzer:
-          lastModifiedDate: 2024-08-21
+          lastModifiedDate: 2026-05-13
         armory:
-          lastModifiedDate: 2024-08-21
+          lastModifiedDate: 2026-05-13
         accessibilityinsights:
           lastModifiedDate: 2025-06-04
       binary:
         credscan:
-          lastModifiedDate: 2024-08-21
+          lastModifiedDate: 2026-05-13
         binskim:
-          lastModifiedDate: 2025-01-29
+          lastModifiedDate: 2026-05-13
         prefast:
-          lastModifiedDate: 2025-01-29
+          lastModifiedDate: 2026-05-13
   8662:
     retail:
       source:
