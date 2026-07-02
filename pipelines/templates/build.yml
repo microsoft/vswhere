@@ -9,17 +9,25 @@ parameters:
   PublishArtifactTemplate: /pipelines/template/1es-publish-task.yml@self
 
 steps:
+- task: NuGetToolInstaller@0
+  displayName: Install nuget
+
+- task: NuGetAuthenticate@1
+  displayName: Authenticate to Azure Artifacts
+
 - powershell: |
-    dotnet tool install --tool-path "${env:AGENT_TOOLSDIRECTORY}\nbgv" nbgv
+    dotnet tool install --tool-path "${env:AGENT_TOOLSDIRECTORY}\nbgv" nbgv --configfile "$(Build.SourcesDirectory)\nuget.config"
     $version = & "${env:AGENT_TOOLSDIRECTORY}\nbgv\nbgv.exe" get-version --variable SemVer1
     & "${env:AGENT_TOOLSDIRECTORY}\nbgv\nbgv.exe" cloud --version $version
   displayName: Set cloud build version
 
-- task: NuGetToolInstaller@0
-  displayName: Install nuget
-
 - task: NuGetCommand@2
   displayName: Restore packages
+  inputs:
+    command: restore
+    restoreSolution: vswhere.sln
+    feedsToUse: config
+    nugetConfigPath: $(Build.SourcesDirectory)\nuget.config
 
 - task: VSBuild@1
   displayName: Build
