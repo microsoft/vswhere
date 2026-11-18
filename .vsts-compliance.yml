@@ -36,7 +36,7 @@ extends:
     settings:
       networkIsolationPolicy: CFSClean,CFSClean2,DefaultDeny
     pool:
-      name: VSEngSS-MicroBuild2022-1ES
+      name: VSEng-MicroBuildVSStable
     sdl:
       sourceAnalysisPool:
         name: AzurePipelines-EO
