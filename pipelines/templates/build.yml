@@ -38,7 +38,7 @@ steps:
   env:
     TreatWarningsAsErrors: true
 
-- task: VSTest@2
+- task: VSTest@3
   displayName: Functional tests
   inputs:
     configuration: ${{ parameters.BuildConfiguration }}
